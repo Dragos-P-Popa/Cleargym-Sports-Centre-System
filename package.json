@@ -1,0 +1,22 @@
+{
+  "name": "auth-api",
+  "version": "0.1",
+  "description": "Microservice which provides authentication and authorisation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uol-feps-soc-comp2913-2223s2-classroom/project-squad7.git"
+  },
+  "author": "Dragos Popa, Ali Almoharif",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/uol-feps-soc-comp2913-2223s2-classroom/project-squad7/issues"
+  },
+  "homepage": "https://github.com/uol-feps-soc-comp2913-2223s2-classroom/project-squad7#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
