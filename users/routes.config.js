@@ -1,6 +1,10 @@
 const UsersController = require('./controllers/users.controller');
 const config = require('../index.js');
 
+/*
+    Defines the app's routes.
+*/  
+
 // expressJS router
 exports.routesConfig = function (app) {
     // POST endpoint for the 'users' path

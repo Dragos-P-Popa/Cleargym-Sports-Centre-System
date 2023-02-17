@@ -2,6 +2,10 @@ const express = require('express'); //Import the express dependency
 const app = express();              //Instantiate an express app, the main work horse of this server
 const port = 5001;                  //Port that the node app will be listening to
 
+/* 
+    This file is the root of the application.
+*/  
+
 // uses the routes defined in the routes.config file
 const UsersRouter = require('./users/routes.config');
 

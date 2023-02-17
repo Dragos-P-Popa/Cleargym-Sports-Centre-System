@@ -1,6 +1,13 @@
 const UserModel = require('../models/users.model');
 const crypto = require('crypto');
 
+/* 
+    This file contains the user logic. 
+
+    It is in charge of hashing paswords, and initialising database changes levaraging the 
+    user.models.js file.
+*/  
+
 exports.insert = (req, res) => {
     // using 16 random bytes as a salt for the password encryption
     let salt = crypto.randomBytes(16).toString('base64');

@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+/* 
+    This files defines the User DB Schema and manages all DB communication. 
+
+    It exports some modules which can be used by other parts of the application to complete
+    different operations on the database, either read or write. 
+*/  
+
 // connect to a locally hosted mongoDB database
 mongoose.connect('mongodb://127.0.0.1:27017/auth-db');
 
