@@ -19,9 +19,7 @@ This section will start showing the tests for each api and try to explain which 
 
 describe("Testing",function (){
 
-    it("create a user",function (done) {
-
-
+    it("Create a user",function (done) {
     server
         .post('/users')
         .send({"firstName": "testCase001",
@@ -42,11 +40,36 @@ describe("Testing",function (){
         });
     });
 
-//Test2: Delete the user that has been created
+    it("Login a user - correct credentials", function (done) {
+        server
+            .post('/login')
+            .send({
+                    "email": "testCase01@squad007.com",
+                    "password": "test@case001"
+                })
+            .expect(201)
+            .end(function (err, res) {
+                res.status.should.equal(201);
+                done();
+            });
+    });
 
+    it("Login a user - incorrect credentials", function (done) {
+        server
+            .post('/login')
+            .send({
+                    "email": "testCase01@squad007.com",
+                    "password": "wrongPassword"
+                })
+            .expect(400)
+            .end(function (err, res) {
+                res.status.should.equal(400);
+                done();
+            });
+    });
 
+    //Test2: Delete the user that has been created
     it("Delete the user by the user ID", function (done){
-
         server
             .delete('/users/'+userId)
 
