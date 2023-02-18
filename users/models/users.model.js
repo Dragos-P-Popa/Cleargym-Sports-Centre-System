@@ -11,7 +11,14 @@ const Schema = mongoose.Schema;
 mongoose.set("strictQuery", false);
 
 // connect to a locally hosted mongoDB database
-mongoose.connect('mongodb://127.0.0.1:27017/auth-db');
+mongoose.connect('mongodb://127.0.0.1:27017/auth-db').then(() => {
+    console.log("Successfully connected to database");
+  })
+  .catch((error) => {
+    console.log("Failed to connect to DB");
+    console.error(error);
+    process.exit(1);
+  });
 
 // define the standard user schema for the mongoDB database
 const userSchema = new Schema({
