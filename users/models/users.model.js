@@ -8,6 +8,8 @@ const Schema = mongoose.Schema;
     different operations on the database, either read or write. 
 */  
 
+mongoose.set("strictQuery", false);
+
 // connect to a locally hosted mongoDB database
 mongoose.connect('mongodb://127.0.0.1:27017/auth-db');
 
@@ -40,6 +42,11 @@ exports.findById = (id) => {
         delete result.__v;
         return result;
     });
+};
+
+exports.findByEmail = (email) => {
+    // find user entry in mongo db using the email
+    return User.find({email: email});
 };
 
 // mongoDB updating one document

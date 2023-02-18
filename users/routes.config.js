@@ -1,5 +1,5 @@
 const UsersController = require('./controllers/users.controller');
-const config = require('../index.js');
+const ValidationMiddleware = require('../auth/middlewares/validation.user.middleware');
 
 /*
     Defines the app's routes.
@@ -14,18 +14,26 @@ exports.routesConfig = function (app) {
     ]);
     // get user by Id
     app.get('/users/:userId', [
+        // user should be logged in to access this
+        ValidationMiddleware.checkJWT,
         UsersController.getById
     ]);
     // update user by Id
     app.patch('/users/:userId', [
+        // user should be logged in to access this
+        ValidationMiddleware.checkJWT,
         UsersController.patchById
     ]);
     // list users
     app.get('/users', [
+        // user should be logged in to access this
+        ValidationMiddleware.checkJWT,
         UsersController.list
     ])
     // delete users
     app.delete('/users/:userId', [
+        // user should be logged in to access this
+        ValidationMiddleware.checkJWT,
         UsersController.removeById
     ])
 };
