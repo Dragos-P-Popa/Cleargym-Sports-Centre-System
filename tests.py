@@ -54,14 +54,18 @@ class FacilitiesTestCase(unittest.TestCase):
         status_code = app.get_facility("ID")
         self.assertEqual(status_code, 200)
 
-        #testing get facility by invalid ID
+        #testing get facility by invalid ID i.e: too long
         with self.assertRaises(TypeError):
             status_code = app.get_facility("123abc45de")
             self.assertEqual(status_code, 400)
 
         #testing get facility by non existing name
+        status_code = app.get_facility("non existing")
+        self.assertEqual(status_code, 404)
+
         #testing get facility by non existing ID 
-        #testing get facility by an invalid ID i.e: mix of alphabets and integers
+        status_code = app.get_facility("09876543210")
+        self.assertEqual(status_code, 404)
 
 
     #def edit_facility_capacity(self):
