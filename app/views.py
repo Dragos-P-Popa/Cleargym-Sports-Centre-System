@@ -5,7 +5,7 @@ import logging
 # The route corresponding to retrieving, updating and deleting a booking
 # by its ID
 @app.route('/bookings/{id}', methods=['GET', 'PATCH', 'DELETE'])
-def access_bookings():
+def get_patch_del_booking():
 
     # Validate which request was made and execute the corresponding code
 
@@ -25,7 +25,7 @@ def access_bookings():
 
 # The route corresponding to retrieving a booking by the user's ID
 @app.route('/bookings/user/{userId}', methods=['GET'])
-def get_by_uid():
+def get_booking_by_uid():
     # Validate that a correct request was sent to this API
     if bool(request.method == 'GET'):
         app.logger.info('A request to GET a booking by the user\'s ID')
@@ -33,7 +33,7 @@ def get_by_uid():
 
 # The route corresponding to creating a new booking
 @app.route('/booking', methods=['POST'])
-def create():
+def post_booking():
     # Validate that a correct request was sent to this API
     if bool(request.method == 'POST'): # & (form.validate_on_submit()) once we have forms
         app.logger.info('A request to GET a booking by the user\'s ID')
