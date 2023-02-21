@@ -1,5 +1,6 @@
 const UsersController = require('./controllers/users.controller');
 const ValidationMiddleware = require('../auth/middlewares/validation.user.middleware');
+const VerificationMiddleware = require('../auth/middlewares/verification.user.middleware');
 
 /*
     Defines the app's routes.
@@ -9,6 +10,8 @@ const ValidationMiddleware = require('../auth/middlewares/validation.user.middle
 exports.routesConfig = function (app) {
     // POST endpoint for the 'users' path
     app.post('/users', [
+        VerificationMiddleware.verifyUserCreation,
+        VerificationMiddleware.checkPassword,
         // uses the 'insert' function from the users.controller.js file
         UsersController.insert
     ]);
@@ -22,6 +25,8 @@ exports.routesConfig = function (app) {
     app.patch('/users/:userId', [
         // user should be logged in to access this
         ValidationMiddleware.checkJWT,
+        VerificationMiddleware.verifyPatch,
+        VerificationMiddleware.checkPassword,
         UsersController.patchById
     ]);
     // list users
