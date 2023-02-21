@@ -6,6 +6,17 @@ const crypto = require('crypto');
     match what we have in the mongo database. 
 */
 
+exports.checkPassword = (req, res, next) => {
+    // regex expression for strings that contain at least 6 chars, upper/lower case, number and symbol
+    var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
+    
+    // check if given password contains all of the criteria mentioned above
+    if (re.test(req.body.password)){
+        return next();
+    } else {
+        return res.status(400).send({error: "The password is not secure enough."});
+    }
+}
 
 // module which checks if the given email and password
 // matches what is in the db
