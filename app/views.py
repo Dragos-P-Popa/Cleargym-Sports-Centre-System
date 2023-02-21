@@ -15,7 +15,7 @@ def access_bookings():
         # Temporarily returning a string for debugging
         return "Returning a booking by its ID"
 
-    if bool(request.method == 'PATCH'):
+    if bool(request.method == 'PATCH'): # & (form.validate_on_submit()) once we have forms
         app.logger.info('A request to PATCH a booking by its ID')
         return "Updating a booking by its ID"
 
@@ -35,6 +35,6 @@ def get_by_uid():
 @app.route('/booking', methods=['POST'])
 def create():
     # Validate that a correct request was sent to this API
-    if bool(request.method == 'POST'):
+    if bool(request.method == 'POST'): # & (form.validate_on_submit()) once we have forms
         app.logger.info('A request to GET a booking by the user\'s ID')
         return "Returning a booking by the user\'s ID"
