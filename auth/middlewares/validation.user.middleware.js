@@ -9,6 +9,7 @@ const fs = require('fs');
 
 // open public key file
 var publicKEY  = fs.readFileSync('public.key', 'utf8');
+var privateKEY  = fs.readFileSync('private.key', 'utf8');
 
 exports.checkJWT = (req, res, next) => {
     // if the header contains a token
@@ -33,3 +34,30 @@ exports.checkJWT = (req, res, next) => {
         return res.status(401).send();
     }
 };
+
+exports.checkRefresh = (req, res, next) => {
+    if (req.body.refreshToken /*&& !(req.body.refreshToken in blacklist)*/){
+        decoded = jwt.decode(req.body.refreshToken, publicKEY)
+
+        if ((decoded.aud == req.body.audience) && jwt.verify(req.body.refreshToken, publicKEY)) {
+            // set the token settings
+            var signOptionsAccess = {
+                issuer:  'Sports Centre System',
+                expiresIn:  "10m",
+                // the audience will be checked to make sure the 
+                // correct user is making the request using a token which was 
+                // assigned to them
+                audience: req.body.audience,
+                algorithm:  "RS256" 
+                };
+
+            var accessToken = jwt.sign({user: req.body.audience}, privateKEY, signOptionsAccess);
+
+            res.status(201).send({accessToken: accessToken})
+        } else {
+            return res.status(401).send({error: "Wrong audience"});
+        }
+    } else {
+        return res.status(400).send({error: "Refresh token is not present or has been blacklisted."});
+    }
+}
