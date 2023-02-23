@@ -3,9 +3,9 @@ from flask import Flask, request
 from datetime import datetime
 
 
-# @app.before_first_request
-# def create_tables():
-#     db.create_all()
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 # API endpoint that shows a facility either by facility id or facility name
 @app.route('/facility/<param>', methods=['GET'])
