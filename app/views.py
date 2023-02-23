@@ -1,40 +1,123 @@
-from app import app
-from flask import render_template, flash, request, redirect
-import logging
 
-# The route corresponding to retrieving, updating and deleting a booking
-# by its ID
-@app.route('/bookings/{id}', methods=['GET', 'PATCH', 'DELETE'])
-def get_patch_del_booking():
+from app import app , db , models
+from flask import request, jsonify , Flask
+import datetime
+from datetime import datetime, date , time
 
-    # Validate which request was made and execute the corresponding code
-
-    if bool(request.method == 'GET'):
-        # Logger used for debugging through more informative console messages
-        app.logger.info('A request to GET a booking by its ID')
-        # Temporarily returning a string for debugging
-        return "Returning a booking by its ID"
-
-    if bool(request.method == 'PATCH'): # & (form.validate_on_submit()) once we have forms
-        app.logger.info('A request to PATCH a booking by its ID')
-        return "Updating a booking by its ID"
-
-    if bool(request.method == 'DELETE'):
-        app.logger.info('A request to DELETE a booking by its ID')
-        print( "Deleting a booking by its ID")
-
-# The route corresponding to retrieving a booking by the user's ID
-@app.route('/bookings/user/{userId}', methods=['GET'])
-def get_booking_by_uid():
-    # Validate that a correct request was sent to this API
-    if bool(request.method == 'GET'):
-        app.logger.info('A request to GET a booking by the user\'s ID')
-        return "Returning a booking by the user\'s ID"
-
-# The route corresponding to creating a new booking
 @app.route('/booking', methods=['POST'])
 def post_booking():
-    # Validate that a correct request was sent to this API
-    if bool(request.method == 'POST'): # & (form.validate_on_submit()) once we have forms
-        app.logger.info('A request to GET a booking by the user\'s ID')
-        return "Returning a booking by the user\'s ID"
+
+    Info = request.get_json()
+
+    if not Info:
+        return jsonify({'message': 'Missing fields'}), 400
+    
+    booking = models.booking(
+    
+        id=Info["id"],
+        userId = Info["userId"],
+        createDate = datetime.strptime(Info["createDate"],'%Y/%m/%d').date(),
+        bookingDate = datetime.strptime(Info["bookingDate"], '%Y/%m/%d').date(),
+        bookingTime = datetime.strptime(Info['bookingTime'], '%H:%M').time(),
+        bookingLength = datetime.strptime(Info['bookingLength'], '%H:%M').time(),
+        bookingType = Info["bookingType"],
+        teamEvent = Info["teamEvent"]
+    )
+
+    db.session.add(booking)
+    db.session.commit()
+
+    response = {'id': booking.id, 
+                'userId': booking.userId,
+                'createDate':booking.createDate.strftime('%Y/%m/%d'),
+                'bookingDate':booking.bookingDate.strftime('%Y/%m/%d'),
+                'bookingTime':booking.bookingTime.strftime('%H:%M'),
+                'bookingLength':booking.bookingLength.strftime('%H:%M'),
+                'bookingType':booking.bookingType,
+                'teamEvent':booking.teamEvent
+                }
+
+#return the response
+    return {'booking': response}, 200
+
+
+@app.route('/booking/<int:id>', methods=['DELETE'])
+def delete_booking(id):
+    booking = models.booking.query.get(id)
+#check for error
+    if not booking:
+        return jsonify({'message': 'Booking does not exist'}), 400
+        
+    db.session.delete(booking)
+    db.session.commit()
+
+    response = {'id': booking.id, 
+                'userId': booking.userId,
+                'createDate':booking.createDate.strftime('%y/%m/%d'),
+                'bookingDate':booking.bookingDate.strftime('%y/%m/%d'),
+                'bookingTime':booking.bookingTime.strftime('%H:%M'),
+                'bookingLength':booking.bookingLength.strftime('%H:%M'),
+                'bookingType':booking.bookingType,
+                'teamEvent':booking.teamEvent
+                }
+
+    return {'booking': response}, 200
+
+
+@app.route('/Update')
+def patch_booking():
+    return "Update a booking"
+
+
+@app.route('/booking/user/<userId>', methods=['GET'])
+def get_booking_uid(userId):
+
+    bookings = models.booking.query.filter_by(userId=userId).all()
+
+    if not bookings:
+        return jsonify({'message': 'Booking does not exist'}), 400
+        
+    db.session.commit()
+    if bookings:
+        booking_list = []
+        for booking in bookings:
+            booking_list.append({
+                'id': booking.id, 
+                'userId': booking.userId,
+                'createDate':booking.createDate.strftime('%y/%m/%d'),
+                'bookingDate':booking.bookingDate.strftime('%y/%m/%d'),
+                'bookingTime':booking.bookingTime.strftime('%H:%M'),
+                'bookingLength':booking.bookingLength.strftime('%H:%M'),
+                'bookingType':booking.bookingType,
+                'teamEvent':booking.teamEvent
+            })
+        return jsonify(booking_list)
+
+
+@app.route('/booking/<int:id>', methods=['GET'])
+def get_booking_bid(id):
+    booking = models.booking.query.get(id)
+#check for error
+    if not booking:
+        return jsonify({'message': 'Booking does not exist'}), 400
+        
+    db.session.commit()
+
+    response = {'id': booking.id, 
+                'userId': booking.userId,
+                'createDate':booking.createDate.strftime('%y/%m/%d'),
+                'bookingDate':booking.bookingDate.strftime('%y/%m/%d'),
+                'bookingTime':booking.bookingTime.strftime('%H:%M'),
+                'bookingLength':booking.bookingLength.strftime('%H:%M'),
+                'bookingType':booking.bookingType,
+                'teamEvent':booking.teamEvent
+                }
+
+#return the response
+    return {'booking': response}, 200
+
+
+
+
+    
+
