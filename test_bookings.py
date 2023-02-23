@@ -28,4 +28,4 @@ def test_placeholder0(set_tear_fixture):
 # A temporary placeholder function for testing the output when 'False' is returned
 def test_placeholder1():
     app.logger.error('asserting False')
-    assert True
+    assert False
