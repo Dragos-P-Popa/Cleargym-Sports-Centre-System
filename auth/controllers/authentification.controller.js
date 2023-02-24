@@ -1,8 +1,11 @@
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
+const BlacklistModel = require('../models/tokens.model');
+
 
 /*
-    This file creates the JWT tokens
+    This file creates the JWT tokens and adds refresh tokens
+    to the blacklist once a user has been signed out
 */
 
 // open the private key file
@@ -39,4 +42,11 @@ exports.login = (req, res) => {
 
     // send the tokens
     res.status(201).send({accessToken: accessToken, refreshToken: refreshToken})
+}
+
+exports.logout = (req, res) => {
+    // if previous checks in routes.config pass and the token
+    // has not been blacklisted already, it should be blacklisted now
+    BlacklistModel.blacklistToken(req.body);
+    return res.status(200).send({response: "Token has just been blacklisted"});
 }

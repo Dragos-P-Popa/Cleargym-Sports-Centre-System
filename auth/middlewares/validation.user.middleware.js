@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
+const BlacklistModel = require('../models/tokens.model');
 
 /*
     This file checks that the given request contains
@@ -35,8 +36,8 @@ exports.checkJWT = (req, res, next) => {
     }
 };
 
-exports.checkRefresh = (req, res, next) => {
-    if (req.body.refreshToken /*&& !(req.body.refreshToken in blacklist)*/){
+exports.checkRefresh = (req, res) => {
+    if (req.body.refreshToken){
         decoded = jwt.decode(req.body.refreshToken, publicKEY)
 
         if ((decoded.aud == req.body.audience) && jwt.verify(req.body.refreshToken, publicKEY)) {
@@ -58,6 +59,6 @@ exports.checkRefresh = (req, res, next) => {
             return res.status(401).send({error: "Wrong audience"});
         }
     } else {
-        return res.status(400).send({error: "Refresh token is not present or has been blacklisted."});
+        return res.status(400).send({error: "Refresh token is missing."});
     }
 }

@@ -12,7 +12,7 @@ mongoose.set("strictQuery", false);
 
 // connect to a locally hosted mongoDB database
 mongoose.connect('mongodb://127.0.0.1:27017/auth-db').then(() => {
-    console.log("Successfully connected to database");
+    console.log("Successfully connected to users database");
   })
   .catch((error) => {
     console.log("Failed to connect to DB");
