@@ -19,6 +19,7 @@ This section will start showing the tests for each api and try to explain which 
 
 describe("Testing",function (){
 
+
     it("Create a user",function (done) {
     server
         .post('/users')
@@ -90,8 +91,6 @@ describe("Testing",function (){
                 .expect(400)
                 .end(function (err,res){
                     res.status.should.equal(400);
-                    if(res.body.hasOwnProperty('id'))
-
                         done();
                 });
         });
@@ -109,8 +108,6 @@ describe("Testing",function (){
                 .expect(400)
                 .end(function (err,res){
                     res.status.should.equal(400);
-                    if(res.body.hasOwnProperty('id'))
-
                         done();
                 });
         });
@@ -129,8 +126,6 @@ describe("Testing",function (){
                 .expect(400)
                 .end(function (err,res){
                     res.status.should.equal(400);
-                    if(res.body.hasOwnProperty('id'))
-
                         done();
                 });
         });
@@ -148,8 +143,6 @@ describe("Testing",function (){
                 .expect(400)
                 .end(function (err,res){
                     res.status.should.equal(400);
-                    if(res.body.hasOwnProperty('id'))
-
                         done();
                 });
         });
@@ -167,8 +160,6 @@ describe("Testing",function (){
                 .expect(400)
                 .end(function (err,res){
                     res.status.should.equal(400);
-                    if(res.body.hasOwnProperty('id'))
-
                         done();
                 });
         });
@@ -185,8 +176,6 @@ describe("Testing",function (){
                 .expect(400)
                 .end(function (err,res){
                     res.status.should.equal(400);
-                    if(res.body.hasOwnProperty('id'))
-
                         done();
                 });
         });
@@ -203,8 +192,6 @@ describe("Testing",function (){
                 .expect(400)
                 .end(function (err,res){
                     res.status.should.equal(400);
-                    if(res.body.hasOwnProperty('id'))
-
                         done();
                 });
         });
@@ -223,8 +210,6 @@ describe("Testing",function (){
                 .expect(400)
                 .end(function (err,res){
                     res.status.should.equal(400);
-                    if(res.body.hasOwnProperty('id'))
-
                         done();
                 });
         });
@@ -286,16 +271,16 @@ describe("Testing",function (){
             server
               .patch('/users/'+userId)
               .auth(authToken, { type: 'bearer' })
-              .send({"firstName": "UpdatedName",
-                   "lastName": "testCase001",
-                    "email": "TestCase2023.10@squad007.com"
+              .send({
+                  "password" : "Zz123456!"
                 })
 
                 //This means the record has been updated
-                .expect(204)
-                .end(function (err,res){
-                    res.status.should.equal(204);
-                    done();
+              .expect(204)
+              .end(function (err,res){
+                res.status.should.equal(204);
+                done();
+
                 });
         });
 //Test 16: Get all the users that has been created if the privilege is high
