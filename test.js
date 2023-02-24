@@ -238,7 +238,7 @@ describe("Testing",function (){
           server
           .post('/login')
            .send({
-                "email": "testCase01@squad007.com",
+                "email": "TestCase2023.10@squad007.com",
                 "password": "wrongPassword"
             })
           .expect(400)

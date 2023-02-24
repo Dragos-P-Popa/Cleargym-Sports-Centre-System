@@ -30,6 +30,12 @@ UsersRouter.routesConfig(app);
 // use routes defined in auth/routes.config.js
 AuthRouter.routesConfig(app);
 
+// used for mocha tests
+app.get('/', (req, res) => {
+    res.status(200).send();
+  })
+  
+
 app.listen(port, () => {
     console.log(`Now listening on port ${port}`); 
 });
