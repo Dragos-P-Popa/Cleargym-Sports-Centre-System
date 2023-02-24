@@ -33,5 +33,4 @@ jobs:
         mongodb-version: ${{ matrix.mongodb-version }}
     - run: rm -rf package-lock.json
     - run: npm install
-    - run: npm start
-    - run: npm test
+    - run: npm run st
