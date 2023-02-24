@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "auth-jwt-refresh" ]
+    branches: [ "main-accounts" ]
   pull_request:
-    branches: [ "auth-jwt-refresh" ]
+    branches: [ "main-accounts" ]
 
 jobs:
   build:
@@ -33,6 +33,5 @@ jobs:
         mongodb-version: ${{ matrix.mongodb-version }}
     - run: rm -rf package-lock.json
     - run: npm install
-    - run: npm ci
     - run: npm start
     - run: npm test
