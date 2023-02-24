@@ -17,9 +17,9 @@ def get_patch_del_booking(id):
 
         if not booking:
                 return jsonify({'message': 'Missing fields'}), 400
-        
+
         db.session.commit()
-        response = {'id': booking.id, 
+        response = {'id': booking.id,
                 'userId': booking.userId}
 
         return {'booking': response}, 200
@@ -37,7 +37,7 @@ def get_patch_del_booking(id):
 
         if not booking:
             return jsonify({'message': 'Missing fields'}), 400
-        
+
         db.session.delete(booking)
         db.session.commit()
 
@@ -56,14 +56,14 @@ def get_booking_by_uid(userId):
 
         if not booking:
             return jsonify({'message': 'Missing fields'}), 400
-        
+
         db.session.commit()
 
-        response = {'id': booking.id, 
+        response = {'id': booking.id,
                 'userId': booking.userId}
 
         return {'booking': response}, 200
-       
+
 
 # The route corresponding to creating a new booking
 @app.route('/booking', methods=['POST'])
@@ -71,7 +71,7 @@ def post_booking():
     # Validate that a correct request was sent to this API
     if bool(request.method == 'POST'): # & (form.validate_on_submit()) once we have forms
 
-        app.logger.info('A request to GET a booking by the user\'s ID')
+        app.logger.info('A request to POST a booking by the user\'s ID')
 
         Info = request.get_json()
 
@@ -86,7 +86,7 @@ def post_booking():
         db.session.add(booking)
         db.session.commit()
 
-        response = {'id': booking.id, 
+        response = {'id': booking.id,
                     'userId': booking.userId}
 
         return {'booking': response}, 200
