@@ -33,4 +33,5 @@ jobs:
         mongodb-version: ${{ matrix.mongodb-version }}
     - run: rm -rf package-lock.json
     - run: npm install
+    - run: npm install jsonwebtoken
     - run: npm run st
