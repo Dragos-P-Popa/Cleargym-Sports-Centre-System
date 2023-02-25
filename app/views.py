@@ -16,7 +16,7 @@ def get_patch_del_booking(id):
         booking = models.TRY.query.get(id)
 
         if not booking:
-                return jsonify({'message': 'Missing fields'}), 400
+            return jsonify({'message': 'Missing fields'}), 400
 
         db.session.commit()
         response = {'id': booking.id,
@@ -81,12 +81,13 @@ def post_booking():
         booking = models.TRY(
             id=Info["id"],
             userId=Info["userId"]
-            )
+        )
 
-        db.session.add(booking)
         db.session.commit()
 
-        response = {'id': booking.id,
-                    'userId': booking.userId}
+        # Worth noting, bookingID string input seems to be automatically
+        # converted to an int in models.py
+        response = {'id': booking.id, 'userId': booking.userId}
 
-        return {'booking': response}, 200
+        # Note: Return the response only. No extra data explaining what this is.
+        return response, 200
