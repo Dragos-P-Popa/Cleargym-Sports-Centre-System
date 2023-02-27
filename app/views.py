@@ -59,9 +59,9 @@ def update_facility(param):
         facility.capacity = data['capacity']
     if 'openingTime' in data:
         facility.openingTime = datetime.strptime(data['openingTime'], '%H:%M:%S').time()
-    if 'closing_time' in data:
+    if 'closingTime' in data:
         facility.closingTime = datetime.strptime(data['closingTime'], '%H:%M:%S').time()
-    if 'manager_id' in data:
+    if 'managerId' in data:
         facility.managerId = data['managerId']
 
     # commit changes to the database
