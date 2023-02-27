@@ -13,10 +13,10 @@ def get_facility(param):
     facility = None
     if param.isdigit():
         # parameter is a facility ID
-        facility = db.Facility.query.filter_by(id=int(param)).first()
+        facility = db.session.query(models.Facility).filter_by(id=int(param)).first()
     else:
         # parameter is a name of facility
-        facility = db.Facility.query.filter_by(facilityName=param).first()
+        facility = db.session.query(models.Facility).filter_by(facilityName=param).first()
     if facility is None:
         #  if the code does not run correctly, return a 404 Not Found status code
         return jsonify({'error': f'Facility with id {param} does not exist.'}), 404
@@ -25,9 +25,9 @@ def get_facility(param):
     result = {  'id': facility.id,
                 'facilityName': facility.facilityName,
                 'capacity': facility.capacity,
-                'opening_time': facility.opening_time.strftime('%H:%M:%S'),
-                'closing_time': facility.closing_time.strftime('%H:%M:%S'),
-                'manager_id': facility.manager_id   }
+                'openingTime': facility.openingTime.strftime('%H:%M:%S'),
+                'closingTime': facility.closingTime.strftime('%H:%M:%S'),
+                'managerId': facility.managerId   }
 
     # if the code runs correctly, return an 200 OK status code
     return result, 200
@@ -39,10 +39,10 @@ def update_facility(param):
     facility = None
     if param.isdigit():
         # parameter is a facility ID
-        facility = db.Facility.query.filter_by(id=int(param)).first()
+        facility = db.session.query(models.Facility).filter_by(id=int(param)).first()
     else:
         # parameter is a name of facility
-        facility = db.Facility.query.filter_by(facilityName=param).first()
+        facility = db.session.query(models.Facility).filter_by(facilityName=param).first()
     if facility is None:
         #  if the code does not run correctly, return a 404 Not Found status code
         return jsonify({'error': f'Facility with id {param} does not exist.'}), 404
@@ -57,12 +57,12 @@ def update_facility(param):
         facility.facilityName = data['facilityName']
     if 'capacity' in data:
         facility.capacity = data['capacity']
-    if 'opening_time' in data:
-        facility.opening_time = datetime.strptime(data['opening_time'], '%H:%M:%S').time()
+    if 'openingTime' in data:
+        facility.openingTime = datetime.strptime(data['openingTime'], '%H:%M:%S').time()
     if 'closing_time' in data:
-        facility.closing_time = datetime.strptime(data['closing_time'], '%H:%M:%S').time()
+        facility.closingTime = datetime.strptime(data['closingTime'], '%H:%M:%S').time()
     if 'manager_id' in data:
-        facility.manager_id = data['manager_id']
+        facility.managerId = data['managerId']
 
     # commit changes to the database
     db.session.commit()
@@ -71,9 +71,9 @@ def update_facility(param):
     result = {  'id': facility.id,
                 'facilityName': facility.facilityName,
                 'capacity': facility.capacity,
-                'opening_time': facility.opening_time.strftime('%H:%M:%S'),
-                'closing_time': facility.closing_time.strftime('%H:%M:%S'),
-                'manager_id': facility.manager_id   }
+                'openingTime': facility.openingTime.strftime('%H:%M:%S'),
+                'closingTime': facility.closingTime.strftime('%H:%M:%S'),
+                'managerId': facility.managerId   }
 
     # if the code runs correctly, return an 200 OK status code
     return result, 200
@@ -91,9 +91,9 @@ def create_facility():
     facility = models.Facility(
         facilityName=data['facilityName'],
         capacity=data['capacity'],
-        opening_time=datetime.strptime(data['opening_time'], '%H:%M:%S').time(),
-        closing_time=datetime.strptime(data['closing_time'], '%H:%M:%S').time(),
-        manager_id=data['manager_id']
+        openingTime=datetime.strptime(data['openingTime'], '%H:%M:%S').time(),
+        closingTime=datetime.strptime(data['closingTime'], '%H:%M:%S').time(),
+        managerId=data['managerId']
     )
     
     # add new facility to the database
@@ -104,9 +104,9 @@ def create_facility():
     result = {  'id': facility.id,
                 'facilityName': facility.facilityName,
                 'capacity': facility.capacity,
-                'opening_time': facility.opening_time.strftime('%H:%M:%S'),
-                'closing_time': facility.closing_time.strftime('%H:%M:%S'),
-                'manager_id': facility.manager_id   }
+                'openingTime': facility.openingTime.strftime('%H:%M:%S'),
+                'closingTime': facility.closingTime.strftime('%H:%M:%S'),
+                'managerId': facility.managerId   }
     
     # if the code runs correctly, return an 200 OK status code
     return result, 200

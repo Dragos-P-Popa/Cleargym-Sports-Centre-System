@@ -24,7 +24,7 @@ def upgrade():
     sa.Column('capacity', sa.Integer(), nullable=False),
     sa.Column('openingTime', sa.Time(), nullable=False),
     sa.Column('closingTime', sa.Time(), nullable=False),
-    sa.Column('managerId', sa.Integer(), nullable=False),
+    sa.Column('managerId', sa.String(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
