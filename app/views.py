@@ -1,5 +1,5 @@
 from app import app, db, models
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from datetime import datetime
 
 
@@ -19,7 +19,7 @@ def get_facility(param):
         facility = db.Facility.query.filter_by(facilityName=param).first()
     if facility is None:
         #  if the code does not run correctly, return a 404 Not Found status code
-        return {'error': f'Facility with id {param} does not exist.'}, 404
+        return jsonify({'error': f'Facility with id {param} does not exist.'}), 404
     
     # return facility
     result = {  'id': facility.id,
@@ -30,7 +30,7 @@ def get_facility(param):
                 'manager_id': facility.manager_id   }
 
     # if the code runs correctly, return an 200 OK status code
-    return {'facility': result}, 200
+    return result, 200
 
 
 # API endpoint that allows to change specific values of a facility on facility id or facility name
@@ -45,12 +45,12 @@ def update_facility(param):
         facility = db.Facility.query.filter_by(facilityName=param).first()
     if facility is None:
         #  if the code does not run correctly, return a 404 Not Found status code
-        return {'error': f'Facility with id {param} does not exist.'}, 404
+        return jsonify({'error': f'Facility with id {param} does not exist.'}), 404
     
     # retrieve data, not sure if this is correct (?)
     data = request.get_json()
     if not data:
-        return {'error': 'No data provided'}, 400
+        return jsonify({'error': 'No data provided'}), 400
 
     # update facility properties with new values from request data
     if 'facilityName' in data:
@@ -76,7 +76,7 @@ def update_facility(param):
                 'manager_id': facility.manager_id   }
 
     # if the code runs correctly, return an 200 OK status code
-    return {'facility': result}, 200
+    return result, 200
 
 
 # API endpoint to create a new facility
@@ -85,7 +85,7 @@ def create_facility():
     # retrieve data from request body
     data = request.get_json()
     if not data:
-        return {'error': 'No data provided'}, 400
+        return jsonify({'error': 'No data provided'}), 400
     
     # create a new Facility object with the provided data
     facility = models.Facility(
@@ -109,4 +109,4 @@ def create_facility():
                 'manager_id': facility.manager_id   }
     
     # if the code runs correctly, return an 200 OK status code
-    return {'facility': result}, 200
+    return result, 200
