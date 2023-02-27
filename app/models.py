@@ -9,7 +9,7 @@ class Facility(db.Model):
     capacity = db.Column(db.Integer, nullable=False)
     openingTime = db.Column(db.Time, nullable=False)
     closingTime = db.Column(db.Time, nullable=False)
-    managerId = db.Column(db.Integer, nullable=False)
+    managerId = db.Column(db.String, nullable=False)
 
 
 def __init__(self, facilityName, capacity, openingTime, closingTime, managerId):
