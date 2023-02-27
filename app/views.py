@@ -110,3 +110,23 @@ def create_facility():
     
     # if the code runs correctly, return an 200 OK status code
     return result, 200
+
+# API endpoint for fetching all facilities
+@app.route('/facilities', methods=['GET'])
+def get_all_facilities():
+    # get all facilities in the database
+    facilities = models.Facility.query.all()
+    # initialise list
+    result = []
+
+    # for each facility, steralise the object given by sqlalchemy
+    for facility in facilities:
+        result.append({  'id': facility.id,
+            'facilityName': facility.facilityName,
+            'capacity': facility.capacity,
+            'openingTime': facility.openingTime.strftime('%H:%M:%S'),
+            'closingTime': facility.closingTime.strftime('%H:%M:%S'),
+            'managerId': facility.managerId   })
+
+    # convert to json and return
+    return jsonify(result)
