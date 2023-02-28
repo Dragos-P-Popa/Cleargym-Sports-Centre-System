@@ -1,11 +1,20 @@
 from app import app, db, models
 from flask import Flask, request, jsonify
 from datetime import datetime
+from create_facilities import preload_data
 
 
+# create the table and the database before running the first request
 @app.before_first_request
 def create_tables():
-    db.create_all()
+    # delete all data from the Facility table
+    db.session.query(models.Facility).delete()
+
+    # commit the changes to the database
+    db.session.commit()
+
+    # preload some data in the database
+    preload_data()
 
 # API endpoint that shows a facility either by facility id or facility name
 @app.route('/facility/<param>', methods=['GET'])
@@ -47,7 +56,7 @@ def update_facility(param):
         #  if the code does not run correctly, return a 404 Not Found status code
         return jsonify({'error': f'Facility with id {param} does not exist.'}), 404
     
-    # retrieve data, not sure if this is correct (?)
+    # retrieve data
     data = request.get_json()
     if not data:
         return jsonify({'error': 'No data provided'}), 400
