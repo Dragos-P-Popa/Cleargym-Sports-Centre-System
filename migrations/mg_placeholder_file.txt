@@ -1,3 +1,0 @@
-This file allows this directory to be added to git for later use.
-It will be replaced by migration files.
-
