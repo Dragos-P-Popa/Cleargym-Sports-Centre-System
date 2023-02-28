@@ -26,7 +26,6 @@ exports.routesConfig = function (app) {
         // user should be logged in to access this
         ValidationMiddleware.checkJWT,
         VerificationMiddleware.verifyPatch,
-        VerificationMiddleware.checkPassword,
         UsersController.patchById
     ]);
     // list users

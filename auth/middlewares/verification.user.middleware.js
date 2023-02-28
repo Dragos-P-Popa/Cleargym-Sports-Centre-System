@@ -9,7 +9,7 @@ const crypto = require('crypto');
 exports.checkPassword = (req, res, next) => {
     // regex expression for strings that contain at least 6 chars, upper/lower case, number and symbol
     var re = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{6,}$/;
-    
+
     // check if given password contains all of the criteria mentioned above
     if (re.test(req.body.password)){
         return next();
@@ -79,10 +79,10 @@ exports.verifyUserCreation = (req, res, next) => {
 }
 
 exports.verifyPatch = (req, res, next) => {
-    if (req.body.password.length > 5){
-        // has been validated validated
-        return next();
+    // if password is present, it needs additional validation
+    if (req.body.password) {
+        this.checkPassword(req, res, next);
     } else {
-        return res.status(400).send({error: "The password is not long enough."});
+        return next();
     }
 }
