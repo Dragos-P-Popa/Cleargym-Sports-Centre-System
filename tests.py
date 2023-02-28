@@ -45,6 +45,16 @@ class FacilitiesTestCase(unittest.TestCase):
             result, status_code = app.create_facility('Swimming pool', 30, 10.00, '8:00:00', '10:0ABC', '63F0DE4724EF6726E1F27D57')
             self.assertEqual(status_code, 400) #400 Bad request
 
+        #testing by adding empty name
+        # with self.client:
+        #     response = self.client.post ('/facility', data={
+        #     'facilityName': '',
+        #     'capacity': '30',
+        #     'openingTime' : '8:00:00'
+        #     'closingTime' : '20:00:00'
+        #     })
+        #     self.assertEqual()
+
     def test_get_facility(self):
         #testing get facility by name 
         result, status_code = app.get_facility("Swimming Pool")
@@ -67,6 +77,12 @@ class FacilitiesTestCase(unittest.TestCase):
         result, status_code = app.get_facility("09876543210")
         self.assertEqual(status_code, 404)
 
+        #testing get facility with an empty value
+        result, status_code = app.get_facility(" ")
+        self.assertEqual(status_code, 400)
+
+
+    #need to check if this is how unit test works for PATCH!!
     def test_update_facility(self):
         #test update facility with name
         result, status_code = app.update_facility("Swimming Pool")
