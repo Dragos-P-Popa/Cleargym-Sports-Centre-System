@@ -11,6 +11,7 @@ let server = supertest.agent("http://localhost:3001");
 //Defining a user id variable to store it and use it in a delete request
 let userId;
 let authToken;
+let refToken;
 /*-----------------------------------------------------------------
 This section will start showing the tests for each api and try to explain which tests are running on each stage
 -------------------------------------------------------------------*/
@@ -25,7 +26,7 @@ describe("Testing",function (){
         .post('/users')
         .send({"firstName": "testCase002",
             "lastName": "testCase002",
-            "email": "TestCase2023.10@squad007.com",
+            "email": "newemail@new.com",
             "password": "Test@case20231"})
 
         //This means the record has been created
@@ -49,7 +50,7 @@ describe("Testing",function (){
                 .post('/users')
                 .send({"firstName": "testCase002",
                     "lastName": "testCase002",
-                    "email": "TestCase2023.10@squad007.com",
+                    "email": "newemail@new.com",
                     "password": "Test@case20231"})
 
                 //This means the record has been created
@@ -219,8 +220,33 @@ describe("Testing",function (){
             server
                 .post('/login')
                 .send({
-                    "email": "TestCase2023.10@squad007.com",
+                    "email": "newemail@new.com",
                     "password": "Test@case20231"
+                })
+                .expect(201)
+                .end(function (err, res) {
+                    res.status.should.equal(201);
+                    if(res.body.hasOwnProperty("accessToken"))
+                    {
+                        authToken = res.body.accessToken;
+                    }
+                    if(res.body.hasOwnProperty("refreshToken"))
+                    {
+                        refToken = res.body.refreshToken;
+                    }
+                    done();
+                });
+        });
+
+
+//Test 13: Refresh and get new access token
+        it("Refresh and get a new access token", function (done) {
+            server
+                .post('/refresh')
+                .send({
+                    "refreshToken" : refToken,
+                    "audience": "newemail@new.com"
+
                 })
                 .expect(201)
                 .end(function (err, res) {
@@ -233,12 +259,56 @@ describe("Testing",function (){
                 });
         });
 
-//Test 13: Login with incorrect credentials
+//Test 14: Refresh without an audience
+        it("Refresh without an audience - unauthorized", function (done) {
+            server
+                .post('/refresh')
+                .send({
+                    "refreshToken" : refToken
+                })
+                .expect(401)
+                .end(function (err, res) {
+                    res.status.should.equal(401);
+                    done();
+                });
+        });
+
+//Test 15: Refresh with the wrong audience
+        it("Refresh with wrong audience - unauthorized", function (done) {
+            server
+                .post('/refresh')
+                .send({
+                    "refreshToken" : refToken,
+                    "audience" : "wrong@wrong.com"
+                })
+                .expect(401)
+                .end(function (err, res) {
+                    res.status.should.equal(401);
+                    done();
+                });
+        });
+
+//Test 16: Refresh without a refresh token
+        it("Refresh without refresh token - bad request", function (done) {
+            server
+                .post('/refresh')
+                .send({
+
+                    "audience": "newemail@new.com"
+                })
+                .expect(400)
+                .end(function (err, res) {
+                    res.status.should.equal(400);
+                    done();
+                });
+        });
+
+//Test 17: Login with incorrect credentials
           it("Login a user - incorrect credentials", function (done) {
           server
           .post('/login')
            .send({
-                "email": "TestCase2023.10@squad007.com",
+                "email": "newemail@new.com",
                 "password": "wrongPassword"
             })
           .expect(400)
@@ -248,7 +318,7 @@ describe("Testing",function (){
           });
          });
 
-//Test 14: Get the user details by GET request
+//Test 18: Get the user details by GET request
         it("Get the user details by the user ID", function (done){
 
             server
@@ -265,8 +335,8 @@ describe("Testing",function (){
         })
 
 
-//Test 15: update the user details by PATCH request
-        it("Update user details",function (done) {
+//Test 19: update the user details by PATCH request (Password)
+        it("Update user details - password",function (done) {
 
             server
               .patch('/users/'+userId)
@@ -283,7 +353,87 @@ describe("Testing",function (){
 
                 });
         });
-//Test 16: Get all the users that has been created if the privilege is high
+
+//Test 20: update the user details by PATCH request (First name)
+        it("Update user details - First name",function (done) {
+
+            server
+                .patch('/users/'+userId)
+                .auth(authToken, { type: 'bearer' })
+                .send({
+                    "firstName" : "MyName is A member"
+                })
+
+                //This means the record has been updated
+                .expect(204)
+                .end(function (err,res){
+                    res.status.should.equal(204);
+                    done();
+
+                });
+        });
+
+//Test 21: update the user details by PATCH request (Last name)
+        it("Update user details - last name",function (done) {
+
+            server
+                .patch('/users/'+userId)
+                .auth(authToken, { type: 'bearer' })
+                .send({
+                    "lastName" : "MyLastname is A programmer"
+                })
+
+                //This means the record has been updated
+                .expect(204)
+                .end(function (err,res){
+                    res.status.should.equal(204);
+                    done();
+
+                });
+        });
+
+//Test 22: update the user details by PATCH request (email)
+        it("Update user details - eamil",function (done) {
+
+            server
+                .patch('/users/'+userId)
+                .auth(authToken, { type: 'bearer' })
+                .send({
+                    "email" : "jan@jan.com"
+                })
+
+                //This means the record has been updated
+                .expect(204)
+                .end(function (err,res){
+                    res.status.should.equal(204);
+                    done();
+
+                });
+        });
+
+//Test 23: update the user details by PATCH request (All details)
+        it("Update user details - all the details",function (done) {
+
+            server
+                .patch('/users/'+userId)
+                .auth(authToken, { type: 'bearer' })
+                .send({
+                    "firstName": "All",
+                    "lastName": "details",
+                    "email": "FEB@Chaged.com",
+                    "password": "New@month02"
+                })
+
+                //This means the record has been updated
+                .expect(204)
+                .end(function (err,res){
+                    res.status.should.equal(204);
+                    done();
+
+                });
+        });
+
+//Test 24: Get all the users that has been created if the privilege is high
        it("Get all the users in the Database", function (done){
 
             server
@@ -299,7 +449,9 @@ describe("Testing",function (){
                })
         })
 
-//Test 17: Delete the user that has been created
+
+
+//Test 25: Delete the user that has been created
     it("Delete the user by the user ID", function (done){
        server
             .delete('/users/'+userId)
