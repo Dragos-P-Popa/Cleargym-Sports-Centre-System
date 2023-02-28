@@ -129,4 +129,4 @@ def get_all_facilities():
             'managerId': facility.managerId   })
 
     # convert to json and return
-    return jsonify(result)
+    return jsonify(result), 200
