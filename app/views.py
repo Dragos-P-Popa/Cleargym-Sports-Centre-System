@@ -7,12 +7,6 @@ from create_facilities import preload_data
 # create the table and the database before running the first request
 @app.before_first_request
 def create_tables():
-    # delete all data from the Facility table
-    db.session.query(models.Facility).delete()
-
-    # commit the changes to the database
-    db.session.commit()
-
     # preload some data in the database
     preload_data()
 
