@@ -50,7 +50,7 @@ describe("Testing",function (){
                 .post('/users')
                 .send({"firstName": "testCase002",
                     "lastName": "testCase002",
-                    "email": "TestCase2023.10@squad007.com",
+                    "email": "newemail@new.com",
                     "password": "Test@case20231"})
 
                 //This means the record has been created
