@@ -1,8 +1,14 @@
 from app import db
+from datetime import datetime
 
 
-class TRY(db.Model):
-    # Worth noting, string input seems to be automatically converted to an int
-    id = db.Column(db.Integer, primary_key=True)
-    # And int input is automatically converted to string
-    userId = db.Column(db.String(500))
+# Creating the columns
+class Booking(db.Model):
+    id = db.Column(db.Integer, primary_key=True, nullable=False)
+    userId = db.Column(db.String(500), nullable=False)
+    createDate = db.Column(db.Date, nullable=False)
+    bookingDate = db.Column(db.Date, nullable=False)
+    bookingTime = db.Column(db.Time, nullable=False)
+    bookingLength = db.Column(db.Time, nullable=False)
+    bookingType = db.Column(db.String(500), nullable=False)
+    teamEvent = db.Column(db.Boolean, nullable=False)
