@@ -1,0 +1,1 @@
+<button class="py-1 m-2 px-24 rounded-lg border-4 border- text-mainBlue font-extrabold text-xl bg-white drop-shadow-lg"><slot/></button>
