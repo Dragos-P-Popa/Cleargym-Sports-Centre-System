@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 # Creating the columns
-class booking(db.Model):
+class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     userId = db.Column(db.String(500), nullable=False)
     createDate = db.Column(db.Date, nullable=False)
