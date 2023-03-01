@@ -75,6 +75,7 @@ def post_booking():
     # return the response
     return jsonify(response), 200
 
+
 # This function is to delete a booking by using the booking id
 @app.route('/bookings/<int:id>', methods=['DELETE'])
 def delete_booking(id):
@@ -111,6 +112,7 @@ def delete_booking(id):
     # return the response
     return jsonify(response), 200
 
+
 # This function is to show all bookings of a user by using the user id
 @app.route('/bookings/user/<userId>', methods=['GET'])
 def get_booking_uid(userId):
@@ -145,6 +147,7 @@ def get_booking_uid(userId):
 
     # return the response ( The booking_list )
     return jsonify(booking_list), 200
+
 
 # This function is to get a booking by using the booking id
 @app.route('/bookings/<int:id>', methods=['GET'])
