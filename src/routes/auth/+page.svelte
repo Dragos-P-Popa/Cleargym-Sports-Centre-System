@@ -2,6 +2,7 @@
   // import prebuilt components
   import   MainButton from "../../components/mainButton.svelte"
   import  SecondaryButton from "../../components/secondaryButton.svelte"
+  import "@fontsource/manrope";
 
   // this function runs when the login for is submitted using the login button
   async function onSubmit(e: { target: HTMLFormElement; }) {
@@ -89,5 +90,6 @@
   :global(body) {
     background-image: url("gym.jpeg");
     padding-top: 5rem;
+    font-family: "Manrope";
     }
 </style>
