@@ -1,3 +1,7 @@
+<script>
+    import "@fontsource/manrope";
+</script>
+
 <div class="grid grid-cols-12">
     <div class="min-h-screen border-r-2 border-borderColor col-span-2 mr-2 p-8 pt-16">
        <img class="place-self-center pr-3 mb-16" src = "logo.svg" alt="logo"/>
@@ -17,3 +21,9 @@
         <p>MAIN</p> 
      </div>
 </div>
+
+<style lang="postcss">
+    :global(body) {
+        font-family:"Manrope",
+    }
+</style>
