@@ -1,9 +1,6 @@
 <script>
   import   MainButton from "../components/mainButton.svelte"
   import  SecondaryButton from "../components/secondaryButton.svelte"
-  import button from "../components/button.svelte";
-
-
 
 </script>
 
