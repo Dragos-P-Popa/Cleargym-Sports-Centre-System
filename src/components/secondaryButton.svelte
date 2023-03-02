@@ -1,7 +1,6 @@
 <script>
-
     let buttonProps = {
-        class:[$$restProps.class]
+        class:[$$restProps.class] + " py-1 my-2 w-3/5 rounded-lg border-4 text-mainBlue font-extrabold text-xl bg-white drop-shadow-lg",
     }
 </script>
 <button {...buttonProps}
@@ -11,7 +10,3 @@
         on:mouseover>
     <slot/>
 </button>
-
-
-
-<button class="py-1 m-2 px-24 rounded-lg border-4 border- text-mainBlue font-extrabold text-xl bg-white drop-shadow-lg"><slot/></button>
