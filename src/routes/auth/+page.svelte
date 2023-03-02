@@ -1,16 +1,46 @@
 <script lang="ts">
+  // import prebuilt components
   import   MainButton from "../../components/mainButton.svelte"
   import  SecondaryButton from "../../components/secondaryButton.svelte"
 
-  function onSubmit(e: { target: HTMLFormElement; }) {
+  // this function runs when the login for is submitted using the login button
+  async function onSubmit(e: { target: HTMLFormElement; }) {
+    // fetch form fields
     const formData = new FormData(e.target);
+    // initialise a variable for the API response
+    let result = null
 
-    const data = {};
+    const data : any = {};
+    // for each form field, create new key and assign the correct value inputted
+    // by the user
     for (let field of formData) {
       const [key, value] = field;
       data[key] = value;
     }
-    console.log(data);
+
+    let email = data.email;
+	  let password = data.password;
+
+    //create a request to the Auth API (make sure it is running on your machine to test)
+    const res = await fetch('http://localhost:3001/login/', {
+			method: 'POST',
+      // essential to set the header
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // add email and password
+			body: JSON.stringify({
+				email,
+        password
+			})
+		})
+		
+    // wait in the background for API response
+		const json = await res.json()
+    // this contains the response, hopefully the access and refresh tokens
+		result = JSON.stringify(json)
+
+    console.log(result);
   }
 </script>
 
