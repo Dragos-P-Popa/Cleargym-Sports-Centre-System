@@ -34,6 +34,12 @@ exports.routesConfig = function (app) {
         ValidationMiddleware.checkJWT,
         UsersController.list
     ])
+    // get current signed in user
+    app.get('/user', [
+        // user should be logged in to access this
+        ValidationMiddleware.checkJWT,
+        UsersController.getByToken
+    ])
     // delete users
     app.delete('/users/:userId', [
         // user should be logged in to access this
