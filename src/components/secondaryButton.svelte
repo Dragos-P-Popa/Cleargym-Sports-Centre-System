@@ -1,6 +1,6 @@
 <script>
     let buttonProps = {
-        class:[$$restProps.class] + " py-1 my-2 w-3/5 rounded-lg border-4 text-mainBlue font-extrabold text-xl bg-white drop-shadow-lg",
+        class:[$$restProps.class] + " py-1 my-2 w-3/5 rounded-lg border-4 text-mainBlue font-extrabold text-xl bg-white drop-shadow-md",
     }
 </script>
 <button {...buttonProps}

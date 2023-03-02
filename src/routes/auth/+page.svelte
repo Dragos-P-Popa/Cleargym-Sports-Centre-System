@@ -34,18 +34,28 @@
         password
 			})
 		})
-		
-    // wait in the background for API response
-		const json = await res.json()
-    // this contains the response, hopefully the access and refresh tokens
-		result = JSON.stringify(json)
 
-    console.log(result);
+    // wait in the background for API response
+		result = await res.json()
+    const code = await res.status
+
+
+    if (code != 201){
+      console.log(result);
+    } else {
+      localStorage.setItem('accessToken', result.accessToken);
+      localStorage.setItem('refreshToken', result.refreshToken);
+
+      console.log(localStorage.getItem('accessToken'));
+      console.log(localStorage.getItem('refreshToken'));
+    }
+		
+
   }
 </script>
 
-<div class="rounded-xl bg-white shadow-lg border-[1px] border-borderColor m-8 mx-[20%] max-w-[60%] px-16 pt-12 pb-4">
-  <p class="text-center">LOGO</p>
+<div class="grid rounded-xl bg-white shadow-lg border-[1px] border-borderColor m-8 mx-[30%] max-w-[40%] px-16 pt-12 pb-8">
+  <img class="place-self-center pr-3" src = "logo.svg" alt="logo"/>
   <p class="text-center text-5xl font-bold pt-4">Welcome to cleargym!</p>
   <p class="text-center text-xl font-light pb-20">Lorem ipsum lorem ipsum lerem ipsum</p>
 
@@ -74,8 +84,10 @@
 
 </div>
 
+
 <style lang="postcss">
-  :global(hmtl) {
-      background-color: theme(colors.mainBlue);
+  :global(body) {
+    background-image: url("gym.jpeg");
+    padding-top: 5rem;
     }
 </style>
