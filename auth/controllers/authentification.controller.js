@@ -51,7 +51,7 @@ exports.login = (req, res) => {
     });
 
     // send the tokens
-    res.status(201).send()
+    res.status(201).send({})
 }
 
 exports.logout = (req, res) => {

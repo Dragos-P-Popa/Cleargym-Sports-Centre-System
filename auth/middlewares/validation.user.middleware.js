@@ -19,7 +19,6 @@ exports.checkJWT = (req, res, next) => {
     // if the header contains a token
     if(token) {
         try {
-
             // if the key is valid, next() is called and the logic continues 
             // in another controller based on route
             req.jwt = jwt.verify(token, publicKEY);
@@ -31,7 +30,6 @@ exports.checkJWT = (req, res, next) => {
         }
     } else {
         // return unauthorised as there is no token present
-        console.log('here')
         return res.status(401).send();
     }
 };
@@ -62,7 +60,7 @@ exports.checkRefresh = (req, res) => {
                 httpOnly: true
               });
             
-            res.status(201).send()
+            res.status(201).send({})
         } else {
             return res.status(401).send({error: "Wrong audience"});
         }
