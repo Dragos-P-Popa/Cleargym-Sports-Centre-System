@@ -32,6 +32,7 @@
     //create a request to the Auth API (make sure it is running on your machine to test)
     const res = await fetch('http://localhost:3001/login/', {
 			method: 'POST',
+      credentials: 'include',
       // essential to set the header
       headers: {
         "Content-Type": "application/json",
@@ -51,12 +52,6 @@
     if (code != 201){
       console.log(result);
     } else {
-      localStorage.setItem('accessToken', result.accessToken);
-      localStorage.setItem('refreshToken', result.refreshToken);
-
-      console.log(localStorage.getItem('accessToken'));
-      console.log(localStorage.getItem('refreshToken'));
-
       goto('/dashboard');
     }
 	
