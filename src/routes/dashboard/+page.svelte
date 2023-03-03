@@ -1,6 +1,7 @@
 <script>
     import "@fontsource/manrope";
     import BookingCard from "../../components/bookingCard.svelte"
+    import QuickBooking from "../../components/quickBooking.svelte"
     import { onMount } from 'svelte';
 
     let user = [];
@@ -62,11 +63,11 @@
                 <p class="text-4xl text-[#1A1A1A] pb-4">Next booking</p>
 
                 {#each bookings as b}
-                    <BookingCard class="">
-                        <p slot="heading">{b.bookingDate}</p>
-                        <p slot="subheading">{b.bookingLength} hour(s) session</p>
-                    </BookingCard>
+                    <BookingCard class="" heading={b.bookingDate} subheading={b.bookingLength}></BookingCard>
                 {/each}
+
+                <QuickBooking/>
+
             </div>
         </div>
      </div>
