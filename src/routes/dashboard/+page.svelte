@@ -2,6 +2,7 @@
     import "@fontsource/manrope";
     import BookingCard from "../../components/bookingCard.svelte"
     import QuickBooking from "../../components/quickBooking.svelte"
+    import NavBar from "../../components/navbar.svelte"
     import { onMount } from 'svelte';
 
     let user = [];
@@ -34,20 +35,8 @@
 
 
 <div class="grid grid-cols-12">
-    <div class="min-h-screen border-r-2 border-borderColor col-span-2 mr-2 p-8 pt-16">
-       <img class="place-self-center pr-3 mb-16" src = "logo.svg" alt="logo"/>
+    <NavBar/>
 
-       <button class="py-2 px-2 my-1 bg-[#EEEEF2] transition-colors duration-200 border-[#DDDDDD] border-[1px] rounded-lg w-full text-left inline-flex items-center">
-            <img class="pr-3" src = "home.svg" alt="home icon"/>
-            <span>Home</span>
-       </button> <br>
-       <button class="py-2 px-2 my-1 hover:bg-[#EEEEF2] transition-colors duration-200 hover:border-[#DDDDDD] border-[#FFFFFF] border-[1px] rounded-lg w-full text-left inline-flex items-center">
-            <img class="pr-3" src = "calendar.svg" alt="calendar icon"/>
-            <span>Bookings</span>
-       </button>
-
-
-    </div>
     <div class="col-span-10 pt-12 px-8">
         <div class="grid grid-cols-6">
             <div class="col-span-4">
@@ -66,7 +55,7 @@
                     <BookingCard class="" heading={b.bookingDate} subheading={b.bookingLength}></BookingCard>
                 {/each}
 
-                <QuickBooking/>
+                <QuickBooking active="0"/>
 
             </div>
         </div>
