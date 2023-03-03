@@ -1,6 +1,35 @@
 <script>
     import "@fontsource/manrope";
+    import { onMount } from 'svelte';
+
+    let user = [];
+    let bookings = [];
+
+    //http://127.0.0.1:3002/bookings/user/640136331fa3b5d6b18fb0ee
+
+    onMount(async () => {
+        let token = localStorage.getItem('accessToken');
+		const res = await fetch('http://localhost:3001/user/', {
+			method: 'GET',
+            // essential to set the header
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        let userData = await res.json();
+        user = [...userData];
+
+        const res2 = await fetch('http://127.0.0.1:3002/bookings/user/'+userData[0]._id, {
+			method: 'GET'
+        })
+
+        let bookingsData = await res2.json();
+        bookings = [...bookingsData];
+    });
+
 </script>
+
 
 <div class="grid grid-cols-12">
     <div class="min-h-screen border-r-2 border-borderColor col-span-2 mr-2 p-8 pt-16">
@@ -18,7 +47,14 @@
 
     </div>
     <div>
-        <p>MAIN</p> 
+        {#each user as u}
+            <p>Welcome {u.firstName}!</p>
+            <p>{u._id}</p>
+        {/each}
+
+        {#each bookings as b}
+`           <p>Booking length {b.bookingLength}!</p>
+        {/each}
      </div>
 </div>
 
