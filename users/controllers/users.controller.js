@@ -1,5 +1,8 @@
 const UserModel = require('../models/users.model');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const fs = require('fs');
+var publicKEY  = fs.readFileSync('public.key', 'utf8');
 
 /* 
     This file contains the user logic. 
@@ -69,3 +72,30 @@ exports.removeById = (req, res) => {
             res.status(204).send({});
         });
  };
+
+exports.getByToken = (req, res) => {
+    if(req.headers['authorization']) {
+        try {
+            let auth = req.headers['authorization'].split(' ');
+            // check that the authorisation header type is 'Bearer'
+            if (auth['0'] !== 'Bearer') {
+                // if not, unauthorised
+                return res.status(401).send();
+            } else {
+                // decode toke
+                decoded = jwt.decode(auth[1], publicKEY);
+
+                // find the user to which it belongs and return
+                UserModel.findByEmail(decoded.aud)
+                .then((result) => {
+                    res.status(201).send(result);
+                });
+            }
+        } catch (e) {
+            return res.status(403).send();
+        }
+    } else {
+        // return unauthorised as there is no token present
+        return res.status(401).send();
+    }
+}

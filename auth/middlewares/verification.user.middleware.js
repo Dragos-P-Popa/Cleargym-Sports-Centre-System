@@ -45,7 +45,7 @@ exports.isMatch = (req, res, next) => {
                     };
                     return next();
                 } else {
-                    return res.status(400).send({errors: ['Invalid e-mail or password']});
+                    return res.status(400).send({error: "Invalid e-mail or password"});
                 }
             }
         })
