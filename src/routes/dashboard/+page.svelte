@@ -47,21 +47,27 @@
 
 
     </div>
-    <div>
-        {#each user as u}
-            <p>Welcome {u.firstName}!</p>
-            <p>{u._id}</p>
-        {/each}
+    <div class="col-span-10 pt-12 px-8">
+        <div class="grid grid-cols-6">
+            <div class="col-span-4">
+                {#each user as u}
+                    <p class="font-bold text-5xl text-[#1A1A1A]">{u.firstName},</p>
+                    <!--<p>{u._id}</p>-->
+                    <p class="font-light text-2xl text-[#515151]">welcome back!</p>
+                {/each}
 
-        {#each bookings as b}
-`           <p>Booking length {b.bookingLength}!</p>
-        {/each}
-
-
-        <BookingCard class="">
-            <p>test</p>
-            <p>subheading</p>
-        </BookingCard>
+                {#each bookings as b}
+        `           <p>Booking length {b.bookingLength}!</p>
+                {/each}
+            </div>
+            <div class="col-span-2 pt-16 px-4">
+                <p class="text-4xl text-[#1A1A1A] pb-4">Next booking</p>
+                <BookingCard class="">
+                    <p>test</p>
+                    <p>subheading</p>
+                </BookingCard>
+            </div>
+        </div>
      </div>
 </div>
 
