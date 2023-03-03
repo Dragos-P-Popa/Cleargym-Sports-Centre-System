@@ -5,9 +5,9 @@ name: Flask-bookings CI
 
 on:
   push:
-    branches: [ "booking/subbranch/initial_test_scripts" ] # name of the branch being tested
+    branches: [ "main-bookings" ] # name of the branch being tested
   pull_request:
-    branches: [ "booking/subbranch/initial_test_scripts" ]
+    branches: [ "main-bookings" ]
 
 jobs:
   build:
