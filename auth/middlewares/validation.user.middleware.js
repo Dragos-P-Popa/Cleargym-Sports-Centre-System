@@ -13,34 +13,37 @@ var publicKEY  = fs.readFileSync('public.key', 'utf8');
 var privateKEY  = fs.readFileSync('private.key', 'utf8');
 
 exports.checkJWT = (req, res, next) => {
+
+    const token = req.cookies.accessToken.slice(1, -1)
+
     // if the header contains a token
-    if(req.headers['authorization']) {
+    if(token) {
         try {
-            let auth = req.headers['authorization'].split(' ');
-            // check that the authorisation header type is 'Bearer'
-            if (auth['0'] !== 'Bearer') {
-                // if not, unauthorised
-                return res.status(401).send();
-            } else {
-                // if the key is valid, next() is called and the logic continues 
-                // in another controller based on route
-                req.jwt = jwt.verify(auth[1], publicKEY);
-                return next();
-            }
+
+            // if the key is valid, next() is called and the logic continues 
+            // in another controller based on route
+            req.jwt = jwt.verify(token, publicKEY);
+            return next();
+
         } catch (e) {
+            console.log(e)
             return res.status(403).send();
         }
     } else {
         // return unauthorised as there is no token present
+        console.log('here')
         return res.status(401).send();
     }
 };
 
 exports.checkRefresh = (req, res) => {
-    if (req.body.refreshToken){
-        decoded = jwt.decode(req.body.refreshToken, publicKEY)
 
-        if ((decoded.aud == req.body.audience) && jwt.verify(req.body.refreshToken, publicKEY)) {
+    const token = req.cookies.refreshToken.slice(1, -1)
+
+    if (token){
+        decoded = jwt.decode(token, publicKEY)
+
+        if ((decoded.aud == req.body.audience) && jwt.verify(token, publicKEY)) {
             // set the token settings
             var signOptionsAccess = {
                 issuer:  'Sports Centre System',
@@ -54,7 +57,12 @@ exports.checkRefresh = (req, res) => {
 
             var accessToken = jwt.sign({user: req.body.audience}, privateKEY, signOptionsAccess);
 
-            res.status(201).send({accessToken: accessToken})
+            res.cookie("accessToken", JSON.stringify(accessToken), {
+                secure: process.env.NODE_ENV !== "development",
+                httpOnly: true
+              });
+            
+            res.status(201).send()
         } else {
             return res.status(401).send({error: "Wrong audience"});
         }

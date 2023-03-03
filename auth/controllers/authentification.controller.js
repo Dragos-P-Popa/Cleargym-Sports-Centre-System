@@ -40,8 +40,18 @@ exports.login = (req, res) => {
     var accessToken = jwt.sign({user: req.body.email}, privateKEY, signOptionsAccess);
     var refreshToken = jwt.sign({user: req.body.email}, privateKEY, signOptionsRefresh);
 
+    res.cookie("accessToken", JSON.stringify(accessToken), {
+        secure: process.env.NODE_ENV !== "development",
+        httpOnly: true
+      });
+
+    res.cookie("refreshToken", JSON.stringify(refreshToken), {
+        secure: process.env.NODE_ENV !== "development",
+        httpOnly: true
+    });
+
     // send the tokens
-    res.status(201).send({accessToken: accessToken, refreshToken: refreshToken})
+    res.status(201).send()
 }
 
 exports.logout = (req, res) => {

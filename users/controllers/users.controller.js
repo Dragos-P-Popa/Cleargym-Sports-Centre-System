@@ -74,23 +74,21 @@ exports.removeById = (req, res) => {
  };
 
 exports.getByToken = (req, res) => {
-    if(req.headers['authorization']) {
-        try {
-            let auth = req.headers['authorization'].split(' ');
-            // check that the authorisation header type is 'Bearer'
-            if (auth['0'] !== 'Bearer') {
-                // if not, unauthorised
-                return res.status(401).send();
-            } else {
-                // decode toke
-                decoded = jwt.decode(auth[1], publicKEY);
 
-                // find the user to which it belongs and return
-                UserModel.findByEmail(decoded.aud)
-                .then((result) => {
-                    res.status(201).send(result);
-                });
-            }
+    const token = req.cookies.accessToken.slice(1, -1)
+
+    if(token) {
+        try {
+            
+            // decode toke
+            decoded = jwt.decode(token, publicKEY);
+
+            // find the user to which it belongs and return
+            UserModel.findByEmail(decoded.aud)
+            .then((result) => {
+                res.status(201).send(result);
+            });
+            
         } catch (e) {
             return res.status(403).send();
         }
