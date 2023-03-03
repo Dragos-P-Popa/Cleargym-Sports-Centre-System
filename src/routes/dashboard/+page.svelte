@@ -1,5 +1,6 @@
 <script>
     import "@fontsource/manrope";
+    import BookingCard from "../../components/bookingCard.svelte"
     import { onMount } from 'svelte';
 
     let user = [];
@@ -55,6 +56,12 @@
         {#each bookings as b}
 `           <p>Booking length {b.bookingLength}!</p>
         {/each}
+
+
+        <BookingCard class="">
+            <p>test</p>
+            <p>subheading</p>
+        </BookingCard>
      </div>
 </div>
 
