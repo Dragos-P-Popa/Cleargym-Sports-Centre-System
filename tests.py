@@ -1,94 +1,117 @@
-import unittest 
-from app import app
-from datetime import datetime
+#!flask/bin/python
 
-class FacilitiesTestCase(unittest.TestCase):
-    def setUp(self):
-        app.config.from_object('config')
-        app.config['TESTING'] = True
-        app.config['WTF_CSRF_ENABLED'] = False
-        #the basedir lines could be added like the original db
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
-        self.app = app.test_client()
-        db.create_all()
+import os
+import pytest
+from flask import json, request, Flask
+from flask_sqlalchemy import SQLAlchemy
+from app import app, db, models
 
-        pass
+# The function responsible for setting up and tearing down all the data
+# and objects that may be reused in multiple tests
+@pytest.fixture
+def app_fixture():
 
+    app.logger.info("Start of the 'set up' / 'tear down' function")
 
-    def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+    app.config.from_object('config')
+    app.config['TESTING'] = True
+    app.config['WTF_CSRF_ENABLED'] = False
+    # Setting up temporary database tables in memory
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 
-    def test_add_new_facility(self):
-        #testing by adding a new facility with the right data
-        result, status_code = app.create_facility('Swimming pool', 30, 10.00, '8:00:00', '10:00:00', '63F0DE4724EF6726E1F27D57')
-        # self.assertIsInstance(facility_id, int)
-        self.assertEqual(status_code, 200) #200 - ok 201- accepted
+    # Create the tables
+    db.create_all()
 
-        #testing by adding invalid capacity
-        with self.assertRaises(TypeError):
-            result, status_code = app.create_facility('Swimming pool', 'A' , 10.00, '8:00:00', '10:00:00', '63F0DE4724EF6726E1F27D57')
-            self.assertEqual(status_code, 400) #400 Bad request
-        
-        #testing by adding invalid price
-        with self.assertRaises(TypeError):
-            result, status_code = app.create_facility('Swimming pool', 30, 'B', '8:00:00', '10:00:00', '63F0DE4724EF6726E1F27D57')
-            self.assertEqual(status_code, 400) #400 Bad request
+    # 'yield' returns the app's test instance to whatever function
+    # makes use of this fixture
+    yield app.test_client()
 
-        #testing by adding invalid opening time
-        with self.assertRaises(TypeError):
-            result, status_code = app.create_facility('Swimming pool', 30, 10.00, '8A:00', '10:00:00', '63F0DE4724EF6726E1F27D57')
-            result, self.assertEqual(status_code, 400) #400 Bad request
+    # Delete the tables
+    db.drop_all()
 
-        #testing by adding invalid closing time
-        with self.assertRaises(TypeError):
-            result, status_code = app.create_facility('Swimming pool', 30, 10.00, '8:00:00', '10:0ABC', '63F0DE4724EF6726E1F27D57')
-            self.assertEqual(status_code, 400) #400 Bad request
+    app.logger.info("End of the 'set up' / 'tear down' function")
 
-        #testing by adding empty name
-        # with self.client:
-        #     response = self.client.post ('/facility', data={
-        #     'facilityName': '',
-        #     'capacity': '30',
-        #     'openingTime' : '8:00:00'
-        #     'closingTime' : '20:00:00'
-        #     })
-        #     self.assertEqual()
+# Show the app instance returned by the app_fixture() function
+def test_fixture_setup(app_fixture):
+    app.logger.info(f"The app_fixture() function returns {app_fixture}")
+    assert True
 
-    def test_get_facility(self):
-        #testing get facility by name 
-        result, status_code = app.get_facility("Swimming Pool")
-        self.assertEqual(status_code, 200)
+#testing to add a new facility with valid data
+def test_create_facility(app_fixture):
+    app.logger.info("POST a faciliy with valid data")
 
-        #testing get facility by ID
-        result, status_code = app.get_facility("ID")
-        self.assertEqual(status_code, 200)
+    #POST test data
+    endpoint_response = app_fixture.post('/facility', json = {  'id': 102934536,
+                                                                'facilityName': "Swimming Pool",
+                                                                'capacity': 30,
+                                                                'openingTime': "8:00:00",
+                                                                'closingTime': "20:00:00",
+                                                                'managerID': "63F0DE4724EF6726E1F27D57"})
+    
+    # Validate that the correct error code and message was returned
+    assert endpoint_response.status_code == 200
 
-        #testing get facility by invalid ID i.e: too long
-        with self.assertRaises(TypeError):
-            result, status_code = app.get_facility("123abc45de")
-            self.assertEqual(status_code, 400)
+    # Decode the returned byte string
+    decoded_string = json.loads(endpoint_response.data)
 
-        #testing get facility by non existing name
-        result, status_code = app.get_facility("non existing")
-        self.assertEqual(status_code, 404)
-
-        #testing get facility by non existing ID 
-        result, status_code = app.get_facility("09876543210")
-        self.assertEqual(status_code, 404)
-
-        #testing get facility with an empty value
-        result, status_code = app.get_facility(" ")
-        self.assertEqual(status_code, 400)
+    # Validate that the returned data is correct
+    assert decoded_string == {'id': 102934536,
+                              'facilityName': "Swimming Pool",
+                              'capacity': 30,
+                              'openingTime': "8:00:00",
+                              'closingTime': "20:00:00",
+                              'managerID': "63F0DE4724EF6726E1F27D57"}
+    
+    app.logger.info("END OF TEST: test_post_valid_facility")
 
 
-    #need to check if this is how unit test works for PATCH!!
-    def test_update_facility(self):
-        #test update facility with name
-        result, status_code = app.update_facility("Swimming Pool")
-        self.assertEqual(status_code, 200)
+#testing to add a new facility with invalid data
+def test_post_invalid_facility(app_fixture):
 
-        #test update facility wih ID
+    # Display the message confirming this test is accessed
+    app.logger.info("POST a facility with invalid data")
 
-if __name__ == '__main__':
-    unittest.main()
+    # POST test data
+    endpoint_response = app_fixture.post('/facility', json = {  'id': 102934536,
+                                                                'facilityName': "Swimming Pool",
+                                                                'capacity': "30ABC",
+                                                                'openingTime': "8:A0:00",
+                                                                'closingTime': "20:0B:00",
+                                                                'managerID': "63F0DE4724EF6726E1F27D57"})
+
+    # Validate that the correct error code and message was returned
+    assert endpoint_response.status_code == 400
+
+    # Decode the returned byte string
+    decoded_string = json.loads(endpoint_response.data)
+
+    # Validate that the returned data is correct
+    #assert decoded_string == {"Error": "Invalid or missing data in one or more fields"} --------------
+
+    # Inform that the end of this test was reached
+    app.logger.info("END OF TEST: test_post_invalid_facility")
+
+# POST a new booking with missing data
+def test_post_missing_facility(app_fixture):
+
+    # Display the message confirming this test is accessed
+    app.logger.info("POST a facility with missing data")
+
+    # POST test data
+    endpoint_response = app_fixture.post('/booking',
+                                         json = {})
+
+    # Validate that the correct error code and message was returned
+    assert endpoint_response.status_code == 400
+
+    # Decode the returned byte string
+    decoded_string = json.loads(endpoint_response.data)
+
+    # Validate that the returned data is correct
+    # assert decoded_string == {"Error": "No data in the request"} ------------------
+
+    # Inform that the end of this test was reached
+    app.logger.info("END OF TEST: test_post_missing_booking")
+
+
+
