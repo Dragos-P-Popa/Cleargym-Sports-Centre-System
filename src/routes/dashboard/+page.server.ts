@@ -1,6 +1,17 @@
-import { error } from '@sveltejs/kit'
 
 export async function load({ fetch, request }) {
+
+    // make sure token is refreshed
+   const refresRes = await fetch('http://localhost:3001/refresh/', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "audience": "" // TODO :: Store email last used for signin, use that 
+        })
+    });
     
     const res = await fetch('http://localhost:3001/user/', {
 			method: 'GET',
@@ -20,6 +31,4 @@ export async function load({ fetch, request }) {
     if (user) {
       return { user, bookings }
     }
-  
-    error(404, 'Not found')
   }
