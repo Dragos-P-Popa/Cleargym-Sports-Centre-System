@@ -43,8 +43,7 @@ def test_post_valid_booking(app_fixture):
 
     # POST test data
     endpoint_response = app_fixture.post('/booking',
-                                         json = {'id': 102934536,
-                                                'userId': "21345235",
+                                         json = {'userId': "21345235",
                                                 'createDate': "2023/01/01",
                                                 'bookingDate': "2023/01/02",
                                                 'bookingTime': "13:15",
@@ -59,7 +58,7 @@ def test_post_valid_booking(app_fixture):
     decoded_string = json.loads(endpoint_response.data)
 
     # Validate that the returned data is correct
-    assert decoded_string == {'id': 102934536,
+    assert decoded_string == {'id': 1,
                             'userId': "21345235",
                             'createDate': "2023/01/01",
                             'bookingDate': "2023/01/02",
@@ -80,10 +79,9 @@ def test_post_invalid_booking(app_fixture):
 
     # POST test data
     endpoint_response = app_fixture.post('/booking',
-                                         json = {'id': 1029345362.34324,
-                                                'userId': 21345235,
+                                         json = {'userId': "21345235",
                                                 'createDate': "2023/01/01",
-                                                'bookingDate': "2023/01/02",
+                                                'bookingDate': "abcdef",
                                                 'bookingTime': "13:15",
                                                 'bookingLength': "01:00",
                                                 'bookingType': "General use",
@@ -96,7 +94,8 @@ def test_post_invalid_booking(app_fixture):
     decoded_string = json.loads(endpoint_response.data)
 
     # Validate that the returned data is correct
-    assert decoded_string == {"IntegrityError": "Invalid data in one or more fields"}
+    assert decoded_string == {"ValueError": "Data does not match the required" +
+                                            " format in one or more fields"}
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_post_invalid_booking")
@@ -132,8 +131,7 @@ def test_delete_valid_booking(app_fixture):
 
     # POST test data
     test_record = app_fixture.post('/booking',
-                                    json = {'id': 102934536,
-                                            'userId': "21345235",
+                                    json = {'userId': "21345235",
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
@@ -142,7 +140,7 @@ def test_delete_valid_booking(app_fixture):
                                             'teamEvent': False})
 
     # Attempt to DELETE data
-    endpoint_response = app_fixture.delete("/bookings/102934536")
+    endpoint_response = app_fixture.delete("/bookings/1")
 
     # Validate that the correct status code was returned
     assert endpoint_response.status_code == 200
@@ -151,7 +149,7 @@ def test_delete_valid_booking(app_fixture):
     decoded_string = json.loads(endpoint_response.data)
 
     # Validate that the returned data is correct
-    assert decoded_string == {'id': 102934536,
+    assert decoded_string == {'id': 1,
                             'userId': "21345235",
                             'createDate': "2023/01/01",
                             'bookingDate': "2023/01/02",
@@ -171,8 +169,7 @@ def test_delete_missing_booking(app_fixture):
 
     # POST test data
     test_record = app_fixture.post('/booking',
-                                    json = {'id': 102934536,
-                                            'userId': "21345235",
+                                    json = {'userId': "21345235",
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
@@ -205,8 +202,7 @@ def test_get_bookings_valid_uid(app_fixture):
 
     # POST first booking
     test_record_1 = app_fixture.post('/booking',
-                                    json = {'id': 102934536,
-                                            'userId': "21345235",
+                                    json = {'userId': "21345235",
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
@@ -216,8 +212,7 @@ def test_get_bookings_valid_uid(app_fixture):
 
     # POST second booking
     test_record = app_fixture.post('/booking',
-                                    json = {'id': 203948562,
-                                            'userId': "21345235",
+                                    json = {'userId': "21345235",
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/03",
                                             'bookingTime': "14:30",
@@ -235,7 +230,7 @@ def test_get_bookings_valid_uid(app_fixture):
     decoded_string = json.loads(endpoint_response.data)
 
     # Validate that the returned data is correct
-    assert decoded_string == [{'id': 102934536,
+    assert decoded_string == [{'id': 1,
                                'userId': '21345235',
                                'createDate': '2023/01/01',
                                'bookingDate': '2023/01/02',
@@ -243,7 +238,7 @@ def test_get_bookings_valid_uid(app_fixture):
                                'bookingLength': '01:00',
                                'bookingType': 'General use',
                                'teamEvent': False},
-                              {'id': 203948562,
+                              {'id': 2,
                                'userId': '21345235',
                                'createDate': '2023/01/01',
                                'bookingDate': '2023/01/03',
@@ -264,8 +259,7 @@ def test_get_bookings_invalid_uid(app_fixture):
 
     # POST a test booking
     test_record = app_fixture.post('/booking',
-                                    json = {'id': 102934536,
-                                            'userId': "21345235",
+                                    json = {'userId': "21345235",
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
@@ -297,8 +291,7 @@ def test_get_booking_valid_bid(app_fixture):
 
     # POST a test booking
     test_record = app_fixture.post('/booking',
-                                    json = {'id': 102934536,
-                                            'userId': "21345235",
+                                    json = {'userId': "21345235",
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
@@ -307,7 +300,7 @@ def test_get_booking_valid_bid(app_fixture):
                                             'teamEvent': False})
 
     # Attempt to GET the booking
-    endpoint_response = app_fixture.get("/bookings/102934536")
+    endpoint_response = app_fixture.get("/bookings/1")
 
     # Validate that the correct status code was returned
     assert endpoint_response.status_code == 200
@@ -316,7 +309,7 @@ def test_get_booking_valid_bid(app_fixture):
     decoded_string = json.loads(endpoint_response.data)
 
     # Validate that the returned data is correct
-    assert decoded_string == {'id': 102934536,
+    assert decoded_string == {'id': 1,
                               'userId': '21345235',
                               'createDate': '2023/01/01',
                               'bookingDate': '2023/01/02',
@@ -336,8 +329,7 @@ def test_get_booking_invalid_bid(app_fixture):
 
     # POST a test booking
     test_record = app_fixture.post('/booking',
-                                    json = {'id': 102934536,
-                                            'userId': "21345235",
+                                    json = {'userId': "21345235",
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
@@ -368,8 +360,7 @@ def test_patch_valid_booking(app_fixture):
 
     # POST a test booking
     test_record = app_fixture.post('/booking',
-                                    json = {'id': 102934536,
-                                            'userId': "21345235",
+                                    json = {'userId': "21345235",
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
@@ -384,7 +375,7 @@ def test_patch_valid_booking(app_fixture):
     app.logger.info(f"POSTed test data: {decoded_string}")
 
     # PATCH the booking time and length
-    update_record = app_fixture.patch('/bookings/102934536',
+    update_record = app_fixture.patch('/bookings/1',
                                       json = {'bookingTime': "14:15",
                                               'bookingLength': "01:30",
                                              })
@@ -402,7 +393,7 @@ def test_patch_valid_booking(app_fixture):
     decoded_string = json.loads(update_record.data)
 
     # Validate that the returned data is correctly updated
-    assert decoded_string == {'id': 102934536,
+    assert decoded_string == {'id': 1,
                               'userId': "21345235",
                               'createDate': "2023/01/01",
                               'bookingDate': "2023/01/02",
@@ -422,8 +413,7 @@ def test_patch_invalid_booking(app_fixture):
 
     # POST a test booking
     test_record = app_fixture.post('/booking',
-                                    json = {'id': 102934536,
-                                            'userId': "21345235",
+                                    json = {'userId': "21345235",
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
@@ -435,7 +425,7 @@ def test_patch_invalid_booking(app_fixture):
     decoded_string = json.loads(test_record.data)
 
     # PATCH the booking time and length using invalid data type
-    update_record = app_fixture.patch('/bookings/102934536',
+    update_record = app_fixture.patch('/bookings/1',
                                       json = {'bookingTime': 235234523,
                                               'bookingLength': "01:30",
                                              })

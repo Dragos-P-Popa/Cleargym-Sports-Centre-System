@@ -6,13 +6,14 @@ from sqlalchemy.orm.exc import UnmappedInstanceError
 from datetime import datetime
 
 # The error handlers for IntegrityError, KeyError, UnmappedInstanceError,
-# TypeError and AttributeError.
+# TypeError, AttributeError and ValueError.
 # These might occur when data is:
-# - of an invalid type from the database perspective
+# - of an invalid type from the database schema perspective
 # - missing from the request
 # - refers to a non-existent database record
-# - of an invalid type from a function parameter perspective (e.g. strptime())
+# - of an invalid type as a function parameter
 # - refering to a non-existent attribute, e.g. in a NoneType object
+# - sent in an incorrect format (e.g. date/time)
 
 @app.errorhandler(IntegrityError)
 def integrity_error_handler(error):
@@ -50,6 +51,14 @@ def unmapped_error_handler(error):
     # of a NoneType object assigned to a variable in views.py
     return jsonify({"AttributeError": "The referenced record does not exist"}), 400
 
+@app.errorhandler(ValueError)
+def unmapped_error_handler(error):
+    db.session.rollback()
+    app.logger.error("ValueError detected")
+    # ValueError is raised when the sent data does not match the required format
+    # e.g. date/time
+    return jsonify({"ValueError": "Data does not match the required format in one or more fields"}), 400
+
 
 # This function is to create a new booking
 @app.route('/booking', methods=['POST'])
@@ -60,8 +69,6 @@ def post_booking():
     # Create a new booking
     try:
         booking = models.Booking(
-
-            id=info["id"],
             userId=info["userId"],
             createDate=datetime.strptime(info["createDate"], '%Y/%m/%d').date(),
             bookingDate=datetime.strptime(info["bookingDate"], '%Y/%m/%d').date(),
@@ -134,6 +141,9 @@ def delete_booking(id):
 
     except UnmappedInstanceError:
         raise UnmappedInstanceError("UnmappedInstanceError detected")
+
+    except ValueError:
+        raise ValueError("ValueError detected")
 
     # return the response
     return jsonify(response), 200
@@ -265,6 +275,9 @@ def patch_booking(id):
 
     except AttributeError:
         raise AttributeError("AttributeError detected")
+
+    except ValueError:
+        raise ValueError("ValueError detected")
 
     # return the response
     return jsonify(response), 200
