@@ -26,7 +26,7 @@ exports.checkJWT = (req, res, next) => {
 
         } catch (e) {
             console.log(e)
-            return res.status(403).send();
+            return res.status(403).send({});
         }
     } else {
         // return unauthorised as there is no token present
@@ -56,7 +56,7 @@ exports.checkRefresh = (req, res) => {
             var accessToken = jwt.sign({user: req.body.audience}, privateKEY, signOptionsAccess);
 
             res.cookie("accessToken", JSON.stringify(accessToken), {
-                secure: process.env.NODE_ENV !== "development",
+                secure: true,
                 httpOnly: true
               });
             

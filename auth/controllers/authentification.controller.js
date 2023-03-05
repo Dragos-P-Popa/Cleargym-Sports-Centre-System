@@ -50,6 +50,11 @@ exports.login = (req, res) => {
         httpOnly: true
     });
 
+    res.cookie("audience", req.body.email, {
+        secure: process.env.NODE_ENV !== "development",
+        httpOnly: true
+    });
+
     // send the tokens
     res.status(201).send({})
 }
