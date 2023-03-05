@@ -12,33 +12,7 @@
     let user = data.user;
     let bookings = data.bookings;
 
-    let audience = user.emai
 
-    // function which sents a refresh request to the Auth API
-    async function refreshToken() {
-        const res = await fetch('http://localhost:3001/refresh/', {
-			method: 'POST',
-            credentials: 'include',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-				"audience": ""+user.email
-			})
-        });
-    }
-
-    // svelte interval which will run every 5 minutes
-    const interval = setInterval(async () => {
-        refreshToken();
-    }, 300000);
-
-    onMount(async () => {
-        // initial token refresh when page is loaded
-        refreshToken();
-    });
-
-  onDestroy(() => clearInterval(interval));
 </script>
 
 
