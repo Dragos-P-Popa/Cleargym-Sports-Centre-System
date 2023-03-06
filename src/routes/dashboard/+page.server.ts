@@ -7,8 +7,7 @@ export async function load({ fetch, request }) {
             credentials: 'include',
         })
 
-    let userData = await res.json();
-    let user = [...userData][0];
+    let user = await res.json();
 
     const res2 = await fetch('http://127.0.0.1:3002/bookings/user/'+user._id, {
         method: 'GET'
