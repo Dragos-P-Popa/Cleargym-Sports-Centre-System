@@ -45,7 +45,6 @@ exports.findById = (id) => {
         // convert to JSON
         result = result.toJSON();
         // delete uneccessary fields from response
-        delete result._id;
         delete result.__v;
         return result;
     });
