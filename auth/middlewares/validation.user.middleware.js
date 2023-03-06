@@ -37,11 +37,12 @@ exports.checkJWT = (req, res, next) => {
 exports.checkRefresh = (req, res) => {
 
     const token = req.cookies.refreshToken.slice(1, -1)
+    const uid = req.cookies.audience
 
     if (token){
         decoded = jwt.decode(token, publicKEY)
 
-        if ((decoded.aud == req.body.audience) && jwt.verify(token, publicKEY)) {
+        if ((decoded.aud == uid) && jwt.verify(token, publicKEY)) {
             // set the token settings
             var signOptionsAccess = {
                 issuer:  'Sports Centre System',
@@ -49,11 +50,11 @@ exports.checkRefresh = (req, res) => {
                 // the audience will be checked to make sure the 
                 // correct user is making the request using a token which was 
                 // assigned to them
-                audience: req.body.audience,
+                audience: uid,
                 algorithm:  "RS256" 
                 };
 
-            var accessToken = jwt.sign({user: req.body.audience}, privateKEY, signOptionsAccess);
+            var accessToken = jwt.sign({user: uid}, privateKEY, signOptionsAccess);
 
             res.cookie("accessToken", JSON.stringify(accessToken), {
                 secure: true,

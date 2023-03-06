@@ -53,7 +53,9 @@ exports.findById = (id) => {
 
 exports.findByEmail = (email) => {
     // find user entry in mongo db using the email
-    return User.find({email: email});
+    return User.find({email: email}).then((result) => {
+        return result;
+    });
 };
 
 // mongoDB updating one document

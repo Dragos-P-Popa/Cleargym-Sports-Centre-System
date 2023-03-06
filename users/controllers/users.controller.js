@@ -84,9 +84,9 @@ exports.getByToken = (req, res) => {
             decoded = jwt.decode(token, publicKEY);
 
             // find the user to which it belongs and return
-            UserModel.findByEmail(decoded.aud)
+            UserModel.findById(decoded.aud)
             .then((result) => {
-                res.status(201).send(result);
+                res.status(201).send(JSON.stringify(result));
             });
             
         } catch (e) {

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const BlacklistModel = require('../models/tokens.model');
-
+const UserModel = require('../../users/models/users.model');
 
 /*
     This file creates the JWT tokens and adds refresh tokens
@@ -13,50 +13,55 @@ var privateKEY  = fs.readFileSync('private.key', 'utf8');
 
 exports.login = (req, res) => {
 
-    // set the token settings
-    var signOptionsAccess = {
-        issuer:  'Sports Centre System',
-        expiresIn:  "10m",
-        // the audience will be checked to make sure the 
-        // correct user is making the request using a token which was 
-        // assigned to them
-        audience: req.body.email,
-        algorithm:  "RS256" 
-        };
+    const user = UserModel.findByEmail(req.body.email).then((result) => {
+        const uid = JSON.stringify(result[0]._id).slice(1, -1)
 
-    // set the token settings
-    var signOptionsRefresh = {
-        issuer:  'Sports Centre System',
-        expiresIn:  "2d",
-        // the audience will be checked to make sure the 
-        // correct user is making the request using a token which was 
-        // assigned to them
-        audience: req.body.email,
-        algorithm:  "RS256" 
-        };
+        // set the token settings
+        var signOptionsAccess = {
+            issuer:  'Sports Centre System',
+            expiresIn:  "10m",
+            // the audience will be checked to make sure the 
+            // correct user is making the request using a token which was 
+            // assigned to them
+            audience: uid,
+            algorithm:  "RS256" 
+            };
 
-    // create tokens containing user ID and the signOptions
-    // alongside expiry and issue time
-    var accessToken = jwt.sign({user: req.body.email}, privateKEY, signOptionsAccess);
-    var refreshToken = jwt.sign({user: req.body.email}, privateKEY, signOptionsRefresh);
+        // set the token settings
+        var signOptionsRefresh = {
+            issuer:  'Sports Centre System',
+            expiresIn:  "2d",
+            // the audience will be checked to make sure the 
+            // correct user is making the request using a token which was 
+            // assigned to them
+            audience: uid,
+            algorithm:  "RS256" 
+            };
 
-    res.cookie("accessToken", JSON.stringify(accessToken), {
-        secure: process.env.NODE_ENV !== "development",
-        httpOnly: true
-      });
+        // create tokens containing user ID and the signOptions
+        // alongside expiry and issue time
+        var accessToken = jwt.sign({user: uid}, privateKEY, signOptionsAccess);
+        var refreshToken = jwt.sign({user: uid}, privateKEY, signOptionsRefresh);
 
-    res.cookie("refreshToken", JSON.stringify(refreshToken), {
-        secure: process.env.NODE_ENV !== "development",
-        httpOnly: true
+        res.cookie("accessToken", JSON.stringify(accessToken), {
+            secure: process.env.NODE_ENV !== "development",
+            httpOnly: true
+        });
+
+        res.cookie("refreshToken", JSON.stringify(refreshToken), {
+            secure: process.env.NODE_ENV !== "development",
+            httpOnly: true
+        });
+
+        res.cookie("audience", uid, {
+            secure: process.env.NODE_ENV !== "development",
+            httpOnly: true
+        });
+
+        // send the tokens
+        res.status(201).send({})
     });
-
-    res.cookie("audience", req.body.email, {
-        secure: process.env.NODE_ENV !== "development",
-        httpOnly: true
-    });
-
-    // send the tokens
-    res.status(201).send({})
+    
 }
 
 exports.logout = (req, res) => {
