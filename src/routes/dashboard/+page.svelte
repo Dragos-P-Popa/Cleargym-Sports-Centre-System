@@ -33,7 +33,7 @@
                     <BookingCard class="" heading={b.bookingDate} subheading={b.bookingLength}></BookingCard>
                 {/each}
 
-                <QuickBooking active="0"/>
+                <QuickBooking/>
 
             </div>
         </div>

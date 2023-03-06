@@ -18,12 +18,12 @@
 
     <form>
         <div class="py-2">
-          <label for="time">Time</label> <br>
-          <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="time" name="time" value="" />
+            <label for="date">Date</label> <br>
+            <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="date" id="date" name="date" value="" />
         </div>
         <div class="py-2">
-          <label for="date">Date</label> <br>
-          <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="date" id="date" name="date" value="" />
+          <label for="time">Time</label> <br>
+          <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="time" name="time" value="" />
         </div>
         <div class="py-2">
           <label for="length">Length</label> <br>
