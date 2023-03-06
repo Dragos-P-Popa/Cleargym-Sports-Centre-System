@@ -33,7 +33,7 @@ def get_facility(param):
                 'managerId': facility.managerId   }
 
     # if the code runs correctly, return an 200 OK status code
-    return result, 200
+    return jsonify(result), 200
 
 
 # API endpoint that allows to change specific values of a facility on facility id or facility name
@@ -79,7 +79,7 @@ def update_facility(param):
                 'managerId': facility.managerId   }
 
     # if the code runs correctly, return an 200 OK status code
-    return result, 200
+    return jsonify(result), 200
 
 
 # API endpoint to create a new facility
@@ -112,7 +112,7 @@ def create_facility():
                 'managerId': facility.managerId   }
     
     # if the code runs correctly, return an 200 OK status code
-    return result, 200
+    return jsonify(result), 200
 
 # API endpoint for fetching all facilities
 @app.route('/facilities', methods=['GET'])
