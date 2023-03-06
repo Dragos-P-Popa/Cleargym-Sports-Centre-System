@@ -1,29 +1,64 @@
 from app import app, db, models
-from flask import json, request, jsonify
+from flask import request, jsonify
 import datetime
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import UnmappedInstanceError
 from datetime import datetime
 
-# The error handlers for IntegrityError and KeyError, which might occur when
-# data is missing or invalid
+# The error handlers for IntegrityError, KeyError, UnmappedInstanceError,
+# TypeError, AttributeError and ValueError.
+# These might occur when data is:
+# - of an invalid type from the database schema perspective
+# - missing from the request
+# - refers to a non-existent database record
+# - of an invalid type as a function parameter
+# - refering to a non-existent attribute, e.g. in a NoneType object
+# - sent in an incorrect format (e.g. date/time)
+
 @app.errorhandler(IntegrityError)
 def integrity_error_handler(error):
     db.session.rollback()
     app.logger.error(str(error))
-    return jsonify({"Error": "Invalid or missing data in one or more fields"}), 400
+    # IntegrityError refers to invalid data type in database operations
+    return jsonify({"IntegrityError": "Invalid data in one or more fields"}), 400
 
 @app.errorhandler(KeyError)
 def key_error_handler(error):
     db.session.rollback()
     app.logger.error(str(error))
-    return jsonify({"Error": "No data in the request"}), 400
+    # KeyError refers to a missing key:value pair
+    return jsonify({"KeyError": "Missing data in the request"}), 400
 
 @app.errorhandler(UnmappedInstanceError)
 def unmapped_error_handler(error):
     db.session.rollback()
     app.logger.error("UnmappedInstanceError detected")
-    return jsonify({"Error": "Invalid ID in the request"}), 400
+    # UnmappedInstanceError is raised when trying to operate on a non-existent record
+    return jsonify({"UnmappedInstanceError": "Record not found in the database"}), 400
+
+@app.errorhandler(TypeError)
+def unmapped_error_handler(error):
+    db.session.rollback()
+    app.logger.error("TypeError detected")
+    # TypeError refers to invalid data type passed as an argument to a function
+    return jsonify({"TypeError": "Endpoint function operating on a wrong data type"}), 400
+
+@app.errorhandler(AttributeError)
+def unmapped_error_handler(error):
+    db.session.rollback()
+    app.logger.error("AttributeError detected")
+    # AttributeError is raised when trying to access an attribute
+    # of a NoneType object assigned to a variable in views.py
+    return jsonify({"AttributeError": "The referenced record does not exist"}), 400
+
+@app.errorhandler(ValueError)
+def unmapped_error_handler(error):
+    db.session.rollback()
+    app.logger.error("ValueError detected")
+    # ValueError is raised when the sent data does not match the required format
+    # e.g. date/time
+    return jsonify({"ValueError": "Data does not match the required format in one or more fields"}), 400
+
 
 # This function is to create a new booking
 @app.route('/booking', methods=['POST'])
@@ -34,9 +69,8 @@ def post_booking():
     # Create a new booking
     try:
         booking = models.Booking(
-
-            id=info["id"],
             userId=info["userId"],
+            facilitiesId = info["facilitiesId"],
             createDate=datetime.strptime(info["createDate"], '%Y/%m/%d').date(),
             bookingDate=datetime.strptime(info["bookingDate"], '%Y/%m/%d').date(),
             bookingTime=datetime.strptime(info['bookingTime'], '%H:%M').time(),
@@ -49,6 +83,18 @@ def post_booking():
         db.session.add(booking)
         db.session.commit()
 
+        # Create a new response
+        response = {'id': booking.id,
+                    'userId': booking.userId,
+                    'facilitiesId': booking.facilitiesId,
+                    'createDate': booking.createDate.strftime('%Y/%m/%d'),
+                    'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
+                    'bookingTime': booking.bookingTime.strftime('%H:%M'),
+                    'bookingLength': booking.bookingLength.strftime('%H:%M'),
+                    'bookingType': booking.bookingType,
+                    'teamEvent': booking.teamEvent
+                    }
+
     # Validate whether any data was submitted and if it is in a valid format
 
     # The error handling was implemented and debugged
@@ -60,17 +106,6 @@ def post_booking():
 
     except KeyError:
         raise KeyError("KeyError detected")
-
-    # Create a new response
-    response = {'id': booking.id,
-                'userId': booking.userId,
-                'createDate': booking.createDate.strftime('%Y/%m/%d'),
-                'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
-                'bookingTime': booking.bookingTime.strftime('%H:%M'),
-                'bookingLength': booking.bookingLength.strftime('%H:%M'),
-                'bookingType': booking.bookingType,
-                'teamEvent': booking.teamEvent
-                }
 
     # return the response
     return jsonify(response), 200
@@ -88,6 +123,18 @@ def delete_booking(id):
         db.session.delete(booking)
         db.session.commit()
 
+        # Create a new response
+        response = {'id': booking.id,
+                    'userId': booking.userId,
+                    'facilitiesId': booking.facilitiesId,
+                    'createDate': booking.createDate.strftime('%Y/%m/%d'),
+                    'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
+                    'bookingTime': booking.bookingTime.strftime('%H:%M'),
+                    'bookingLength': booking.bookingLength.strftime('%H:%M'),
+                    'bookingType': booking.bookingType,
+                    'teamEvent': booking.teamEvent
+                    }
+
     # Validate whether any data was submitted and if it is in a valid format
     except IntegrityError:
         raise IntegrityError("IntegrityError detected", IntegrityError, None)
@@ -98,16 +145,8 @@ def delete_booking(id):
     except UnmappedInstanceError:
         raise UnmappedInstanceError("UnmappedInstanceError detected")
 
-    # Create a new response
-    response = {'id': booking.id,
-                'userId': booking.userId,
-                'createDate': booking.createDate.strftime('%Y/%m/%d'),
-                'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
-                'bookingTime': booking.bookingTime.strftime('%H:%M'),
-                'bookingLength': booking.bookingLength.strftime('%H:%M'),
-                'bookingType': booking.bookingType,
-                'teamEvent': booking.teamEvent
-                }
+    except ValueError:
+        raise ValueError("ValueError detected")
 
     # return the response
     return jsonify(response), 200
@@ -122,11 +161,13 @@ def get_booking_uid(userId):
         bookings = models.Booking.query.filter_by(userId=userId).all()
 
         booking_list = []
+
         for booking in bookings:
             # Adding all bookings in a list called booking_list
             booking_list.append({
                 'id': booking.id,
                 'userId': booking.userId,
+                'facilitiesId': booking.facilitiesId,
                 'createDate': booking.createDate.strftime('%Y/%m/%d'),
                 'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
                 'bookingTime': booking.bookingTime.strftime('%H:%M'),
@@ -160,6 +201,7 @@ def get_booking_bid(id):
         # Create a new response
         response = {'id': booking.id,
                     'userId': booking.userId,
+                    'facilitiesId': booking.facilitiesId,
                     'createDate': booking.createDate.strftime('%Y/%m/%d'),
                     'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
                     'bookingTime': booking.bookingTime.strftime('%H:%M'),
@@ -177,6 +219,73 @@ def get_booking_bid(id):
 
     except UnmappedInstanceError:
         raise UnmappedInstanceError("UnmappedInstanceError detected")
+
+    # return the response
+    return jsonify(response), 200
+
+
+# This function is to get a booking by using the booking id
+@app.route('/bookings/<int:id>', methods=['PATCH'])
+def patch_booking(id):
+
+    try:
+        # Requesting the data from the database by using the selected booking id
+        booking = models.Booking.query.get(id)
+
+        # Decoding the data sent to the API
+        request_data = request.get_json()
+
+        # Iterate over the key, value pairs in the request data
+        for attribute, value in request_data.items():
+
+            # Validate which attribute is being updated
+            # and execute the corresponding code
+            if attribute == "userId":
+                booking.userId = value
+            if attribute == "facilitiesId":
+                booking.facilitiesId = value
+            elif attribute == "createDate" or attribute == "bookingDate":
+                setattr(booking, attribute, datetime.strptime(value, '%Y/%m/%d').date())
+            elif attribute == "bookingTime" or attribute == "bookingLength":
+                setattr(booking, attribute, datetime.strptime(value, '%H:%M').time())
+            elif attribute == "bookingType":
+                booking.bookingType = value
+            elif attribute == "teamEvent":
+                booking.teamEvent = value
+
+        # Commit the changes made
+        db.session.commit()
+
+        # Create a new response
+        response = {'id': booking.id,
+                    'userId': booking.userId,
+                    'facilitiesId': booking.facilitiesId,
+                    'createDate': booking.createDate.strftime('%Y/%m/%d'),
+                    'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
+                    'bookingTime': booking.bookingTime.strftime('%H:%M'),
+                    'bookingLength': booking.bookingLength.strftime('%H:%M'),
+                    'bookingType': booking.bookingType,
+                    'teamEvent': booking.teamEvent
+                    }
+
+    # Validate whether any data was submitted and if it is in a valid format
+    except IntegrityError:
+        raise IntegrityError("IntegrityError detected", IntegrityError, None)
+
+    except KeyError:
+        raise KeyError("KeyError detected")
+
+    except UnmappedInstanceError:
+        raise UnmappedInstanceError("UnmappedInstanceError detected")
+
+    except TypeError:
+        raise TypeError("TypeError detected")
+
+    except AttributeError:
+        raise AttributeError("AttributeError detected")
+
+    except ValueError:
+        raise ValueError("ValueError detected")
 
     # return the response
     return jsonify(response), 200

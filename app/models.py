@@ -6,6 +6,7 @@ from datetime import datetime
 class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     userId = db.Column(db.String(500), nullable=False)
+    facilitiesId = db.Column(db.Integer, nullable = False)
     createDate = db.Column(db.Date, nullable=False)
     bookingDate = db.Column(db.Date, nullable=False)
     bookingTime = db.Column(db.Time, nullable=False)
