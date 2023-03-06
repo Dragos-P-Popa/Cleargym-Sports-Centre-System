@@ -37,7 +37,7 @@ def test_fixture_setup(app_fixture):
     assert True
 
 #testing to add a new facility with valid data
-def test_create_facility(app_fixture):
+def test_create_facility_with_valid_data(app_fixture):
     app.logger.info("POST a faciliy with valid data")
 
     #POST test data
@@ -113,5 +113,89 @@ def test_post_missing_facility(app_fixture):
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_post_missing_booking")
 
+# GET a facility with valid facility ID
+def test_get_validID_facility(app_fixture):
 
+    app.logger.info("GET a facility with valid ID")
 
+    #POST a facility first
+    test_record_1 = app_fixture.post('/facility', json = {  'id': 102934536,
+                                                            'facilityName': "Swimming Pool",
+                                                            'capacity': 30,
+                                                            'openingTime': "8:00:00",
+                                                            'closingTime': "20:00:00",
+                                                            'managerID': "63F0DE4724EF6726E1F27D57"})
+
+    #POST a second facility
+    test_record_1 = app_fixture.post('/facility', json = {  'id': 123456789,
+                                                            'facilityName': "Tennis court",
+                                                            'capacity': 4,
+                                                            'openingTime': "8:00:00",
+                                                            'closingTime': "20:00:00",
+                                                            'managerID': "24F01E5793QF9716E1F29E57"})
+    
+    #Attempt to get the facilitt
+    endpoint_response = app_fixture.get("/bookings/id/102944536")
+    assert endpoint_response.status_code == 200
+
+    # Decode the returned byte string
+    decoded_string = json.loads(endpoint_response.data)
+    assert decoded_string == {'id': 102934536,
+                              'facilityName': "Swimming Pool",
+                              'capacity': 30,
+                              'openingTime': "8:00:00",
+                              'closingTime': "20:00:00",
+                              'managerID': "63F0DE4724EF6726E1F27D57"}
+    
+    app.logger.info("END OF TEST: test_get_validID_facility")
+
+# GET a facility with a Valid Facility Name
+def test_get_validName_facility(app_fixture):
+
+    app.logger.info("GET a facility with valid name")
+
+    #POST a facility first
+    test_record_1 = app_fixture.post('/facility', json = {  'id': 102934536,
+                                                            'facilityName': "Swimming Pool",
+                                                            'capacity': 30,
+                                                            'openingTime': "8:00:00",
+                                                            'closingTime': "20:00:00",
+                                                            'managerID': "63F0DE4724EF6726E1F27D57"})
+
+    #POST a second facility
+    test_record_1 = app_fixture.post('/facility', json = {  'id': 123456789,
+                                                            'facilityName': "Tennis court 1",
+                                                            'capacity': 4,
+                                                            'openingTime': "8:00:00",
+                                                            'closingTime': "20:00:00",
+                                                            'managerID': "24F01E5793QF9716E1F29E57"})
+    
+    #Attempt to get the facilitt
+    endpoint_response = app_fixture.get("/bookings/facilityName/Tennis court")
+    assert endpoint_response.status_code == 200
+
+    # Decode the returned byte string
+    decoded_string = json.loads(endpoint_response.data)
+    assert decoded_string == {  'id': 123456789,
+                                'facilityName': "Tennis court 1",
+                                'capacity': 4,
+                                'openingTime': "8:00:00",
+                                'closingTime': "20:00:00",
+                                'managerID': "24F01E5793QF9716E1F29E57"}
+    
+    app.logger.info("END OF TEST: test_get_validName_facility")
+
+#GET facility with invalid data
+
+#PATCH facility
+# def test_patch_valid_facility(app_fixture):
+
+#     app.logger.info("PATCH a facility capacity with valid ID")
+
+#     #POST a facility first
+#     test_record_1 = app_fixture.post('/facility', json = {  'id': 102934536,
+#                                                             'facilityName': "Swimming Pool",
+#                                                             'capacity': 30,
+#                                                             'openingTime': "8:00:00",
+#                                                             'closingTime': "20:00:00",
+#                                                             'managerID': "63F0DE4724EF6726E1F27D57"})
