@@ -188,14 +188,49 @@ def test_get_validName_facility(app_fixture):
 #GET facility with invalid data
 
 #PATCH facility
-# def test_patch_valid_facility(app_fixture):
+def test_patch_valid_facility(app_fixture):
 
-#     app.logger.info("PATCH a facility capacity with valid ID")
+    # Display the message confirming this test is accessed
+    app.logger.info("PATCH a facility by a valid facility ID")
 
-#     #POST a facility first
-#     test_record_1 = app_fixture.post('/facility', json = {  'id': 102934536,
-#                                                             'facilityName': "Swimming Pool",
-#                                                             'capacity': 30,
-#                                                             'openingTime': "8:00:00",
-#                                                             'closingTime': "20:00:00",
-#                                                             'managerID': "63F0DE4724EF6726E1F27D57"})
+    # POST a test booking
+    test_record = app_fixture.post('/facility', json = {  'id': 102934536,
+                                                            'facilityName': "Swimming Pool",
+                                                            'capacity': 30,
+                                                            'openingTime': "8:00:00",
+                                                            'closingTime': "20:00:00",
+                                                            'managerID': "63F0DE4724EF6726E1F27D57"})
+
+    # Decode the returned byte string
+    decoded_string = json.loads(test_record.data)
+
+    # Display the record after POST
+    app.logger.info(f"POSTed test data: {decoded_string}")
+
+    # PATCH the booking time and length
+    update_record = app_fixture.patch('/facility/1',
+                                      json = {'capacity': "20",
+                                             })
+
+    # Decode the returned byte string
+    decoded_string = json.loads(update_record.data)
+
+    # Display the record after PATCH
+    app.logger.info(f"PATCHed test data: {decoded_string}")
+
+    # Validate that the correct status code was returned
+    assert update_record.status_code == 200
+
+    # Decode the returned byte string
+    decoded_string = json.loads(update_record.data)
+
+    # Validate that the returned data is correctly updated
+    assert decoded_string == {  'id': 102934536,
+                                'facilityName': "Swimming Pool",
+                                'capacity': 20,
+                                'openingTime': "8:00:00",
+                                'closingTime': "20:00:00",
+                                'managerID': "63F0DE4724EF6726E1F27D57"}
+
+    # Inform that the end of this test was reached
+    app.logger.info("END OF TEST: test_patch_valid_facility")
