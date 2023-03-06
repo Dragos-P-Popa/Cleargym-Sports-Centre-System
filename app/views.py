@@ -70,6 +70,7 @@ def post_booking():
     try:
         booking = models.Booking(
             userId=info["userId"],
+            facilitiesId = info["facilitiesId"],
             createDate=datetime.strptime(info["createDate"], '%Y/%m/%d').date(),
             bookingDate=datetime.strptime(info["bookingDate"], '%Y/%m/%d').date(),
             bookingTime=datetime.strptime(info['bookingTime'], '%H:%M').time(),
@@ -85,6 +86,7 @@ def post_booking():
         # Create a new response
         response = {'id': booking.id,
                     'userId': booking.userId,
+                    'facilitiesId': booking.facilitiesId,
                     'createDate': booking.createDate.strftime('%Y/%m/%d'),
                     'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
                     'bookingTime': booking.bookingTime.strftime('%H:%M'),
@@ -124,6 +126,7 @@ def delete_booking(id):
         # Create a new response
         response = {'id': booking.id,
                     'userId': booking.userId,
+                    'facilitiesId': booking.facilitiesId,
                     'createDate': booking.createDate.strftime('%Y/%m/%d'),
                     'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
                     'bookingTime': booking.bookingTime.strftime('%H:%M'),
@@ -164,6 +167,7 @@ def get_booking_uid(userId):
             booking_list.append({
                 'id': booking.id,
                 'userId': booking.userId,
+                'facilitiesId': booking.facilitiesId,
                 'createDate': booking.createDate.strftime('%Y/%m/%d'),
                 'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
                 'bookingTime': booking.bookingTime.strftime('%H:%M'),
@@ -197,6 +201,7 @@ def get_booking_bid(id):
         # Create a new response
         response = {'id': booking.id,
                     'userId': booking.userId,
+                    'facilitiesId': booking.facilitiesId,
                     'createDate': booking.createDate.strftime('%Y/%m/%d'),
                     'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
                     'bookingTime': booking.bookingTime.strftime('%H:%M'),
@@ -237,6 +242,8 @@ def patch_booking(id):
             # and execute the corresponding code
             if attribute == "userId":
                 booking.userId = value
+            if attribute == "facilitiesId":
+                booking.facilitiesId = value
             elif attribute == "createDate" or attribute == "bookingDate":
                 setattr(booking, attribute, datetime.strptime(value, '%Y/%m/%d').date())
             elif attribute == "bookingTime" or attribute == "bookingLength":
@@ -252,6 +259,7 @@ def patch_booking(id):
         # Create a new response
         response = {'id': booking.id,
                     'userId': booking.userId,
+                    'facilitiesId': booking.facilitiesId,
                     'createDate': booking.createDate.strftime('%Y/%m/%d'),
                     'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
                     'bookingTime': booking.bookingTime.strftime('%H:%M'),
