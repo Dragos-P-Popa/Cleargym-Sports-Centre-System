@@ -6,6 +6,10 @@ from sqlalchemy.orm.exc import UnmappedInstanceError
 from datetime import datetime
 import traceback
 
+
+
+############################### ERROR HANDLERS ###############################
+
 # The error handlers for IntegrityError, KeyError, UnmappedInstanceError,
 # TypeError, AttributeError and ValueError.
 # These might occur when data is:
@@ -61,6 +65,9 @@ def value_error_handler(error):
     # e.g. date/time
     return jsonify({"ValueError": "Data does not match the required format in one or more fields"}), 400
 
+
+
+################################# END POINTS #################################
 
 # This function is to create a new booking
 @app.route('/booking', methods=['POST'])
