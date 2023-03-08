@@ -30,6 +30,18 @@ def app_fixture():
 
     app.logger.info("End of the 'set up' / 'tear down' function")
 
+# The function responsible for adding temporary records to the Activity table
+def add_activities():
+
+    # POST test data
+    # endpoint_response = app_fixture.post('/activity',
+                                        # json = {'activityId': "21345235",
+                                                # 'activityType': 'General use',
+                                                # 'activityStartTime': "17:00",
+                                                # 'activityEndTime': "18:00",
+                                                # 'activityDay': 'Monday'})
+    pass
+
 # Show the app instance returned by the app_fixture() function
 def test_fixture_setup(app_fixture):
     app.logger.info(f"The app_fixture() function returns {app_fixture}")
@@ -45,10 +57,12 @@ def test_post_valid_booking(app_fixture):
     endpoint_response = app_fixture.post('/booking',
                                          json = {'userId': "21345235",
                                                 'facilitiesId': 32443456,
+                                                'activityId': 123552,
                                                 'createDate': "2023/01/01",
                                                 'bookingDate': "2023/01/02",
                                                 'bookingTime': "13:15",
                                                 'bookingLength': "01:00",
+                                                'bookingEndTime': "14:15",
                                                 'bookingType': "General use",
                                                 'teamEvent': False})
 
@@ -482,3 +496,23 @@ def test_patch_missing_booking(app_fixture):
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_patch_missing_booking")
+
+
+# Extra tests:
+# - POST a booking with an invalid activityId to generate an IntegrityError
+# - Implement a way to deal with orphaned records in the Booking db
+# If you delete a record from the activity table that has a related record in the booking table,
+# the related records in the booking table will become orphaned.
+# This means that they will still exist in the booking table,
+# but their foreign key reference to the deleted activity record will no longer be valid.
+# This can cause issues if you try to access or modify the orphaned records
+# in the booking table. For example, if you try to access a booking record with
+# an orphaned activity foreign key reference, you may get an error saying that
+# the activity record could not be found. To avoid this issue,
+# you can define a foreign key constraint with the ondelete option set to 'CASCADE'.
+# This tells the database to automatically delete any orphaned records in the
+# booking table when the related record in the activity table is deleted.
+
+
+# Add the endpoint into views.py for POST, GET, DELETE, PATCH activity
+# Create design documents for these endpoints and a new Bookings and Activity schema
