@@ -6,6 +6,9 @@ from flask import json
 from app import app, db
 
 
+
+############################# SET UP AND TEAR DOWN #############################
+
 # The function responsible for setting up and tearing down all the data
 # and objects that may be reused in multiple tests
 @pytest.fixture
@@ -38,6 +41,9 @@ def test_fixture_setup(app_fixture):
     assert True
 
 
+
+######################## ACTIVITY TABLE ENDPOINTS TESTS ########################
+
 # POST a new activity with valid data
 def test_post_valid_activity(app_fixture):
 
@@ -67,6 +73,9 @@ def test_post_valid_activity(app_fixture):
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_post_valid_activity")
 
+
+
+######################## BOOKING TABLE ENDPOINTS TESTS ########################
 
 # The function responsible for adding temporary records to the Activity table
 def add_activities(fixture):
@@ -618,5 +627,7 @@ def test_patch_missing_booking(app_fixture):
 # booking table when the related record in the activity table is deleted."
 
 
-# Add the endpoint into views.py for POST, GET, DELETE, PATCH activity
-# Design documents for these endpoints and a new Bookings and Activity schema
+# - Consider adding an endpoint to GET all activities
+# - Figure out how to maintain the consistency of data between activities deleted
+#   from Bookings.db and activities offered by facilites in Facilities.db
+# - Design documents for these endpoints and a new Bookings and Activity schema
