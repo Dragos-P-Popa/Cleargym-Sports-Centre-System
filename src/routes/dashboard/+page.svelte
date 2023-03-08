@@ -27,11 +27,10 @@
                 <p class="font-light text-2xl text-[#515151]">welcome back!</p>
             </div>
             <div class="col-span-2 pt-16 px-4">
+                {#if bookings?.length > 0}
                 <p class="text-4xl text-[#1A1A1A] pb-4">Next booking</p>
-
-                {#each bookings as b}
-                    <BookingCard class="" heading={b.bookingDate} subheading={b.bookingLength}></BookingCard>
-                {/each}
+                <BookingCard class="" heading={bookings[0].bookingType} subheading={bookings[0].bookingTime}></BookingCard>
+                {/if}
 
                 <QuickBooking/>
 

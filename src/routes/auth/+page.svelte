@@ -177,7 +177,8 @@
 
 <style>
   body {
-    background-image: url("gym.jpeg");
+    background-image: url("gym.jpg");
+    background-size: cover;
     padding-top: 5rem;
     font-family: "Manrope";
     }
