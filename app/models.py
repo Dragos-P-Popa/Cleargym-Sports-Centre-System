@@ -2,12 +2,12 @@ from app import db
 from datetime import datetime
 
 
-# Creating the columns
+# The model of the Booking table
 class Booking(db.Model):
     __tablename__ = "booking_table"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
     userId = db.Column(db.String(500), nullable=False)
-    facilitiesId = db.Column(db.Integer, nullable = False)
+    facilityId = db.Column(db.Integer, nullable = False)
     activityId = db.Column(db.Integer,
                            db.ForeignKey('activity_table.activityId'),
                            nullable=False)
@@ -21,7 +21,7 @@ class Booking(db.Model):
     activity = db.relationship("Activity",
                                back_populates="booking")
 
-
+# The model of the Activity table
 class Activity(db.Model):
     __tablename__ = "activity_table"
     activityId = db.Column(db.Integer, primary_key=True, nullable=False)
