@@ -4,6 +4,7 @@ import datetime
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import UnmappedInstanceError
 from datetime import datetime
+import traceback
 
 # The error handlers for IntegrityError, KeyError, UnmappedInstanceError,
 # TypeError, AttributeError and ValueError.
@@ -37,14 +38,15 @@ def unmapped_error_handler(error):
     return jsonify({"UnmappedInstanceError": "Record not found in the database"}), 400
 
 @app.errorhandler(TypeError)
-def unmapped_error_handler(error):
+def type_error_handler(error):
     db.session.rollback()
     app.logger.error("TypeError detected")
+    app.logger.error(traceback.format_exc())
     # TypeError refers to invalid data type passed as an argument to a function
     return jsonify({"TypeError": "Endpoint function operating on a wrong data type"}), 400
 
 @app.errorhandler(AttributeError)
-def unmapped_error_handler(error):
+def attribute_error_handler(error):
     db.session.rollback()
     app.logger.error("AttributeError detected")
     # AttributeError is raised when trying to access an attribute
@@ -52,7 +54,7 @@ def unmapped_error_handler(error):
     return jsonify({"AttributeError": "The referenced record does not exist"}), 400
 
 @app.errorhandler(ValueError)
-def unmapped_error_handler(error):
+def value_error_handler(error):
     db.session.rollback()
     app.logger.error("ValueError detected")
     # ValueError is raised when the sent data does not match the required format
@@ -95,17 +97,30 @@ def post_booking():
                     'teamEvent': booking.teamEvent
                     }
 
-    # Validate whether any data was submitted and if it is in a valid format
+    # Check for possible errors in the submitted data
 
     # The error handling was implemented and debugged
     # with the help of the following documentation and thread
     # https://flask.palletsprojects.com/en/2.2.x/errorhandling/#returning-api-errors-as-json
     # https://stackoverflow.com/questions/24522290/cannot-catch-sqlalchemy-integrityerror
+    # Validate whether any data was submitted and if it is in a valid format
     except IntegrityError:
         raise IntegrityError("IntegrityError detected", IntegrityError, None)
 
     except KeyError:
         raise KeyError("KeyError detected")
+
+    except UnmappedInstanceError:
+        raise UnmappedInstanceError("UnmappedInstanceError detected")
+
+    except TypeError:
+        raise TypeError("TypeError detected")
+
+    except AttributeError:
+        raise AttributeError("AttributeError detected")
+
+    except ValueError:
+        raise ValueError("ValueError detected")
 
     # return the response
     return jsonify(response), 200
@@ -135,7 +150,7 @@ def delete_booking(id):
                     'teamEvent': booking.teamEvent
                     }
 
-    # Validate whether any data was submitted and if it is in a valid format
+    # Check for possible errors in the submitted data
     except IntegrityError:
         raise IntegrityError("IntegrityError detected", IntegrityError, None)
 
@@ -144,6 +159,12 @@ def delete_booking(id):
 
     except UnmappedInstanceError:
         raise UnmappedInstanceError("UnmappedInstanceError detected")
+
+    except TypeError:
+        raise TypeError("TypeError detected")
+
+    except AttributeError:
+        raise AttributeError("AttributeError detected")
 
     except ValueError:
         raise ValueError("ValueError detected")
@@ -176,7 +197,7 @@ def get_booking_uid(userId):
                 'teamEvent': booking.teamEvent
             })
 
-    # Validate whether any data was submitted and if it is in a valid format
+    # Check for possible errors in the submitted data
     except IntegrityError:
         raise IntegrityError("IntegrityError detected", IntegrityError, None)
 
@@ -185,6 +206,15 @@ def get_booking_uid(userId):
 
     except UnmappedInstanceError:
         raise UnmappedInstanceError("UnmappedInstanceError detected")
+
+    except TypeError:
+        raise TypeError("TypeError detected")
+
+    except AttributeError:
+        raise AttributeError("AttributeError detected")
+
+    except ValueError:
+        raise ValueError("ValueError detected")
 
     # return the response ( The booking_list )
     return jsonify(booking_list), 200
@@ -210,7 +240,7 @@ def get_booking_bid(id):
                     'teamEvent': booking.teamEvent
                     }
 
-    # Validate whether any data was submitted and if it is in a valid format
+    # Check for possible errors in the submitted data
     except IntegrityError:
         raise IntegrityError("IntegrityError detected", IntegrityError, None)
 
@@ -219,6 +249,15 @@ def get_booking_bid(id):
 
     except UnmappedInstanceError:
         raise UnmappedInstanceError("UnmappedInstanceError detected")
+
+    except TypeError:
+        raise TypeError("TypeError detected")
+
+    except AttributeError:
+        raise AttributeError("AttributeError detected")
+
+    except ValueError:
+        raise ValueError("ValueError detected")
 
     # return the response
     return jsonify(response), 200
@@ -268,7 +307,7 @@ def patch_booking(id):
                     'teamEvent': booking.teamEvent
                     }
 
-    # Validate whether any data was submitted and if it is in a valid format
+    # Check for possible errors in the submitted data
     except IntegrityError:
         raise IntegrityError("IntegrityError detected", IntegrityError, None)
 
@@ -286,6 +325,42 @@ def patch_booking(id):
 
     except ValueError:
         raise ValueError("ValueError detected")
+
+    # return the response
+    return jsonify(response), 200
+
+
+# This function is used to create a new activity
+@app.route('/activity', methods=['POST'])
+def post_activity():
+    # requesting the data
+    posted_activity = request.get_json()
+
+    # Create a new booking
+    try:
+        new_activity = models.Activity(
+            activityType = posted_activity["activityType"],
+            activityStartTime = datetime.strptime(posted_activity['activityStartTime'],
+                                                 '%H:%M').time(),
+            activityEndTime=datetime.strptime(posted_activity['activityEndTime'],
+                                             '%H:%M').time(),
+            activityDay=posted_activity["activityDay"])
+
+        # add and commit the booking details to the database (Booking.db)
+        db.session.add(new_activity)
+        db.session.commit()
+
+        # Create a new response
+        response = {'activityId': new_activity.activityId,
+                    'activityType': new_activity.activityType,
+                    'activityStartTime': new_activity.activityStartTime.strftime('%H:%M'),
+                    'activityEndTime': new_activity.activityEndTime.strftime('%H:%M'),
+                    'activityDay': new_activity.activityDay
+                    }
+
+    # Check for possible errors in the submitted data
+    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
+        raise error
 
     # return the response
     return jsonify(response), 200

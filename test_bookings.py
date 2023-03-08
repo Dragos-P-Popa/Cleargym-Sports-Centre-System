@@ -34,12 +34,12 @@ def app_fixture():
 def add_activities():
 
     # POST test data
-    # endpoint_response = app_fixture.post('/activity',
-                                        # json = {'activityId': "21345235",
-                                                # 'activityType': 'General use',
-                                                # 'activityStartTime': "17:00",
-                                                # 'activityEndTime': "18:00",
-                                                # 'activityDay': 'Monday'})
+    endpoint_response = app_fixture.post('/activity',
+                                         json = {'activityId': "21345235",
+                                                 'activityType': 'General use',
+                                                 'activityStartTime': "17:00",
+                                                 'activityEndTime': "18:00",
+                                                 'activityDay': 'Monday'})
     pass
 
 # Show the app instance returned by the app_fixture() function
@@ -498,6 +498,36 @@ def test_patch_missing_booking(app_fixture):
     app.logger.info("END OF TEST: test_patch_missing_booking")
 
 
+# POST a new activity with valid data
+def test_post_valid_activity(app_fixture):
+
+    # Display the message confirming this test is accessed
+    app.logger.info("POST an activity with valid data")
+
+    # POST test data
+    endpoint_response = app_fixture.post('/activity',
+                                         json = {'activityType': 'General use',
+                                                 'activityStartTime': "17:00",
+                                                 'activityEndTime': "18:00",
+                                                 'activityDay': 'Monday'})
+
+    # Validate that the correct status code was returned
+    assert endpoint_response.status_code == 200
+
+    # Decode the returned byte string
+    decoded_string = json.loads(endpoint_response.data)
+
+    # Validate that the returned data is correct
+    assert decoded_string == {'activityId': 1,
+                              'activityType': 'General use',
+                              'activityStartTime': "17:00",
+                              'activityEndTime': "18:00",
+                              'activityDay': 'Monday'}
+
+    # Inform that the end of this test was reached
+    app.logger.info("END OF TEST: test_post_valid_activity")
+
+
 # Extra tests:
 # - POST a booking with an invalid activityId to generate an IntegrityError
 # - Implement a way to deal with orphaned records in the Booking db
@@ -516,3 +546,4 @@ def test_patch_missing_booking(app_fixture):
 
 # Add the endpoint into views.py for POST, GET, DELETE, PATCH activity
 # Create design documents for these endpoints and a new Bookings and Activity schema
+# Remove except/raise statements and rely on error handlers
