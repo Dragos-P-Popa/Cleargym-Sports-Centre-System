@@ -2,5 +2,7 @@
 	"/": [],
 	"/auth": [],
 	"/bookings": [],
-	"/dashboard": []
+	"/dashboard": [
+		"src/routes/dashboard/+page.server.ts"
+	]
 }

@@ -1,5 +1,3 @@
-import * as client_hooks from '../../../src/hooks.client.ts';
-
 export { matchers } from './matchers.js';
 
 export const nodes = [() => import('./nodes/0'),
@@ -18,11 +16,11 @@ export const dictionary = {
 	"/": [5],
 	"/auth": [6,[2]],
 	"/bookings": [7,[3]],
-	"/dashboard": [8,[4]]
+	"/dashboard": [~8,[4]]
 };
 
 export const hooks = {
-	handleError: client_hooks.handleError || (({ error }) => { console.error(error) }),
+	handleError: (({ error }) => { console.error(error) }),
 };
 
 export { default as root } from '../root.svelte';

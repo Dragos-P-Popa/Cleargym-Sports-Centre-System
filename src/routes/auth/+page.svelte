@@ -32,6 +32,7 @@
     //create a request to the Auth API (make sure it is running on your machine to test)
     const res = await fetch('http://localhost:3001/login/', {
 			method: 'POST',
+      credentials: 'include',
       // essential to set the header
       headers: {
         "Content-Type": "application/json",
@@ -51,12 +52,6 @@
     if (code != 201){
       console.log(result);
     } else {
-      localStorage.setItem('accessToken', result.accessToken);
-      localStorage.setItem('refreshToken', result.refreshToken);
-
-      console.log(localStorage.getItem('accessToken'));
-      console.log(localStorage.getItem('refreshToken'));
-
       goto('/dashboard');
     }
 	
@@ -136,7 +131,7 @@
     </div>
 
     <div class="grid">
-      <MainButton type="submit" class="mt-12 max-w-lg place-self-center">Login</MainButton>
+      <MainButton type="submit" class="mt-12  w-3/5 max-w-lg place-self-center">Login</MainButton>
     </div>
   </form>
 
@@ -145,7 +140,7 @@
       <hr class="w-64 h-px my-4 bg-gray-200 border-0">
       <span class="absolute px-3 font-medium text-gray-900 -translate-x-1/2 bg-white left-1/2">or</span>
     </div>
-    <SecondaryButton on:click={() => toggle()} class="place-self-center max-w-lg ">Register</SecondaryButton>
+    <SecondaryButton on:click={() => toggle()} class="place-self-center  w-3/5 max-w-lg ">Register</SecondaryButton>
   </div>
   {:else}
   <form on:submit|preventDefault={registerSubmit}>
@@ -171,7 +166,7 @@
     </div>
 
     <div class="grid">
-      <MainButton type="submit" class="mt-12 max-w-lg place-self-center">Register</MainButton>
+      <MainButton type="submit" class="mt-12  w-3/5 max-w-lg place-self-center">Register</MainButton>
     </div>
   </form>
   {/if}
