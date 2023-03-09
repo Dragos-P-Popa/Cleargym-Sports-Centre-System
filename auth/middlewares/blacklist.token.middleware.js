@@ -7,7 +7,8 @@ const BlacklistModel = require('../models/tokens.model');
 
 // check if a given refresh token has been blacklisted
 exports.isBlacklisted = (req, res, next) => {
-    BlacklistModel.findByToken(req.body.refreshToken).then((result) => {
+    const token = req.cookies.refreshToken.slice(1, -1)
+    BlacklistModel.findByToken(token).then((result) => {
         if (result.length == 0){
             return next();
         } else {

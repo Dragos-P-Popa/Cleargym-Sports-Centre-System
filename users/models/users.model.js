@@ -45,7 +45,6 @@ exports.findById = (id) => {
         // convert to JSON
         result = result.toJSON();
         // delete uneccessary fields from response
-        delete result._id;
         delete result.__v;
         return result;
     });
@@ -53,7 +52,9 @@ exports.findById = (id) => {
 
 exports.findByEmail = (email) => {
     // find user entry in mongo db using the email
-    return User.find({email: email});
+    return User.find({email: email}).then((result) => {
+        return result;
+    });
 };
 
 // mongoDB updating one document

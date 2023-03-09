@@ -1,6 +1,7 @@
 const express = require('express'); //Import the express dependency
 const app = express();              //Instantiate an express app, the main work horse of this server
 const port = 3001;                  //Port that the node app will be listening to
+var cookieParser = require('cookie-parser')
 
 /* 
     This file is the root of the application.
@@ -11,7 +12,7 @@ const UsersRouter = require('./users/routes.config');
 const AuthRouter = require('./auth/routes.config');
 
 app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
     res.header('Access-Control-Expose-Headers', 'Content-Length');
@@ -25,6 +26,8 @@ app.use(function (req, res, next) {
 
 // use JSON in communications
 app.use(express.json());
+// use for parsing token cookies
+app.use(cookieParser())
 // assigns the current 'app' expressJs instance to the UsersRouter
 UsersRouter.routesConfig(app);
 // use routes defined in auth/routes.config.js
