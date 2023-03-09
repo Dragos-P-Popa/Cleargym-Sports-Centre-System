@@ -1,81 +1,11 @@
 #!flask/bin/python
 
-import os
-import pytest
 from flask import json
 from app import app, db
 
 
-
-############################# SET UP AND TEAR DOWN #############################
-
-# The function responsible for setting up and tearing down all the data
-# and objects that may be reused in multiple tests
-@pytest.fixture
-def app_fixture():
-
-    app.logger.info("Start of the 'set up' / 'tear down' function")
-
-    app.config.from_object('config')
-    app.config['TESTING'] = True
-    app.config['WTF_CSRF_ENABLED'] = False
-    # Setting up temporary database tables in memory
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
-
-    # Create the tables
-    db.create_all()
-
-    # 'yield' returns the app's test instance to whatever function
-    # makes use of this fixture
-    yield app.test_client()
-
-    # Delete the tables
-    db.drop_all()
-
-    app.logger.info("End of the 'set up' / 'tear down' function")
-
-
-# Show the app instance returned by the app_fixture() function
-def test_fixture_setup(app_fixture):
-    app.logger.info(f"The app_fixture() function returns {app_fixture}")
-    assert True
-
-
-
-######################## ACTIVITY TABLE ENDPOINTS TESTS ########################
-
-# POST a new activity with valid data
-def test_post_valid_activity(app_fixture):
-
-    # Display the message confirming this test is accessed
-    app.logger.info("POST an activity with valid data")
-
-    # POST test data
-    endpoint_response = app_fixture.post('/activity',
-                                         json = {'activityType': 'General use',
-                                                 'activityStartTime': "17:00",
-                                                 'activityEndTime': "18:00",
-                                                 'activityDay': 'Monday'})
-
-    # Validate that the correct status code was returned
-    assert endpoint_response.status_code == 200
-
-    # Decode the returned byte string
-    decoded_string = json.loads(endpoint_response.data)
-
-    # Validate that the returned data is correct
-    assert decoded_string == {'activityId': 1,
-                              'activityType': 'General use',
-                              'activityStartTime': "17:00",
-                              'activityEndTime': "18:00",
-                              'activityDay': 'Monday'}
-
-    # Inform that the end of this test was reached
-    app.logger.info("END OF TEST: test_post_valid_activity")
-
-
-
 ######################## BOOKING TABLE ENDPOINTS TESTS ########################
+
 
 # The function responsible for adding temporary records to the Activity table
 def add_activities(fixture):
@@ -133,7 +63,7 @@ def test_post_valid_booking(app_fixture):
     app.logger.info("END OF TEST: test_post_valid_booking")
 
 
-# POST a new booking with invalid data
+# POST a new booking with invalid 'bookingDate' format
 def test_post_invalid_booking(app_fixture):
 
     # Display the message confirming this test is accessed
@@ -194,6 +124,7 @@ def test_post_missing_booking(app_fixture):
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_post_missing_booking")
 
+
 # DELETE a booking with valid booking ID
 def test_delete_valid_booking(app_fixture):
 
@@ -241,6 +172,7 @@ def test_delete_valid_booking(app_fixture):
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_delete_valid_booking")
 
+
 # DELETE a booking with invalid booking ID
 def test_delete_missing_booking(app_fixture):
 
@@ -267,7 +199,6 @@ def test_delete_missing_booking(app_fixture):
     endpoint_response = app_fixture.delete("/bookings/100")
     app.logger.error(endpoint_response)
 
-
     # Validate that the correct error code and message was returned
     assert endpoint_response.status_code == 400
 
@@ -279,6 +210,7 @@ def test_delete_missing_booking(app_fixture):
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_delete_missing_booking")
+
 
 # GET all bookings of a user by a valid user ID
 def test_get_bookings_valid_uid(app_fixture):
@@ -437,6 +369,7 @@ def test_get_booking_valid_bid(app_fixture):
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_get_booking_valid_bid")
 
+
 # GET a specific booking by an invalid booking ID
 def test_get_booking_invalid_bid(app_fixture):
 
@@ -473,6 +406,7 @@ def test_get_booking_invalid_bid(app_fixture):
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_get_booking_invalid_bid")
+
 
 # PATCH a booking with valid data
 def test_patch_valid_booking(app_fixture):
@@ -536,6 +470,7 @@ def test_patch_valid_booking(app_fixture):
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_patch_valid_booking")
 
+
 # PATCH a booking with invalid data
 def test_patch_invalid_booking(app_fixture):
 
@@ -579,6 +514,7 @@ def test_patch_invalid_booking(app_fixture):
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_patch_invalid_booking")
 
+
 # PATCH a booking with missing data
 def test_patch_missing_booking(app_fixture):
 
@@ -610,24 +546,9 @@ def test_patch_missing_booking(app_fixture):
 
 
 
+
+
+
 # Extra tests:
 # - POST a booking with an invalid activityId to generate an IntegrityError
-# - Implement a way to deal with orphaned records in the Booking db
 
-# "If you delete a record from the activity table that has a related record in the booking table,
-# the related records in the booking table will become orphaned.
-# This means that they will still exist in the booking table,
-# but their foreign key reference to the deleted activity record will no longer be valid.
-# This can cause issues if you try to access or modify the orphaned records
-# in the booking table. For example, if you try to access a booking record with
-# an orphaned activity foreign key reference, you may get an error saying that
-# the activity record could not be found. To avoid this issue,
-# you can define a foreign key constraint with the ondelete option set to 'CASCADE'.
-# This tells the database to automatically delete any orphaned records in the
-# booking table when the related record in the activity table is deleted."
-
-
-# - Consider adding an endpoint to GET all activities
-# - Figure out how to maintain the consistency of data between activities deleted
-#   from Bookings.db and activities offered by facilites in Facilities.db
-# - Design documents for these endpoints and a new Bookings and Activity schema

@@ -4,11 +4,12 @@ import datetime
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import UnmappedInstanceError
 from datetime import datetime
-import traceback
 
 
 
 ############################### ERROR HANDLERS ###############################
+
+
 
 # The error handlers for IntegrityError, KeyError, UnmappedInstanceError,
 # TypeError, AttributeError and ValueError.
@@ -45,7 +46,6 @@ def unmapped_error_handler(error):
 def type_error_handler(error):
     db.session.rollback()
     app.logger.error("TypeError detected")
-    app.logger.error(traceback.format_exc())
     # TypeError refers to invalid data type passed as an argument to a function
     return jsonify({"TypeError": "Endpoint function operating on a wrong data type"}), 400
 
@@ -68,6 +68,8 @@ def value_error_handler(error):
 
 
 ########################### BOOKING TABLE END POINTS ###########################
+
+
 
 # This function is to create a new booking
 @app.route('/booking', methods=['POST'])
@@ -282,6 +284,8 @@ def patch_booking(id):
 
 
 ########################### ACTIVITY TABLE END POINTS ###########################
+
+
 
 # This function is used to create a new activity
 @app.route('/activity', methods=['POST'])

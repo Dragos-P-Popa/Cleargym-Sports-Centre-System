@@ -1,8 +1,8 @@
-"""Spelling correction facilitiesId to facilityId
+"""Activities table
 
-Revision ID: 2ca1e3963325
-Revises: ece47db39ef1
-Create Date: 2023-03-08 18:02:33.044132
+Revision ID: 0117c3816327
+Revises: 
+Create Date: 2023-03-09 18:36:13.211480
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '2ca1e3963325'
-down_revision = 'ece47db39ef1'
+revision = '0117c3816327'
+down_revision = None
 branch_labels = None
 depends_on = None
 
