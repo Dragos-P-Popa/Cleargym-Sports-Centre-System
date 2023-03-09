@@ -1,7 +1,9 @@
 {
 	"/": [],
 	"/auth": [],
-	"/bookings": [],
+	"/bookings": [
+		"src/routes/bookings/+page.server.ts"
+	],
 	"/dashboard": [
 		"src/routes/dashboard/+page.server.ts"
 	]
