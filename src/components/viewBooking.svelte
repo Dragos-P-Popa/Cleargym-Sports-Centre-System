@@ -4,7 +4,7 @@
 </script>
 
 <div class="p-4 py-8 mt-4 shadow-md rounded-lg border-[1px] border-borderColor">
-    <p class="px-4 text-4xl text-left text-[#1A1A1A]">Booking #1324</p>
+    <p class="px-4 text-4xl text-left text-[#1A1A1A] font-semibold">Booking #1324</p>
     <p class="px-4 font-light text-md text-[#515151] text-left">Booking details</p>
 
     <hr class="m-6 rounded bg-[#EDEDEF]">
