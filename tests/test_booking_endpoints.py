@@ -1,7 +1,7 @@
 #!flask/bin/python
 
 from flask import json
-from app import app, db
+from app import app
 
 
 ######################## BOOKING TABLE ENDPOINTS TESTS ########################
@@ -541,14 +541,3 @@ def test_patch_missing_booking(app_fixture):
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_patch_missing_booking")
-
-
-
-
-
-
-
-
-# Extra tests:
-# - POST a booking with an invalid activityId to generate an IntegrityError
-

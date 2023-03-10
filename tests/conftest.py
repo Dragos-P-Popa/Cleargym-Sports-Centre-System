@@ -1,8 +1,9 @@
 import pytest
 from app import app, db
 
-# The tests are now split into separate files and kept within a designated
-# 'tests' folder, as recommended by the pytest documentation:
+# The fixture configuration and tests are split into separate files
+# and kept within a designated 'tests' folder,
+# as recommended by the pytest documentation:
 # https://docs.pytest.org/en/7.1.x/explanation/goodpractices.html
 
 ############################# SET UP AND TEAR DOWN #############################

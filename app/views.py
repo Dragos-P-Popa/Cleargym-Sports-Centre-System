@@ -11,6 +11,11 @@ from datetime import datetime
 
 
 
+# The error handling was implemented and debugged
+# with the help of the following documentation and thread
+# https://flask.palletsprojects.com/en/2.2.x/errorhandling/#returning-api-errors-as-json
+# https://stackoverflow.com/questions/24522290/cannot-catch-sqlalchemy-integrityerror
+
 # The error handlers for IntegrityError, KeyError, UnmappedInstanceError,
 # TypeError, AttributeError and ValueError.
 # These might occur when data is:
@@ -20,6 +25,8 @@ from datetime import datetime
 # - of an invalid type as a function parameter
 # - refering to a non-existent attribute, e.g. in a NoneType object
 # - sent in an incorrect format (e.g. date/time)
+
+
 
 @app.errorhandler(IntegrityError)
 def integrity_error_handler(error):
@@ -110,13 +117,6 @@ def post_booking():
                     'teamEvent': booking.teamEvent
                     }
 
-    # Check for possible errors in the submitted data
-
-    # The error handling was implemented and debugged
-    # with the help of the following documentation and thread
-    # https://flask.palletsprojects.com/en/2.2.x/errorhandling/#returning-api-errors-as-json
-    # https://stackoverflow.com/questions/24522290/cannot-catch-sqlalchemy-integrityerror
-    # Validate whether any data was submitted and if it is in a valid format
     # Check for possible errors in the submitted data
     except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
         raise error
@@ -272,140 +272,6 @@ def patch_booking(id):
                     'bookingEndTime': booking.bookingEndTime.strftime('%H:%M'),
                     'bookingType': booking.bookingType,
                     'teamEvent': booking.teamEvent
-                    }
-
-    # Check for possible errors in the submitted data
-    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
-        raise error
-
-    # Return the response
-    return jsonify(response), 200
-
-
-
-########################### ACTIVITY TABLE END POINTS ###########################
-
-
-
-# This function is used to create a new activity
-@app.route('/activity', methods=['POST'])
-def post_activity():
-    # requesting the data
-    posted_activity = request.get_json()
-
-    # Create a new booking
-    try:
-        new_activity = models.Activity(
-            activityType = posted_activity["activityType"],
-            activityStartTime = datetime.strptime(posted_activity['activityStartTime'],
-                                                 '%H:%M').time(),
-            activityEndTime=datetime.strptime(posted_activity['activityEndTime'],
-                                             '%H:%M').time(),
-            activityDay=posted_activity["activityDay"])
-
-        # add and commit the booking details to the database (Booking.db)
-        db.session.add(new_activity)
-        db.session.commit()
-
-        # Create a new response
-        response = {'activityId': new_activity.activityId,
-                    'activityType': new_activity.activityType,
-                    'activityStartTime': new_activity.activityStartTime.strftime('%H:%M'),
-                    'activityEndTime': new_activity.activityEndTime.strftime('%H:%M'),
-                    'activityDay': new_activity.activityDay
-                    }
-
-    # Check for possible errors in the submitted data
-    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
-        raise error
-
-    # Return the response
-    return jsonify(response), 200
-
-
-# This function is to delete an activity by using the activity id
-@app.route('/activity/<int:id>', methods=['DELETE'])
-def delete_activity(id):
-
-    try:
-        # requesting the data from the database by using the selected activity id
-        activity = models.Activity.query.get(id)
-
-        # delete and commit the booking details from the database (Booking.db)
-        db.session.delete(activity)
-        db.session.commit()
-
-        # Create a new response
-        response = {'activityId': activity.activityId,
-                    'activityType': activity.activityType,
-                    'activityStartTime': activity.activityStartTime.strftime('%H:%M'),
-                    'activityEndTime': activity.activityEndTime.strftime('%H:%M'),
-                    'activityDay': activity.activityDay
-                    }
-
-    # Check for possible errors in the submitted data
-    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
-        raise error
-
-    # Return the response
-    return jsonify(response), 200
-
-# This function is to get an activity by using the activity id
-@app.route('/activity/<int:id>', methods=['GET'])
-def get_activity_by_id(id):
-
-    try:
-        # Requesting the data from the database by using the selected activity id
-        activity = models.Activity.query.get(id)
-
-        # Create a new response
-        response = {'activityId': activity.activityId,
-                    'activityType': activity.activityType,
-                    'activityStartTime': activity.activityStartTime.strftime('%H:%M'),
-                    'activityEndTime': activity.activityEndTime.strftime('%H:%M'),
-                    'activityDay': activity.activityDay
-                    }
-
-    # Check for possible errors in the submitted data
-    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
-        raise error
-
-    # Return the response
-    return jsonify(response), 200
-
-# This function is to patch an activity by using the activity id
-@app.route('/activity/<int:id>', methods=['PATCH'])
-def patch_activity(id):
-
-    try:
-        # Requesting the data from the database by using the selected activity id
-        activity = models.Activity.query.get(id)
-
-        # Decoding the data sent to the API
-        request_data = request.get_json()
-
-        # Iterate over the key, value pairs in the request data
-        for attribute, value in request_data.items():
-
-            # Validate which attribute is being updated
-            # and execute the corresponding code
-            if attribute == "activityType":
-                activity.activityType = value
-            elif (attribute == "activityStartTime"
-                or attribute == "activityEndTime"):
-                setattr(activity, attribute, datetime.strptime(value, '%H:%M').time())
-            elif attribute == "activityDay":
-                activity.activityDay = value
-
-        # Commit the changes made
-        db.session.commit()
-
-        # Create a new response
-        response = {'activityId': activity.activityId,
-                    'activityType': activity.activityType,
-                    'activityStartTime': activity.activityStartTime.strftime('%H:%M'),
-                    'activityEndTime': activity.activityEndTime.strftime('%H:%M'),
-                    'activityDay': activity.activityDay
                     }
 
     # Check for possible errors in the submitted data

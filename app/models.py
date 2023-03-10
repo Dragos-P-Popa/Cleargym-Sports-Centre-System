@@ -4,35 +4,14 @@ from datetime import datetime
 
 # The model of the Booking table
 class Booking(db.Model):
-    __tablename__ = "booking_table"
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    userId = db.Column(db.String(500), nullable=False)
+    userId = db.Column(db.String(50), nullable=False)
     facilityId = db.Column(db.Integer, nullable = False)
-    activityId = db.Column(db.Integer,
-                           db.ForeignKey('activity_table.activityId'),
-                           nullable=False)
+    activityId = db.Column(db.Integer, nullable=False)
     createDate = db.Column(db.Date, nullable=False)
     bookingDate = db.Column(db.Date, nullable=False)
     bookingTime = db.Column(db.Time, nullable=False)
     bookingLength = db.Column(db.Time, nullable=False)
     bookingEndTime = db.Column(db.Time, nullable=False)
-    bookingType = db.Column(db.String(500), nullable=False)
+    bookingType = db.Column(db.String(100), nullable=False)
     teamEvent = db.Column(db.Boolean, nullable=False)
-    activity = db.relationship("Activity",
-                               back_populates="booking")
-
-# The model of the Activity table
-class Activity(db.Model):
-    __tablename__ = "activity_table"
-    activityId = db.Column(db.Integer, primary_key=True, nullable=False)
-    activityType = db.Column(db.String(100), nullable=False)
-    activityStartTime = db.Column(db.Time, nullable=False)
-    activityEndTime = db.Column(db.Time, nullable=False)
-    activityDay = db.Column(db.String(10), nullable=False)
-    booking = db.relationship("Booking",
-                              back_populates="activity")
-
-    # The one-to-many relationship set up is explained in more detail in the
-    # following SQLAlchemy documentation:
-    # https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html#many-to-one
-    # (It is one activity to many bookings)
