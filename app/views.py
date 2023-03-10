@@ -6,7 +6,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import UnmappedInstanceError
 
 
-# Error handlers:
+########################### ERROR HANDLERS ###########################
+
 # The error handlers for IntegrityError, KeyError, UnmappedInstanceError,
 # TypeError, AttributeError and ValueError.
 # These might occur when data is:
@@ -68,28 +69,35 @@ def create_tables():
     # preload some data in the database
     preload_data()
 
+########################### FACILITY TABLE END POINTS ###########################
+
 # API endpoint that shows a facility either by facility id or facility name
 @app.route('/facility/<param>', methods=['GET'])
 def get_facility(param):
-    facility = None
-    if param.isdigit():
-        # parameter is a facility ID
-        facility = db.session.query(models.Facility).filter_by(id=int(param)).first()
-    else:
-        # parameter is a name of facility
-        facility = db.session.query(models.Facility).filter_by(facilityName=param).first()
-    if facility is None:
-        #  if the code does not run correctly, return a 404 Not Found status code
-        return jsonify({'error': f'Facility with id {param} does not exist.'}), 404
-    
-    # return facility
-    result = {  'id': facility.id,
-                'facilityName': facility.facilityName,
-                'capacity': facility.capacity,
-                'openingTime': facility.openingTime.strftime('%H:%M:%S'),
-                'closingTime': facility.closingTime.strftime('%H:%M:%S'),
-                'managerId': facility.managerId   }
+    try:
+        facility = None
+        if param.isdigit():
+            # parameter is a facility ID
+            facility = db.session.query(models.Facility).filter_by(id=int(param)).first()
+        else:
+            # parameter is a name of facility
+            facility = db.session.query(models.Facility).filter_by(facilityName=param).first()
+        if facility is None:
+            #  if the code does not run correctly, return a 404 Not Found status code
+            return jsonify({'error': f'Facility with id {param} does not exist.'}), 404
+        
+        # return facility
+        result = {  'id': facility.id,
+                    'facilityName': facility.facilityName,
+                    'capacity': facility.capacity,
+                    'openingTime': facility.openingTime.strftime('%H:%M:%S'),
+                    'closingTime': facility.closingTime.strftime('%H:%M:%S'),
+                    'managerId': facility.managerId   }
 
+    # Check for possible errors in the submitted data
+    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
+        raise error
+    
     # if the code runs correctly, return an 200 OK status code
     return jsonify(result), 200
 
@@ -110,32 +118,37 @@ def update_facility(param):
     
     # retrieve data
     data = request.get_json()
-    if not data:
-        return jsonify({'error': 'No data provided'}), 400
+    try:
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
 
-    # update facility properties with new values from request data
-    if 'facilityName' in data:
-        facility.facilityName = data['facilityName']
-    if 'capacity' in data:
-        facility.capacity = data['capacity']
-    if 'openingTime' in data:
-        facility.openingTime = datetime.strptime(data['openingTime'], '%H:%M:%S').time()
-    if 'closingTime' in data:
-        facility.closingTime = datetime.strptime(data['closingTime'], '%H:%M:%S').time()
-    if 'managerId' in data:
-        facility.managerId = data['managerId']
+        # update facility properties with new values from request data
+        if 'facilityName' in data:
+            facility.facilityName = data['facilityName']
+        if 'capacity' in data:
+            facility.capacity = data['capacity']
+        if 'openingTime' in data:
+            facility.openingTime = datetime.strptime(data['openingTime'], '%H:%M:%S').time()
+        if 'closingTime' in data:
+            facility.closingTime = datetime.strptime(data['closingTime'], '%H:%M:%S').time()
+        if 'managerId' in data:
+            facility.managerId = data['managerId']
 
-    # commit changes to the database
-    db.session.commit()
+        # commit changes to the database
+        db.session.commit()
 
-    # return updated facility
-    result = {  'id': facility.id,
-                'facilityName': facility.facilityName,
-                'capacity': facility.capacity,
-                'openingTime': facility.openingTime.strftime('%H:%M:%S'),
-                'closingTime': facility.closingTime.strftime('%H:%M:%S'),
-                'managerId': facility.managerId   }
+        # return updated facility
+        result = {  'id': facility.id,
+                    'facilityName': facility.facilityName,
+                    'capacity': facility.capacity,
+                    'openingTime': facility.openingTime.strftime('%H:%M:%S'),
+                    'closingTime': facility.closingTime.strftime('%H:%M:%S'),
+                    'managerId': facility.managerId   }
 
+    # Check for possible errors in the submitted data
+    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
+        raise error
+    
     # if the code runs correctly, return an 200 OK status code
     return jsonify(result), 200
 
@@ -145,29 +158,35 @@ def update_facility(param):
 def create_facility():
     # retrieve data from request body
     data = request.get_json()
-    if not data:
-        return jsonify({'error': 'No data provided'}), 400
+
+    try:
+        if not data:
+            return jsonify({'error': 'No data provided'}), 400
+        
+        # create a new Facility object with the provided data
+        facility = models.Facility(
+            facilityName=data['facilityName'],
+            capacity=data['capacity'],
+            openingTime=datetime.strptime(data['openingTime'], '%H:%M:%S').time(),
+            closingTime=datetime.strptime(data['closingTime'], '%H:%M:%S').time(),
+            managerId=data['managerId']
+        )
+        
+        # add new facility to the database
+        db.session.add(facility)
+        db.session.commit()
+        
+        # return the new facility as a response
+        result = {  'id': facility.id,
+                    'facilityName': facility.facilityName,
+                    'capacity': facility.capacity,
+                    'openingTime': facility.openingTime.strftime('%H:%M:%S'),
+                    'closingTime': facility.closingTime.strftime('%H:%M:%S'),
+                    'managerId': facility.managerId   }
     
-    # create a new Facility object with the provided data
-    facility = models.Facility(
-        facilityName=data['facilityName'],
-        capacity=data['capacity'],
-        openingTime=datetime.strptime(data['openingTime'], '%H:%M:%S').time(),
-        closingTime=datetime.strptime(data['closingTime'], '%H:%M:%S').time(),
-        managerId=data['managerId']
-    )
-    
-    # add new facility to the database
-    db.session.add(facility)
-    db.session.commit()
-    
-    # return the new facility as a response
-    result = {  'id': facility.id,
-                'facilityName': facility.facilityName,
-                'capacity': facility.capacity,
-                'openingTime': facility.openingTime.strftime('%H:%M:%S'),
-                'closingTime': facility.closingTime.strftime('%H:%M:%S'),
-                'managerId': facility.managerId   }
+    # Check for possible errors in the submitted data
+    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
+        raise error
     
     # if the code runs correctly, return an 200 OK status code
     return jsonify(result), 200
@@ -175,19 +194,154 @@ def create_facility():
 # API endpoint for fetching all facilities
 @app.route('/facilities', methods=['GET'])
 def get_all_facilities():
-    # get all facilities in the database
-    facilities = models.Facility.query.all()
-    # initialise list
-    result = []
+    try:
+        # get all facilities in the database
+        facilities = models.Facility.query.all()
+        # initialise list
+        result = []
 
-    # for each facility, steralise the object given by sqlalchemy
-    for facility in facilities:
-        result.append({  'id': facility.id,
-            'facilityName': facility.facilityName,
-            'capacity': facility.capacity,
-            'openingTime': facility.openingTime.strftime('%H:%M:%S'),
-            'closingTime': facility.closingTime.strftime('%H:%M:%S'),
-            'managerId': facility.managerId   })
+        # for each facility, steralise the object given by sqlalchemy
+        for facility in facilities:
+            result.append({  'id': facility.id,
+                'facilityName': facility.facilityName,
+                'capacity': facility.capacity,
+                'openingTime': facility.openingTime.strftime('%H:%M:%S'),
+                'closingTime': facility.closingTime.strftime('%H:%M:%S'),
+                'managerId': facility.managerId   })
+    
+    # Check for possible errors in the submitted data
+    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
+        raise error
 
     # convert to json and return
     return jsonify(result), 200
+
+########################### ACTIVITY TABLE END POINTS ###########################
+
+# This function is used to create a new activity
+@app.route('/activity', methods=['POST'])
+def post_activity():
+    # requesting the data
+    posted_activity = request.get_json()
+
+    # Create a new booking
+    try:
+        new_activity = models.Activity(
+            activityType = posted_activity["activityType"],
+            activityStartTime = datetime.strptime(posted_activity['activityStartTime'],
+                                                 '%H:%M').time(),
+            activityEndTime=datetime.strptime(posted_activity['activityEndTime'],
+                                             '%H:%M').time(),
+            activityDay=posted_activity["activityDay"])
+
+        # add and commit the booking details to the database
+        db.session.add(new_activity)
+        db.session.commit()
+
+        # Create a new response
+        response = {'activityId': new_activity.activityId,
+                    'activityType': new_activity.activityType,
+                    'activityStartTime': new_activity.activityStartTime.strftime('%H:%M'),
+                    'activityEndTime': new_activity.activityEndTime.strftime('%H:%M'),
+                    'activityDay': new_activity.activityDay
+                    }
+
+    # Check for possible errors in the submitted data
+    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
+        raise error
+
+    # Return the response
+    return jsonify(response), 200
+
+
+# This function is to delete an activity by using the activity id
+@app.route('/activity/<int:id>', methods=['DELETE'])
+def delete_activity(id):
+
+    try:
+        # requesting the data from the database by using the selected activity id
+        activity = models.Activity.query.get(id)
+
+        # delete and commit the booking details from the database
+        db.session.delete(activity)
+        db.session.commit()
+
+        # Create a new response
+        response = {'activityId': activity.activityId,
+                    'activityType': activity.activityType,
+                    'activityStartTime': activity.activityStartTime.strftime('%H:%M'),
+                    'activityEndTime': activity.activityEndTime.strftime('%H:%M'),
+                    'activityDay': activity.activityDay
+                    }
+
+    # Check for possible errors in the submitted data
+    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
+        raise error
+
+    # Return the response
+    return jsonify(response), 200
+
+# This function is to get an activity by using the activity id
+@app.route('/activity/<int:id>', methods=['GET'])
+def get_activity_by_id(id):
+
+    try:
+        # Requesting the data from the database by using the selected activity id
+        activity = models.Activity.query.get(id)
+
+        # Create a new response
+        response = {'activityId': activity.activityId,
+                    'activityType': activity.activityType,
+                    'activityStartTime': activity.activityStartTime.strftime('%H:%M'),
+                    'activityEndTime': activity.activityEndTime.strftime('%H:%M'),
+                    'activityDay': activity.activityDay
+                    }
+
+    # Check for possible errors in the submitted data
+    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
+        raise error
+
+    # Return the response
+    return jsonify(response), 200
+
+# This function is to patch an activity by using the activity id
+@app.route('/activity/<int:id>', methods=['PATCH'])
+def patch_activity(id):
+
+    try:
+        # Requesting the data from the database by using the selected activity id
+        activity = models.Activity.query.get(id)
+
+        # Decoding the data sent to the API
+        request_data = request.get_json()
+
+        # Iterate over the key, value pairs in the request data
+        for attribute, value in request_data.items():
+
+            # Validate which attribute is being updated
+            # and execute the corresponding code
+            if attribute == "activityType":
+                activity.activityType = value
+            elif (attribute == "activityStartTime"
+                or attribute == "activityEndTime"):
+                setattr(activity, attribute, datetime.strptime(value, '%H:%M').time())
+            elif attribute == "activityDay":
+                activity.activityDay = value
+
+        # Commit the changes made
+        db.session.commit()
+
+        # Create a new response
+        response = {'activityId': activity.activityId,
+                    'activityType': activity.activityType,
+                    'activityStartTime': activity.activityStartTime.strftime('%H:%M'),
+                    'activityEndTime': activity.activityEndTime.strftime('%H:%M'),
+                    'activityDay': activity.activityDay
+                    }
+
+    # Check for possible errors in the submitted data
+    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
+        raise error
+
+    # Return the response
+    return jsonify(response), 200
