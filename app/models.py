@@ -2,14 +2,16 @@ from app import db
 from datetime import datetime
 
 
-# Creating the columns
+# The model of the Booking table
 class Booking(db.Model):
     id = db.Column(db.Integer, primary_key=True, nullable=False)
-    userId = db.Column(db.String(500), nullable=False)
-    facilitiesId = db.Column(db.Integer, nullable = False)
+    userId = db.Column(db.String(50), nullable=False)
+    facilityId = db.Column(db.Integer, nullable = False)
+    activityId = db.Column(db.Integer, nullable=False)
     createDate = db.Column(db.Date, nullable=False)
     bookingDate = db.Column(db.Date, nullable=False)
     bookingTime = db.Column(db.Time, nullable=False)
     bookingLength = db.Column(db.Time, nullable=False)
-    bookingType = db.Column(db.String(500), nullable=False)
+    bookingEndTime = db.Column(db.Time, nullable=False)
+    bookingType = db.Column(db.String(100), nullable=False)
     teamEvent = db.Column(db.Boolean, nullable=False)

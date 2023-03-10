@@ -1,39 +1,22 @@
 #!flask/bin/python
 
-import os
-import pytest
 from flask import json
-from app import app, db
+from app import app
 
-# The function responsible for setting up and tearing down all the data
-# and objects that may be reused in multiple tests
-@pytest.fixture
-def app_fixture():
 
-    app.logger.info("Start of the 'set up' / 'tear down' function")
+######################## BOOKING TABLE ENDPOINTS TESTS ########################
 
-    app.config.from_object('config')
-    app.config['TESTING'] = True
-    app.config['WTF_CSRF_ENABLED'] = False
-    # Setting up temporary database tables in memory
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 
-    # Create the tables
-    db.create_all()
+# The function responsible for adding temporary records to the Activity table
+def add_activities(fixture):
 
-    # 'yield' returns the app's test instance to whatever function
-    # makes use of this fixture
-    yield app.test_client()
+    # POST test data
+    endpoint_response = fixture.post('/activity',
+                                         json = {'activityType': 'General use',
+                                                 'activityStartTime': "17:00",
+                                                 'activityEndTime': "18:00",
+                                                 'activityDay': 'Monday'})
 
-    # Delete the tables
-    db.drop_all()
-
-    app.logger.info("End of the 'set up' / 'tear down' function")
-
-# Show the app instance returned by the app_fixture() function
-def test_fixture_setup(app_fixture):
-    app.logger.info(f"The app_fixture() function returns {app_fixture}")
-    assert True
 
 # POST a new booking with valid data
 def test_post_valid_booking(app_fixture):
@@ -41,14 +24,19 @@ def test_post_valid_booking(app_fixture):
     # Display the message confirming this test is accessed
     app.logger.info("POST a booking with valid data")
 
+    # Create an activity related to this booking
+    add_activities(app_fixture)
+
     # POST test data
     endpoint_response = app_fixture.post('/booking',
                                          json = {'userId': "21345235",
-                                                'facilitiesId': 32443456,
+                                                'facilityId': 32443456,
+                                                'activityId': 1,
                                                 'createDate': "2023/01/01",
                                                 'bookingDate': "2023/01/02",
                                                 'bookingTime': "13:15",
                                                 'bookingLength': "01:00",
+                                                'bookingEndTime': "14:15",
                                                 'bookingType': "General use",
                                                 'teamEvent': False})
 
@@ -61,11 +49,13 @@ def test_post_valid_booking(app_fixture):
     # Validate that the returned data is correct
     assert decoded_string == {'id': 1,
                             'userId': "21345235",
-                            'facilitiesId': 32443456,
+                            'facilityId': 32443456,
+                            'activityId': 1,
                             'createDate': "2023/01/01",
                             'bookingDate': "2023/01/02",
                             'bookingTime': "13:15",
                             'bookingLength': "01:00",
+                            'bookingEndTime': "14:15",
                             'bookingType': "General use",
                             'teamEvent': False}
 
@@ -73,20 +63,25 @@ def test_post_valid_booking(app_fixture):
     app.logger.info("END OF TEST: test_post_valid_booking")
 
 
-# POST a new booking with invalid data
+# POST a new booking with invalid 'bookingDate' format
 def test_post_invalid_booking(app_fixture):
 
     # Display the message confirming this test is accessed
     app.logger.info("POST a booking with invalid data")
 
+    # Create an activity related to this booking
+    add_activities(app_fixture)
+
     # POST test data
     endpoint_response = app_fixture.post('/booking',
                                          json = {'userId': "21345235",
-                                                'facilitiesId': 32443456,
+                                                'facilityId': 32443456,
+                                                'activityId': 1,
                                                 'createDate': "2023/01/01",
                                                 'bookingDate': "abcdef",
                                                 'bookingTime': "13:15",
                                                 'bookingLength': "01:00",
+                                                'bookingEndTime': "14:15",
                                                 'bookingType': "General use",
                                                 'teamEvent': False})
 
@@ -110,6 +105,9 @@ def test_post_missing_booking(app_fixture):
     # Display the message confirming this test is accessed
     app.logger.info("POST a booking with missing data")
 
+    # Create an activity related to this booking
+    add_activities(app_fixture)
+
     # POST test data
     endpoint_response = app_fixture.post('/booking',
                                          json = {})
@@ -126,20 +124,26 @@ def test_post_missing_booking(app_fixture):
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_post_missing_booking")
 
+
 # DELETE a booking with valid booking ID
 def test_delete_valid_booking(app_fixture):
 
     # Display the message confirming this test is accessed
     app.logger.info("DELETE a booking with a valid user ID")
 
+    # Create an activity related to this booking
+    add_activities(app_fixture)
+
     # POST test data
     test_record = app_fixture.post('/booking',
                                     json = {'userId': "21345235",
-                                            'facilitiesId': 32443456,
+                                            'facilityId': 32443456,
+                                            'activityId': 1,
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
                                             'bookingLength': "01:00",
+                                            'bookingEndTime': "14:15",
                                             'bookingType': "General use",
                                             'teamEvent': False})
 
@@ -155,16 +159,19 @@ def test_delete_valid_booking(app_fixture):
     # Validate that the returned data is correct
     assert decoded_string == {'id': 1,
                             'userId': "21345235",
-                            'facilitiesId': 32443456,
+                            'facilityId': 32443456,
+                            'activityId': 1,
                             'createDate': "2023/01/01",
                             'bookingDate': "2023/01/02",
                             'bookingTime': "13:15",
                             'bookingLength': "01:00",
+                            'bookingEndTime': "14:15",
                             'bookingType': "General use",
                             'teamEvent': False}
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_delete_valid_booking")
+
 
 # DELETE a booking with invalid booking ID
 def test_delete_missing_booking(app_fixture):
@@ -172,21 +179,25 @@ def test_delete_missing_booking(app_fixture):
     # Display the message confirming this test is accessed
     app.logger.info("DELETE a booking with an invalid user ID")
 
+    # Create an activity related to this booking
+    add_activities(app_fixture)
+
     # POST test data
     test_record = app_fixture.post('/booking',
                                     json = {'userId': "21345235",
-                                            'facilitiesId': 32443456,
+                                            'facilityId': 32443456,
+                                            'activityId': 1,
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
                                             'bookingLength': "01:00",
+                                            'bookingEndTime': "14:15",
                                             'bookingType': "General use",
                                             'teamEvent': False})
 
     # Attempt to DELETE data
     endpoint_response = app_fixture.delete("/bookings/100")
     app.logger.error(endpoint_response)
-
 
     # Validate that the correct error code and message was returned
     assert endpoint_response.status_code == 400
@@ -200,31 +211,39 @@ def test_delete_missing_booking(app_fixture):
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_delete_missing_booking")
 
+
 # GET all bookings of a user by a valid user ID
 def test_get_bookings_valid_uid(app_fixture):
 
     # Display the message confirming this test is accessed
     app.logger.info("GET all bookings of a user by a valid user ID")
 
+    # Create an activity related to this booking
+    add_activities(app_fixture)
+
     # POST first booking
     test_record_1 = app_fixture.post('/booking',
                                     json = {'userId': "21345235",
-                                            'facilitiesId': 32443456,
+                                            'facilityId': 32443456,
+                                            'activityId': 1,
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
                                             'bookingLength': "01:00",
+                                            'bookingEndTime': "14:15",
                                             'bookingType': "General use",
                                             'teamEvent': False})
 
     # POST second booking
     test_record = app_fixture.post('/booking',
                                     json = {'userId': "21345235",
-                                            'facilitiesId': 32443456234,
+                                            'facilityId': 32443456234,
+                                            'activityId': 1,
                                             'createDate': "2023/01/01",
-                                            'bookingDate': "2023/01/03",
-                                            'bookingTime': "14:30",
+                                            'bookingDate': "2023/01/02",
+                                            'bookingTime': "14:15",
                                             'bookingLength': "01:15",
+                                            'bookingEndTime': "15:30",
                                             'bookingType': "General use",
                                             'teamEvent': False})
 
@@ -239,23 +258,27 @@ def test_get_bookings_valid_uid(app_fixture):
 
     # Validate that the returned data is correct
     assert decoded_string == [{'id': 1,
-                               'userId': '21345235',
-                               'facilitiesId': 32443456,
-                               'createDate': '2023/01/01',
-                               'bookingDate': '2023/01/02',
-                               'bookingTime': '13:15',
-                               'bookingLength': '01:00',
-                               'bookingType': 'General use',
-                               'teamEvent': False},
-                              {'id': 2,
-                               'userId': '21345235',
-                               'facilitiesId': 32443456234,
-                               'createDate': '2023/01/01',
-                               'bookingDate': '2023/01/03',
-                               'bookingTime': '14:30',
-                               'bookingLength': '01:15',
-                               'bookingType': 'General use',
-                               'teamEvent': False}]
+                            'userId': "21345235",
+                            'facilityId': 32443456,
+                            'activityId': 1,
+                            'createDate': "2023/01/01",
+                            'bookingDate': "2023/01/02",
+                            'bookingTime': "13:15",
+                            'bookingLength': "01:00",
+                            'bookingEndTime': "14:15",
+                            'bookingType': "General use",
+                            'teamEvent': False},
+                            {'id': 2,
+                            'userId': "21345235",
+                            'facilityId': 32443456234,
+                            'activityId': 1,
+                            'createDate': "2023/01/01",
+                            'bookingDate': "2023/01/02",
+                            'bookingTime': "14:15",
+                            'bookingLength': "01:15",
+                            'bookingEndTime': "15:30",
+                            'bookingType': "General use",
+                            'teamEvent': False}]
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_get_bookings_valid_uid")
@@ -267,14 +290,19 @@ def test_get_bookings_invalid_uid(app_fixture):
     # Display the message confirming this test is accessed
     app.logger.info("GET all bookings of a user by an invalid user ID")
 
+    # Create an activity related to this booking
+    add_activities(app_fixture)
+
     # POST a test booking
     test_record = app_fixture.post('/booking',
                                     json = {'userId': "21345235",
-                                            'facilitiesId': 32443456,
+                                            'facilityId': 32443456,
+                                            'activityId': 1,
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
                                             'bookingLength': "01:00",
+                                            'bookingEndTime': "14:15",
                                             'bookingType': "General use",
                                             'teamEvent': False})
 
@@ -300,14 +328,19 @@ def test_get_booking_valid_bid(app_fixture):
     # Display the message confirming this test is accessed
     app.logger.info("GET a booking by a valid booking ID")
 
+    # Create an activity related to this booking
+    add_activities(app_fixture)
+
     # POST a test booking
     test_record = app_fixture.post('/booking',
                                     json = {'userId': "21345235",
-                                            'facilitiesId': 32443456,
+                                            'facilityId': 32443456,
+                                            'activityId': 1,
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
                                             'bookingLength': "01:00",
+                                            'bookingEndTime': "14:15",
                                             'bookingType': "General use",
                                             'teamEvent': False})
 
@@ -322,17 +355,20 @@ def test_get_booking_valid_bid(app_fixture):
 
     # Validate that the returned data is correct
     assert decoded_string == {'id': 1,
-                              'userId': '21345235',
-                              'facilitiesId': 32443456,
-                              'createDate': '2023/01/01',
-                              'bookingDate': '2023/01/02',
-                              'bookingTime': '13:15',
-                              'bookingLength': '01:00',
-                              'bookingType': 'General use',
+                              'userId': "21345235",
+                              'facilityId': 32443456,
+                              'activityId': 1,
+                              'createDate': "2023/01/01",
+                              'bookingDate': "2023/01/02",
+                              'bookingTime': "13:15",
+                              'bookingLength': "01:00",
+                              'bookingEndTime': "14:15",
+                              'bookingType': "General use",
                               'teamEvent': False}
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_get_booking_valid_bid")
+
 
 # GET a specific booking by an invalid booking ID
 def test_get_booking_invalid_bid(app_fixture):
@@ -340,14 +376,19 @@ def test_get_booking_invalid_bid(app_fixture):
     # Display the message confirming this test is accessed
     app.logger.info("GET a booking by an invalid booking ID")
 
+    # Create an activity related to this booking
+    add_activities(app_fixture)
+
     # POST a test booking
     test_record = app_fixture.post('/booking',
                                     json = {'userId': "21345235",
-                                            'facilitiesId': 32443456,
+                                            'facilityId': 32443456,
+                                            'activityId': 1,
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
                                             'bookingLength': "01:00",
+                                            'bookingEndTime': "14:15",
                                             'bookingType': "General use",
                                             'teamEvent': False})
 
@@ -366,20 +407,26 @@ def test_get_booking_invalid_bid(app_fixture):
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_get_booking_invalid_bid")
 
+
 # PATCH a booking with valid data
 def test_patch_valid_booking(app_fixture):
 
     # Display the message confirming this test is accessed
     app.logger.info("PATCH a booking by a valid booking ID")
 
+    # Create an activity related to this booking
+    add_activities(app_fixture)
+
     # POST a test booking
     test_record = app_fixture.post('/booking',
                                     json = {'userId': "21345235",
-                                            'facilitiesId': 32443456,
+                                            'facilityId': 32443456,
+                                            'activityId': 1,
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
                                             'bookingLength': "01:00",
+                                            'bookingEndTime': "14:15",
                                             'bookingType': "General use",
                                             'teamEvent': False})
 
@@ -409,17 +456,20 @@ def test_patch_valid_booking(app_fixture):
 
     # Validate that the returned data is correctly updated
     assert decoded_string == {'id': 1,
-                              'userId': "21345235",
-                              'facilitiesId': 32443456,
-                              'createDate': "2023/01/01",
-                              'bookingDate': "2023/01/02",
-                              'bookingTime': "14:15",
-                              'bookingLength': "01:30",
-                              'bookingType': "General use",
-                              'teamEvent': False}
+                            'userId': "21345235",
+                            'facilityId': 32443456,
+                            'activityId': 1,
+                            'createDate': "2023/01/01",
+                            'bookingDate': "2023/01/02",
+                            'bookingTime': "14:15",
+                            'bookingLength': "01:30",
+                            'bookingEndTime': "14:15",
+                            'bookingType': "General use",
+                            'teamEvent': False}
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_patch_valid_booking")
+
 
 # PATCH a booking with invalid data
 def test_patch_invalid_booking(app_fixture):
@@ -427,14 +477,19 @@ def test_patch_invalid_booking(app_fixture):
     # Display the message confirming this test is accessed
     app.logger.info("PATCH a booking using invalid data type in bookingTime")
 
+    # Create an activity related to this booking
+    add_activities(app_fixture)
+
     # POST a test booking
     test_record = app_fixture.post('/booking',
                                     json = {'userId': "21345235",
-                                            'facilitiesId': 32443456,
+                                            'facilityId': 32443456,
+                                            'activityId': 1,
                                             'createDate': "2023/01/01",
                                             'bookingDate': "2023/01/02",
                                             'bookingTime': "13:15",
                                             'bookingLength': "01:00",
+                                            'bookingEndTime': "14:15",
                                             'bookingType': "General use",
                                             'teamEvent': False})
 
@@ -459,11 +514,15 @@ def test_patch_invalid_booking(app_fixture):
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_patch_invalid_booking")
 
+
 # PATCH a booking with missing data
 def test_patch_missing_booking(app_fixture):
 
     # Display the message confirming this test is accessed
     app.logger.info("PATCH a non-existent booking")
+
+    # Create an activity related to this booking
+    add_activities(app_fixture)
 
     # PATCH the booking time and length of a non-existent booking
     update_record = app_fixture.patch('/bookings/102',

@@ -8,3 +8,4 @@ import os.path
 @app.before_first_request
 def create_new_tables():
     db.create_all()
+
