@@ -18,8 +18,11 @@ class Facility(db.Model):
     openingTime = db.Column(db.Time, nullable=False)
     closingTime = db.Column(db.Time, nullable=False)
     managerId = db.Column(db.String, nullable=False)
+    # Set up a many-to-many relationship between Facilities and their Activities
     activity = db.relationship("Activity",
-                               back_populates="booking")
+                               secondary=association_table,
+                               back_populates="facility",
+                               lazy='dynamic')
 
 
 def __init__(self, facilityName, capacity, openingTime, closingTime, managerId):
@@ -37,10 +40,13 @@ class Activity(db.Model):
     activityStartTime = db.Column(db.Time, nullable=False)
     activityEndTime = db.Column(db.Time, nullable=False)
     activityDay = db.Column(db.String(10), nullable=False)
-    booking = db.relationship("Booking",
-                              back_populates="activity")
+    # Set up a many-to-many relationship between Facilities and their Activities
+    facility = db.relationship("Facility",
+                              secondary=association_table,
+                              back_populates="activity",
+                              lazy='dynamic')
 
     # The one-to-many relationship set up is explained in more detail in the
     # following SQLAlchemy documentation:
     # https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html#many-to-one
-    # (It is one activity to many bookings)
+    # (It is one activity to many facilities)
