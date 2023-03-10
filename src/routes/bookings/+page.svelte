@@ -2,26 +2,32 @@
   import "@fontsource/manrope";
   import NavBar from "../../components/navbar.svelte"
   import BookingCard from "../../components/bookingCard.svelte"
-  import { UserID, UserEmail } from '../../stores/user'
+  import BookingInfo from "../../components/viewBooking.svelte"
   export let data;
 
   // data fetched from server-side-rendering (SSR)
   // +page.server.ts
   let bookings = data.bookings;
+  let i = 0;
 
-  // Hooks (line 8 - 20) not working
-  let userEmail;
-  let userId;
+  function formatDate(date) {
+      var d = new Date(date),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
 
-  UserID.subscribe(UserID => {
-    userId = UserID;
-  });
+      if (month.length < 2) 
+          month = '0' + month;
+      if (day.length < 2) 
+          day = '0' + day;
 
-  UserEmail.subscribe(UserEmail => {
-    userEmail = UserEmail
-  })
+      return [year, month, day].join('-');
+    }
 
-  console.log(userEmail)
+    function setViewFocus(id) {
+      i = id
+    }
+
 </script>
 
 <div class="grid grid-cols-12">
@@ -34,15 +40,15 @@
             <p class="font-light text-2xl ml-2 text-[#515151]">view and manage your bookings</p>
             
             
-            <div class="mt-16">
-              {#each bookings as b}
-                <BookingCard class="my-2" heading={bookings[0].bookingType} subheading={bookings[0].bookingTime}/>
+            <div class="overflow-y-auto mt-16">
+              {#each bookings as b, i}
+                <BookingCard on:click={() => setViewFocus(i)} class="my-2 transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none" heading="Booking #{b.id}" subheading={b.bookingType}/>
               {/each}
             </div>
           
           </div>
           <div class="col-span-4 pt-16 px-4">
-
+            <BookingInfo bookingNumber={bookings[i].id} bookedOn={bookings[i].createDate} bookingDate={formatDate(bookings[i].bookingDate)} bookingTime={bookings[i].bookingTime} bookingLength={bookings[i].bookingLength}/>
           </div>
       </div>
    </div>

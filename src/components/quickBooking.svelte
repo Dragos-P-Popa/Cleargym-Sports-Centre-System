@@ -28,9 +28,9 @@
         const [key, value] = field;
         data[key] = value;
       }
-
+      
       // TO:DO - Automatic variables
-      let userId = "640136331fa3b5d6b18fb0ee";
+      let userId = localStorage.getItem("uid");
       let facilitiesId = "1";
 
       let createDate = formatDate(Date.now());

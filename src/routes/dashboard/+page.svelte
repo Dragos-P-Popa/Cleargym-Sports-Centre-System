@@ -12,6 +12,9 @@
     let user = data.user;
     let bookings = data.bookings;
 
+    if (typeof window !== 'undefined') {
+        localStorage.setItem("uid", user._id);
+    }
 
 </script>
 

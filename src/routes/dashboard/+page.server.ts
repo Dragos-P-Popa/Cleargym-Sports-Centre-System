@@ -1,11 +1,10 @@
 
 export async function load({ fetch, request }) {
-
     
     const res = await fetch('http://localhost:3001/user/', {
 			method: 'GET',
-            credentials: 'include',
-        })
+      credentials: 'include',
+    })
 
     let user = await res.json();
 
