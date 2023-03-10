@@ -1,7 +1,15 @@
 from app import db
 
-# the Facilities class represents facilities in the Sports Centre
+association_table = db.Table(
+    "association_table",
+    db.Model.metadata,
+    db.Column("facilityID", db.ForeignKey("facility_table.id"),  primary_key=True),
+    db.Column("activityID", db.ForeignKey("activity_table.id"),  primary_key=True),
+)
+
+# the Facilities table represents facilities in the Sports Centre
 class Facility(db.Model):
+    __tablename__ = "facility_table"
     # id attribute is a primary key for Facility model
     id = db.Column(db.Integer, primary_key=True)
     # the following attributes can not be left empty, therefore nullable=False
@@ -10,6 +18,8 @@ class Facility(db.Model):
     openingTime = db.Column(db.Time, nullable=False)
     closingTime = db.Column(db.Time, nullable=False)
     managerId = db.Column(db.String, nullable=False)
+    activity = db.relationship("Activity",
+                               back_populates="booking")
 
 
 def __init__(self, facilityName, capacity, openingTime, closingTime, managerId):
@@ -18,3 +28,19 @@ def __init__(self, facilityName, capacity, openingTime, closingTime, managerId):
     self.openingTime = openingTime
     self.closingTime = closingTime
     self.managerId = managerId
+
+# The model of the Activity table
+class Activity(db.Model):
+    __tablename__ = "activity_table"
+    activityId = db.Column(db.Integer, primary_key=True, nullable=False)
+    activityType = db.Column(db.String(100), nullable=False)
+    activityStartTime = db.Column(db.Time, nullable=False)
+    activityEndTime = db.Column(db.Time, nullable=False)
+    activityDay = db.Column(db.String(10), nullable=False)
+    booking = db.relationship("Booking",
+                              back_populates="activity")
+
+    # The one-to-many relationship set up is explained in more detail in the
+    # following SQLAlchemy documentation:
+    # https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html#many-to-one
+    # (It is one activity to many bookings)

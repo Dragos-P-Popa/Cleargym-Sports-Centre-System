@@ -224,7 +224,7 @@ def post_activity():
     # requesting the data
     posted_activity = request.get_json()
 
-    # Create a new booking
+    # Create a new activity
     try:
         new_activity = models.Activity(
             activityType = posted_activity["activityType"],
@@ -234,7 +234,7 @@ def post_activity():
                                              '%H:%M').time(),
             activityDay=posted_activity["activityDay"])
 
-        # add and commit the booking details to the database
+        # add and commit the activity details to the database
         db.session.add(new_activity)
         db.session.commit()
 
@@ -262,7 +262,7 @@ def delete_activity(id):
         # requesting the data from the database by using the selected activity id
         activity = models.Activity.query.get(id)
 
-        # delete and commit the booking details from the database
+        # delete and commit the activity details from the database
         db.session.delete(activity)
         db.session.commit()
 
