@@ -1,7 +1,7 @@
 <script lang="ts">
     import MainButton from "./mainButton.svelte"
 
-    function formatDate(date) {
+    function formatDate(date : number) {
       var d = new Date(date),
           month = '' + (d.getMonth() + 1),
           day = '' + d.getDate(),

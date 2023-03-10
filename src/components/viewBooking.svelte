@@ -1,15 +1,15 @@
-<script>
+<script lang="ts">
     import MainButton from "./mainButton.svelte"
     import CancelButton from "./cancelButton.svelte"
 
-    export let bookingNumber;
-    export let bookedOn;
-    export let facility;
-    export let bookingDate;
-    export let bookingTime;
-    export let bookingLength;
+    export let bookingNumber : number;
+    export let bookedOn : string;
+    export let facility : number;
+    export let bookingDate : string;
+    export let bookingTime : string;
+    export let bookingLength : string;
 
-    async function deleteBooking(id){
+    async function deleteBooking(id : number){
         const res = await fetch('http://localhost:3002/bookings/'+id, {
 			method: 'DELETE'
             // enable credentials when they are implemented in the bookings API

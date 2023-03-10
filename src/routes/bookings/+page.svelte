@@ -1,4 +1,4 @@
-<script >
+<script lang="ts">
   import "@fontsource/manrope";
   import NavBar from "../../components/navbar.svelte"
   import BookingCard from "../../components/bookingCard.svelte"
@@ -10,7 +10,7 @@
   let bookings = data.bookings;
   let i = 0;
 
-  function formatDate(date) {
+  function formatDate(date : number) {
       var d = new Date(date),
           month = '' + (d.getMonth() + 1),
           day = '' + d.getDate(),
@@ -24,7 +24,7 @@
       return [year, month, day].join('-');
     }
 
-    function setViewFocus(id) {
+    function setViewFocus(id : number) {
       i = id
     }
 
