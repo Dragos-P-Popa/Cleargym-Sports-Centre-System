@@ -3,6 +3,10 @@
         class:[$$restProps.class] + " p-4 border-[1px] border-borderColor shadow-md rounded-lg bg-[url('/gym.jpeg')] pb-12 select-none"
     }
 
+    // export 2 variables, when a bookingCard is created on any page,
+    // it will accept these variables like so;
+    // <BookingCard heading="foo" subheading="bar"/>
+    
     /**
      * @type {String}
      */

@@ -2,6 +2,7 @@
     import MainButton from "./mainButton.svelte"
     import CancelButton from "./cancelButton.svelte"
 
+    // variables to be defined by page (currently bookings/+page.svelte)
     export let bookingNumber : number;
     export let bookedOn : string;
     export let facility : number;
@@ -11,10 +12,12 @@
 
     let editMode = false;
 
+    // toggle between view details and amend booking
     function toggleEdit() {
         editMode = !editMode;
     }
 
+    // format date
     function formatDate(date : number) {
       var d = new Date(date),
           month = '' + (d.getMonth() + 1),
@@ -49,6 +52,7 @@
         data[key] = value;
         }
 
+        // for debugging
         console.log(data);
 
         let formattedDate = formatDate(data.date);
@@ -90,6 +94,7 @@
     </div>
     
 
+    <!--if viewing details, fields should be disabled-->
     {#if editMode == false}
         <div class="py-2 flex space-x-6 px-4 text-[#1A1A1A]">
             <div class="py-2 flex-1">
@@ -121,9 +126,12 @@
         </div>
 
         <div class="flex justify-between  space-x-6 px-4 pt-16">
+            <!--make API call-->
             <CancelButton on:click={() => deleteBooking(bookingNumber)} class="mt-12 w-4/5 place-self-center">Cancel booking</CancelButton>            
+            <!--go into edit mode to amend booking-->
             <MainButton on:click={() => toggleEdit()} class="mt-12 w-4/5 place-self-center">Amend booking</MainButton>
         </div>
+    <!--if editing, fields should be enabled-->
     {:else if editMode == true}
         <form on:submit|preventDefault={amendBooking}>
             <div class="py-2 flex space-x-6 px-4 text-[#1A1A1A]">

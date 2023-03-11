@@ -7,6 +7,7 @@
 
   let registerToggle = false;
 
+  // switch between login and register
   function toggle(){
     registerToggle = !registerToggle;
   }
@@ -52,6 +53,7 @@
     if (code != 201){
       console.log(result);
     } else {
+      // if response to login was 200 redirect to dashboard
       goto('/dashboard');
     }
 	
@@ -108,6 +110,7 @@
     if (code != 201){
       console.log(result);
     } else {
+      // if registration was successful change to login ui
       toggle()
     }
   }
@@ -119,6 +122,7 @@
   <p class="text-center text-5xl font-bold pt-4">Welcome to cleargym!</p>
   <p class="text-center text-xl font-light pb-20">Lorem ipsum lorem ipsum lerem ipsum</p>
 
+  <!--currently in login UI-->
   {#if registerToggle == false}
   <form on:submit|preventDefault={loginSubmit}>
     <div>
@@ -140,6 +144,7 @@
       <hr class="w-64 h-px my-4 bg-gray-200 border-0">
       <span class="absolute px-3 font-medium text-gray-900 -translate-x-1/2 bg-white left-1/2">or</span>
     </div>
+    <!--switch to register UI (line 151 - 177)-->
     <SecondaryButton on:click={() => toggle()} class="place-self-center  w-3/5 max-w-lg ">Register</SecondaryButton>
   </div>
   {:else}

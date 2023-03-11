@@ -10,6 +10,7 @@
   let bookings = data.bookings;
   let i = 0;
 
+  // format date
   function formatDate(date : number) {
       var d = new Date(date),
           month = '' + (d.getMonth() + 1),
@@ -24,6 +25,9 @@
       return [year, month, day].join('-');
     }
 
+    // when clicking on bookings in the list (left) this is called. 
+    // based on 'i' the BookingInfo component will display the appropriate
+    // booking info
     function setViewFocus(id : number) {
       i = id
     }
@@ -41,6 +45,7 @@
             
             
             <div class="overflow-y-auto mt-16">
+              <!--display all bookings-->
               {#each bookings as b, i}
                 <BookingCard on:click={() => setViewFocus(i)} class="my-2 transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none" heading="Booking #{b.id}" subheading={b.bookingType}/>
               {/each}
@@ -48,6 +53,7 @@
           
           </div>
           <div class="col-span-4 pt-16 px-4">
+            <!--display selected bookings' information-->
             <BookingInfo bookingNumber={bookings[i].id} bookedOn={bookings[i].createDate} bookingDate={formatDate(bookings[i].bookingDate)} bookingTime={bookings[i].bookingTime} bookingLength={bookings[i].bookingLength} facility={bookings[i].facilitiesId}/>
           </div>
       </div>

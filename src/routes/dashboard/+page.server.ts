@@ -1,3 +1,7 @@
+/*
+    This file runs on page load. It makes some API calls and forwards 
+    the data to the dashboard page
+*/
 
 export async function load({ fetch, request }) {
     
