@@ -32,6 +32,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@fontsource/manrope": "^4.5.13"
+		"@fontsource/manrope": "^4.5.13",
+		"svelte-cookie": "^1.0.1"
 	}
 }
