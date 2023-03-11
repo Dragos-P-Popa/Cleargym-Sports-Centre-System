@@ -48,7 +48,7 @@
           
           </div>
           <div class="col-span-4 pt-16 px-4">
-            <BookingInfo bookingNumber={bookings[i].id} bookedOn={bookings[i].createDate} bookingDate={formatDate(bookings[i].bookingDate)} bookingTime={bookings[i].bookingTime} bookingLength={bookings[i].bookingLength}/>
+            <BookingInfo bookingNumber={bookings[i].id} bookedOn={bookings[i].createDate} bookingDate={formatDate(bookings[i].bookingDate)} bookingTime={bookings[i].bookingTime} bookingLength={bookings[i].bookingLength} facility={bookings[i].facilitiesId}/>
           </div>
       </div>
    </div>
