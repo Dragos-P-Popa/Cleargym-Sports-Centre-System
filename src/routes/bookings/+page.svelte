@@ -8,6 +8,7 @@
   // data fetched from server-side-rendering (SSR)
   // +page.server.ts
   let bookings = data.bookings;
+  let user = data.user;
   let i = 0;
 
   // format date
@@ -35,7 +36,7 @@
 </script>
 
 <div class="grid grid-cols-12">
-  <NavBar active=1/>
+  <NavBar active=1 firstName={user.firstName} lastName={user.lastName}/>
 
   <div class="col-span-10 pt-12 px-8">
       <div class="grid grid-cols-6">
