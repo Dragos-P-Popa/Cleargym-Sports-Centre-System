@@ -4,7 +4,7 @@ association_table = db.Table(
     "association_table",
     db.Model.metadata,
     db.Column("facilityID", db.ForeignKey("facility_table.id"),  primary_key=True),
-    db.Column("activityID", db.ForeignKey("activity_table.id"),  primary_key=True),
+    db.Column("activityID", db.ForeignKey("activity_table.activityId"),  primary_key=True),
 )
 
 # the Facilities table represents facilities in the Sports Centre
