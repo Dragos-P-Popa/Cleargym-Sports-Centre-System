@@ -3,12 +3,14 @@
   import NavBar from "../../components/navbar.svelte"
   import BookingCard from "../../components/bookingCard.svelte"
   import BookingInfo from "../../components/viewBooking.svelte"
+  
   export let data;
 
   // data fetched from server-side-rendering (SSR)
   // +page.server.ts
   let bookings = data.bookings;
-  let i = 0;
+  let user = data.user;
+  let i = -1;
 
   // format date
   function formatDate(date : number) {
@@ -35,7 +37,7 @@
 </script>
 
 <div class="grid grid-cols-12">
-  <NavBar active=1/>
+  <NavBar active=1 firstName={user.firstName} lastName={user.lastName}/>
 
   <div class="col-span-10 pt-12 px-8">
       <div class="grid grid-cols-6">
@@ -54,7 +56,11 @@
           </div>
           <div class="col-span-4 pt-16 px-4">
             <!--display selected bookings' information-->
-            <BookingInfo bookingNumber={bookings[i].id} bookedOn={bookings[i].createDate} bookingDate={formatDate(bookings[i].bookingDate)} bookingTime={bookings[i].bookingTime} bookingLength={bookings[i].bookingLength} facility={bookings[i].facilitiesId}/>
+            {#if i != -1}
+              <BookingInfo bookingNumber={bookings[i].id} bookedOn={bookings[i].createDate} bookingDate={formatDate(bookings[i].bookingDate)} bookingTime={bookings[i].bookingTime} bookingLength={bookings[i].bookingLength} facility={bookings[i].facilitiesId}/>
+            {:else}
+              <!--new booking-->
+            {/if}
           </div>
       </div>
    </div>

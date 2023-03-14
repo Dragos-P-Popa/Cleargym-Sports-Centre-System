@@ -86,7 +86,7 @@
   
 </script>
 
-<div class="p-4 py-8 mt-4 shadow-md rounded-lg border-[1px] border-borderColor">
+<div class="p-4 pt-8 mb-4 mt-4 shadow-md rounded-lg border-[1px] border-borderColor">
     <p class="text-4xl text-center text-[#1A1A1A]">Quick booking</p>
     <p class="font-light text-md text-[#515151] text-center">Create a new booking at one of our facilities.</p>
 
@@ -134,7 +134,7 @@
         </div>
     
         <div class="grid">
-          <MainButton type="submit" class="mt-12  w-4/5 place-self-center">Checkout</MainButton>
+          <MainButton type="submit" class="mt-12 w-4/5 place-self-center">Checkout</MainButton>
         </div>
       </form>
 </div>
