@@ -1,12 +1,15 @@
 <script>
-  import   MainButton from "../components/mainButton.svelte"
+  import  MainButton from "../components/mainButton.svelte"
   import  SecondaryButton from "../components/secondaryButton.svelte"
-
+  import  Carousel from "../components/facilityCarousel.svelte"
 </script>
 
-<h1 class="text-3xl font-bold underline">Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<div>
+  <div class="absolute right-0 top-0 pt-4 pr-4"><SecondaryButton>Dashboard</SecondaryButton></div>
+</div>
 
-<MainButton>Login</MainButton>
-<SecondaryButton >Register</SecondaryButton>
-
+<style lang="postcss">
+  :global(body) {
+      font-family:"Manrope",
+  }
+</style>
