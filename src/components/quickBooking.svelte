@@ -53,15 +53,19 @@
         // add email and password
         body: JSON.stringify({
           userId,
-          facilitiesId,
+          facilityId: facilitiesId,
+          activityId: 0,
           createDate,
           bookingDate,
           bookingTime,
           bookingLength,
+          bookingEndTime: bookingTime,
           bookingType,
           teamEvent
         })
       })
+
+
 
       // wait in the background for API response
       result = await res.json()
