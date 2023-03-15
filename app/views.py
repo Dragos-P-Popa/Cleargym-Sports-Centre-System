@@ -1,9 +1,14 @@
+# Bouhamadi Mohamed Yanis
 from app import app, db, models
-from flask import request, jsonify
+import Availability
+from Availability import Booking
+# Do not forget to import Flask when you need it.
+from flask import json, request, jsonify, abort
 import datetime
+from datetime import datetime, time, date, timedelta
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import UnmappedInstanceError
-from datetime import datetime
+
 
 
 
@@ -83,10 +88,30 @@ def value_error_handler(error):
 def post_booking():
     # requesting the data
     info = request.get_json()
+    #Getting all booking in the Database and count them
+    all_bookings = models.Booking.query.all()
+    ID = len(all_bookings) + 1
+
+    #Giving the booking a booking ID automatically
+    for item in all_bookings:
+        if models.Booking.query.get(ID):
+            ID = ID - 1
+        elif models.Booking.query.get(ID):
+            ID = ID + 1
+    # Calculating the end_time
+
+    start = datetime.strptime(info['bookingTime'], '%H:%M').time()
+    length = datetime.strptime(info['bookingLength'], '%H:%M').time()
+
+    x = (datetime.combine(datetime.today(), start) +
+         timedelta(hours=length.hour,
+                   minutes=length.minute,
+                   seconds=length.second)).time()
 
     # Create a new booking
     try:
         booking = models.Booking(
+            id=ID,
             userId=info["userId"],
             facilityId=info["facilityId"],
             activityId=info["activityId"],
@@ -94,10 +119,13 @@ def post_booking():
             bookingDate=datetime.strptime(info["bookingDate"], '%Y/%m/%d').date(),
             bookingTime=datetime.strptime(info['bookingTime'], '%H:%M').time(),
             bookingLength=datetime.strptime(info['bookingLength'], '%H:%M').time(),
-            bookingEndTime=datetime.strptime(info['bookingEndTime'], '%H:%M').time(),
+            bookingEndTime=x,
             bookingType=info["bookingType"],
             teamEvent=info["teamEvent"]
         )
+        # Calling the Availability Class and its functions to check the booking.
+        # Check begin
+        # Check done
 
         # add and commit the booking details to the database (Booking.db)
         db.session.add(booking)

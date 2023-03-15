@@ -14,4 +14,3 @@ class Booking(db.Model):
     bookingLength = db.Column(db.Time, nullable=False)
     bookingEndTime = db.Column(db.Time, nullable=False)
     bookingType = db.Column(db.String(100), nullable=False)
-    teamEvent = db.Column(db.Boolean, nullable=False)
