@@ -1,7 +1,5 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import { redirect, type Handle } from '@sveltejs/kit';
-import cookie from 'cookie';
-import { page } from '$app/stores';
 
 /*
     This is svelte server side code that runs every time a fetch() 
@@ -33,9 +31,26 @@ const refreshToken = (async ({ event, resolve }) => {
 
         // set the cleaned token to the current event
         event.cookies.set('accessToken', token)
+    } 
+    return await resolve(event);
+}) satisfies Handle;
+
+const routeProtection = (async ({ event, resolve }) => {
+    if (event.url.pathname == "/auth" || event.url.pathname == "/") {
+        // unprotected route
+        return await resolve(event);
     } else {
-        if (page.path == "/auth/") {
-            throw redirect(308, '/auth')
+        // protected route
+        if (event.cookies.get('refreshToken') == "" || !event.cookies.get('refreshToken')){
+            
+            // refresh was unsuccessful
+            // reset cookies
+            event.cookies.set('accessToken', "")
+            event.cookies.set('audience', "")
+            // then redirect to auth page
+            if (event.url.pathname != "/auth") {
+                throw redirect(307, '/auth')
+            }
         }
     }
     return await resolve(event);
@@ -47,4 +62,4 @@ const runFetch = (async ({ event, resolve }) => {
     return result
 }) satisfies Handle;
  
-export const handle = sequence(refreshToken, runFetch);
+export const handle = sequence(refreshToken, routeProtection, runFetch);
