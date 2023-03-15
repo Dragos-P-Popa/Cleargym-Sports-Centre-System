@@ -1,7 +1,5 @@
-# Bouhamadi Mohamed Yanis
 from app import app, db, models
-import Availability
-from Availability import Booking
+import availability
 # Do not forget to import Flask when you need it.
 from flask import json, request, jsonify, abort
 from datetime import datetime, time, date, timedelta
