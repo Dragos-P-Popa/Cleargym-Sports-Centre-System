@@ -1,31 +1,43 @@
-<script >
+<script lang="ts">
   import "@fontsource/manrope";
   import NavBar from "../../components/navbar.svelte"
   import BookingCard from "../../components/bookingCard.svelte"
-  import { UserID, UserEmail } from '../../stores/user'
+  import BookingInfo from "../../components/viewBooking.svelte"
+  
   export let data;
 
   // data fetched from server-side-rendering (SSR)
   // +page.server.ts
   let bookings = data.bookings;
+  let user = data.user;
+  let i = -1;
 
-  // Hooks (line 8 - 20) not working
-  let userEmail;
-  let userId;
+  // format date
+  function formatDate(date : number) {
+      var d = new Date(date),
+          month = '' + (d.getMonth() + 1),
+          day = '' + d.getDate(),
+          year = d.getFullYear();
 
-  UserID.subscribe(UserID => {
-    userId = UserID;
-  });
+      if (month.length < 2) 
+          month = '0' + month;
+      if (day.length < 2) 
+          day = '0' + day;
 
-  UserEmail.subscribe(UserEmail => {
-    userEmail = UserEmail
-  })
+      return [year, month, day].join('-');
+    }
 
-  console.log(userEmail)
+    // when clicking on bookings in the list (left) this is called. 
+    // based on 'i' the BookingInfo component will display the appropriate
+    // booking info
+    function setViewFocus(id : number) {
+      i = id
+    }
+
 </script>
 
 <div class="grid grid-cols-12">
-  <NavBar active=1/>
+  <NavBar active=1 firstName={user.firstName} lastName={user.lastName}/>
 
   <div class="col-span-10 pt-12 px-8">
       <div class="grid grid-cols-6">
@@ -34,15 +46,21 @@
             <p class="font-light text-2xl ml-2 text-[#515151]">view and manage your bookings</p>
             
             
-            <div class="mt-16">
-              {#each bookings as b}
-                <BookingCard class="my-2" heading={bookings[0].bookingType} subheading={bookings[0].bookingTime}/>
+            <div class="overflow-y-auto mt-16">
+              <!--display all bookings-->
+              {#each bookings as b, i}
+                <BookingCard on:click={() => setViewFocus(i)} class="my-2 transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none" heading="Booking #{b.id}" subheading={b.bookingType}/>
               {/each}
             </div>
           
           </div>
           <div class="col-span-4 pt-16 px-4">
-
+            <!--display selected bookings' information-->
+            {#if i != -1}
+              <BookingInfo bookingNumber={bookings[i].id} bookedOn={bookings[i].createDate} bookingDate={formatDate(bookings[i].bookingDate)} bookingTime={bookings[i].bookingTime} bookingLength={bookings[i].bookingLength} facility={bookings[i].facilitiesId}/>
+            {:else}
+              <!--new booking-->
+            {/if}
           </div>
       </div>
    </div>
