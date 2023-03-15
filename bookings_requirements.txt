@@ -42,5 +42,6 @@ Werkzeug==2.2.3
 Whoosh==2.7.4
 WTForms==3.0.1
 zipp==3.14.0
+pip==23.0.1
 
 
