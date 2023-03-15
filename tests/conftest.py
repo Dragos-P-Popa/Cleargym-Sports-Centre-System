@@ -32,9 +32,3 @@ def app_fixture():
     db.drop_all()
 
     app.logger.info("End of the 'set up' / 'tear down' function")
-
-
-# Show the app instance returned by the app_fixture() function
-def test_fixture_setup(app_fixture):
-    app.logger.info(f"The app_fixture() function returns {app_fixture}")
-    assert True
