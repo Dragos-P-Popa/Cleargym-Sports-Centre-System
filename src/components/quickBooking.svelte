@@ -98,7 +98,7 @@
 </script>
 
 <div class="p-4 pt-8 mb-4 mt-4 shadow-md rounded-lg border-[1px] border-borderColor">
-    <p class="text-4xl text-center text-[#1A1A1A]">Quick booking</p>
+    <p class="text-4xl text-center text-[#1A1A1A]">New Booking</p>
     <p class="font-light text-md text-[#515151] text-center">Create a new booking at one of our facilities.</p>
 
     <hr class="m-6 mx-24 rounded bg-borderColor">
