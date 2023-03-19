@@ -1,6 +1,6 @@
 <div class="flex flex-col w-full px-8 py-1 bg-babyBlue">
     <div class="items-center">
-        <h1 class="py-10 text-3xl font-bold text-center">
+        <h1 class="py-10 text-[48px] font-bold text-center">
             Our Star Facilities
         </h1>
     </div>
