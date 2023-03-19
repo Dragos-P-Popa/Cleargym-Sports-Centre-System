@@ -7,7 +7,9 @@ from datetime import datetime, time, date, timedelta
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import UnmappedInstanceError
 import requests
-#pip freeze > booking_requirements.txt
+
+
+# pip freeze > booking_requirements.txt
 
 ############################### ERROR HANDLERS ###############################
 
@@ -117,45 +119,61 @@ def post_booking():
             bookingDate=datetime.strptime(info["bookingDate"], '%Y/%m/%d').date(),
             bookingTime=start,
             bookingLength=length,
-            bookingEndTime=x,
-            bookingType=info["bookingType"]
+            bookingEndTime=x
         )
 
         # Getting the facility details from facilities API
 
-
-
         # Getting the facility value from the user new booking
         F_id = booking.facilityId
         # Getting the facility details from facilities API
-        link = requests.get(f"http://127.0.0.1:3003/facility/{F_id}")
-        details = link.json()
-        Open = details['openingTime']
-        Close = details['closingTime']
+        Facility_link = requests.get(f"http://127.0.0.1:3003/facility/{F_id}")
+
+        Facility_details = Facility_link.json()
+
+        Open = Facility_details['openingTime']
+        Close = Facility_details['closingTime']
+
         OpenTime = datetime.strptime(Open, '%H:%M:%S').time()
         CloseTime = datetime.strptime(Close, '%H:%M:%S').time()
-        capacity = details['capacity']
-
+        capacity = Facility_details['capacity']
 
         # Calling the Availability Class and its functions to check the booking.
-        # Check begin
+        # Check Facilities Begin
         # Create a new object:
-
         B = Booking(booking.bookingDate,
                     booking.bookingTime,
                     booking.bookingLength,
                     booking.bookingEndTime,
-                    booking.bookingType,
                     F_id,
                     CloseTime,
                     OpenTime,
                     capacity)
 
-        B.check_time(booking.bookingTime, booking.bookingEndTime, OpenTime, CloseTime)
-        B.check_length(booking, booking.bookingDate, booking.bookingTime, booking.bookingLength,
-                     booking.bookingEndTime, booking.bookingType, capacity)
+        print(booking.bookingTime)
+        print(booking.bookingLength)
+        print(booking.bookingEndTime)
+        print(capacity)
+        print(F_id)
 
-        # Check done
+        B.check_time(booking.bookingTime,
+                     booking.bookingEndTime,
+                     OpenTime,
+                     CloseTime)
+        print("test 1 passed")
+        B.check_length(booking,
+                       booking.bookingTime,
+                       booking.bookingLength,
+                       booking.bookingEndTime,
+                       capacity,
+                       F_id)
+        print("test 2 passed")
+
+
+
+        # Check Facilities Done
+        # Check Activities Begin
+        # Check Activities Done
 
         # add and commit the booking details to the database (Booking.db)
         db.session.add(booking)
@@ -174,17 +192,15 @@ def post_booking():
 
 def get_response_for_post(booking):
     return {'id': booking.id,
-                'userId': booking.userId,
-                'facilityId': booking.facilityId,
-                'activityId': booking.activityId,
-                'createDate': booking.createDate.strftime('%Y/%m/%d'),
-                'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
-                'bookingTime': booking.bookingTime.strftime('%H:%M'),
-                'bookingLength': booking.bookingLength.strftime('%H:%M'),
-                'bookingEndTime': booking.bookingEndTime.strftime('%H:%M'),
-                'bookingType': booking.bookingType
-                }
-
+            'userId': booking.userId,
+            'facilityId': booking.facilityId,
+            'activityId': booking.activityId,
+            'createDate': booking.createDate.strftime('%Y/%m/%d'),
+            'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
+            'bookingTime': booking.bookingTime.strftime('%H:%M'),
+            'bookingLength': booking.bookingLength.strftime('%H:%M'),
+            'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
+            }
 
 
 # This function is to delete a booking by using the booking id
@@ -207,8 +223,7 @@ def delete_booking(id):
                     'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
                     'bookingTime': booking.bookingTime.strftime('%H:%M'),
                     'bookingLength': booking.bookingLength.strftime('%H:%M'),
-                    'bookingEndTime': booking.bookingEndTime.strftime('%H:%M'),
-                    'bookingType': booking.bookingType
+                    'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
                     }
 
     # Check for possible errors in the submitted data
@@ -239,8 +254,7 @@ def get_booking_uid(userId):
                 'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
                 'bookingTime': booking.bookingTime.strftime('%H:%M'),
                 'bookingLength': booking.bookingLength.strftime('%H:%M'),
-                'bookingEndTime': booking.bookingEndTime.strftime('%H:%M'),
-                'bookingType': booking.bookingType
+                'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
             })
 
     # Check for possible errors in the submitted data
@@ -267,8 +281,7 @@ def get_booking_bid(id):
                     'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
                     'bookingTime': booking.bookingTime.strftime('%H:%M'),
                     'bookingLength': booking.bookingLength.strftime('%H:%M'),
-                    'bookingEndTime': booking.bookingEndTime.strftime('%H:%M'),
-                    'bookingType': booking.bookingType
+                    'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
                     }
 
     # Check for possible errors in the submitted data
@@ -316,9 +329,6 @@ def patch_booking(id):
                 booking.bookingEndTime = (datetime.combine(datetime.today(), start) +
                                           timedelta(hours=length.hour,
                                                     minutes=length.minute)).time()
-            elif attribute == "bookingType":
-                booking.bookingType = value
-
 
         # Commit the changes made
         db.session.commit()
@@ -332,8 +342,7 @@ def patch_booking(id):
                     'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
                     'bookingTime': booking.bookingTime.strftime('%H:%M'),
                     'bookingLength': booking.bookingLength.strftime('%H:%M'),
-                    'bookingEndTime': booking.bookingEndTime.strftime('%H:%M'),
-                    'bookingType': booking.bookingType
+                    'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
                     }
 
     # Check for possible errors in the submitted data
