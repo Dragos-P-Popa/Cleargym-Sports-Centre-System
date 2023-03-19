@@ -9,22 +9,18 @@
         
         // swipe left when left arrow pressed
         arrowLeft.addEventListener('click', () => {
-        container.scrollLeft -= 633;
+        container.scrollLeft -= 720;
         });
         
         // swipe right when right arrow pressed
         arrowRight.addEventListener('click', () => {
-        container.scrollLeft += 633;
+        container.scrollLeft += 720;
         });
     });
 
 </script>
-
-<div class="py-10 px-20 text-[#1A1A1A] text-[48px]">
-    <p><b>Facility showcase</b></p>
-</div>
   
-<div class="pb-20 pl-20 w-6/12 relative">
+<div class="pb-10 pt-10 px-8 relative">
     <div class="flex overflow-x-auto no-scroll rounded-lg drop-shadow-lg" bind:this={container}>
         <img src="swimming_pool_c.jpg" class="block w-full" alt="Swimming pool" />
         <img src="fitness_room_c.jpg" class="block w-full" alt="Fitness room" />
