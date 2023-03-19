@@ -1,14 +1,13 @@
-# Bouhamadi Mohamed Yanis
 from app import app, db, models
-import Availability
-from Availability import Booking
+import availability
+from availability import Booking
 # Do not forget to import Flask when you need it.
 from flask import json, request, jsonify, abort
-import datetime
 from datetime import datetime, time, date, timedelta
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import UnmappedInstanceError
-
+import requests
+#pip freeze > booking_requirements.txt
 
 ############################### ERROR HANDLERS ###############################
 
@@ -87,6 +86,7 @@ def value_error_handler(error):
 def post_booking():
     # requesting the data
     info = request.get_json()
+
     # Getting all booking in the Database and count them
     all_bookings = models.Booking.query.all()
     ID = len(all_bookings) + 1
@@ -97,11 +97,10 @@ def post_booking():
             ID = ID - 1
         elif models.Booking.query.get(ID):
             ID = ID + 1
-    # Calculating the end_time
 
+    # Calculating the end_time
     start = datetime.strptime(info['bookingTime'], '%H:%M').time()
     length = datetime.strptime(info['bookingLength'], '%H:%M').time()
-
     x = (datetime.combine(datetime.today(), start) +
          timedelta(hours=length.hour,
                    minutes=length.minute,
@@ -109,22 +108,53 @@ def post_booking():
 
     # Create a new booking
     try:
-
         booking = models.Booking(
+            # createDate: default in models.py
             id=ID,
             userId=info["userId"],
             facilityId=info["facilityId"],
             activityId=info["activityId"],
-            # createDate: default in models.py
             bookingDate=datetime.strptime(info["bookingDate"], '%Y/%m/%d').date(),
             bookingTime=start,
             bookingLength=length,
             bookingEndTime=x,
-            bookingType=info["bookingType"],
-
+            bookingType=info["bookingType"]
         )
+
+        # Getting the facility details from facilities API
+
+
+
+        # Getting the facility value from the user new booking
+        F_id = booking.facilityId
+        # Getting the facility details from facilities API
+        link = requests.get(f"http://127.0.0.1:3003/facility/{F_id}")
+        details = link.json()
+        Open = details['openingTime']
+        Close = details['closingTime']
+        OpenTime = datetime.strptime(Open, '%H:%M:%S').time()
+        CloseTime = datetime.strptime(Close, '%H:%M:%S').time()
+        capacity = details['capacity']
+
+
         # Calling the Availability Class and its functions to check the booking.
         # Check begin
+        # Create a new object:
+
+        B = Booking(booking.bookingDate,
+                    booking.bookingTime,
+                    booking.bookingLength,
+                    booking.bookingEndTime,
+                    booking.bookingType,
+                    F_id,
+                    CloseTime,
+                    OpenTime,
+                    capacity)
+
+        B.check_time(booking.bookingTime, booking.bookingEndTime, OpenTime, CloseTime)
+        B.check_length(booking, booking.bookingDate, booking.bookingTime, booking.bookingLength,
+                     booking.bookingEndTime, booking.bookingType, capacity)
+
         # Check done
 
         # add and commit the booking details to the database (Booking.db)
@@ -132,18 +162,7 @@ def post_booking():
         db.session.commit()
 
         # Create a new response
-        response = {'id': booking.id,
-                    'userId': booking.userId,
-                    'facilityId': booking.facilityId,
-                    'activityId': booking.activityId,
-                    'createDate': booking.createDate.strftime('%Y/%m/%d'),
-                    'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
-                    'bookingTime': booking.bookingTime.strftime('%H:%M'),
-                    'bookingLength': booking.bookingLength.strftime('%H:%M'),
-                    'bookingEndTime': booking.bookingEndTime.strftime('%H:%M'),
-                    'bookingType': booking.bookingType,
-                    'teamEvent': booking.teamEvent
-                    }
+        response = get_response_for_post(booking)
 
     # Check for possible errors in the submitted data
     except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
@@ -151,6 +170,21 @@ def post_booking():
 
     # Return the response
     return jsonify(response), 200
+
+
+def get_response_for_post(booking):
+    return {'id': booking.id,
+                'userId': booking.userId,
+                'facilityId': booking.facilityId,
+                'activityId': booking.activityId,
+                'createDate': booking.createDate.strftime('%Y/%m/%d'),
+                'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
+                'bookingTime': booking.bookingTime.strftime('%H:%M'),
+                'bookingLength': booking.bookingLength.strftime('%H:%M'),
+                'bookingEndTime': booking.bookingEndTime.strftime('%H:%M'),
+                'bookingType': booking.bookingType
+                }
+
 
 
 # This function is to delete a booking by using the booking id
@@ -174,8 +208,7 @@ def delete_booking(id):
                     'bookingTime': booking.bookingTime.strftime('%H:%M'),
                     'bookingLength': booking.bookingLength.strftime('%H:%M'),
                     'bookingEndTime': booking.bookingEndTime.strftime('%H:%M'),
-                    'bookingType': booking.bookingType,
-                    'teamEvent': booking.teamEvent
+                    'bookingType': booking.bookingType
                     }
 
     # Check for possible errors in the submitted data
@@ -207,8 +240,7 @@ def get_booking_uid(userId):
                 'bookingTime': booking.bookingTime.strftime('%H:%M'),
                 'bookingLength': booking.bookingLength.strftime('%H:%M'),
                 'bookingEndTime': booking.bookingEndTime.strftime('%H:%M'),
-                'bookingType': booking.bookingType,
-                'teamEvent': booking.teamEvent
+                'bookingType': booking.bookingType
             })
 
     # Check for possible errors in the submitted data
@@ -236,8 +268,7 @@ def get_booking_bid(id):
                     'bookingTime': booking.bookingTime.strftime('%H:%M'),
                     'bookingLength': booking.bookingLength.strftime('%H:%M'),
                     'bookingEndTime': booking.bookingEndTime.strftime('%H:%M'),
-                    'bookingType': booking.bookingType,
-                    'teamEvent': booking.teamEvent
+                    'bookingType': booking.bookingType
                     }
 
     # Check for possible errors in the submitted data
@@ -269,17 +300,25 @@ def patch_booking(id):
                 booking.facilityId = value
             elif attribute == "activityId":
                 booking.activityId = value
-            elif (attribute == "createDate"
-                  or attribute == "bookingDate"):
+            elif (attribute == "bookingDate"):
                 setattr(booking, attribute, datetime.strptime(value, '%Y/%m/%d').date())
-            elif (attribute == "bookingTime"
-                  or attribute == "bookingLength"
-                  or attribute == "bookingEndTime"):
-                setattr(booking, attribute, datetime.strptime(value, '%H:%M').time())
+            elif (attribute == "bookingTime"):
+                start = datetime.strptime(value, '%H:%M').time()
+                booking.bookingTime = start
+                length = booking.bookingLength
+                booking.bookingEndTime = (datetime.combine(datetime.today(), start) +
+                                          timedelta(hours=length.hour,
+                                                    minutes=length.minute)).time()
+            elif (attribute == "bookingLength"):
+                start = booking.bookingTime
+                length = datetime.strptime(value, '%H:%M').time()
+                booking.bookingLength = length
+                booking.bookingEndTime = (datetime.combine(datetime.today(), start) +
+                                          timedelta(hours=length.hour,
+                                                    minutes=length.minute)).time()
             elif attribute == "bookingType":
                 booking.bookingType = value
-            elif attribute == "teamEvent":
-                booking.teamEvent = value
+
 
         # Commit the changes made
         db.session.commit()
@@ -294,8 +333,7 @@ def patch_booking(id):
                     'bookingTime': booking.bookingTime.strftime('%H:%M'),
                     'bookingLength': booking.bookingLength.strftime('%H:%M'),
                     'bookingEndTime': booking.bookingEndTime.strftime('%H:%M'),
-                    'bookingType': booking.bookingType,
-                    'teamEvent': booking.teamEvent
+                    'bookingType': booking.bookingType
                     }
 
     # Check for possible errors in the submitted data
