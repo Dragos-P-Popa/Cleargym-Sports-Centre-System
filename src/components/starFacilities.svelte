@@ -4,7 +4,7 @@
             Our Star Facilities
         </h1>
     </div>
-    <div class="py-20 flex flex-row items-center justify-evenly">
+    <div class="pb-20 flex flex-row items-center justify-evenly">
         <div class="flex flex-col items-center relative">
             <svg
                 width="60"
