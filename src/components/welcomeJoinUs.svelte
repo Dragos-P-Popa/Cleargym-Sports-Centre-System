@@ -10,7 +10,7 @@
         <p>Join us to make use of all our fantastic facilities!</p>
         <JoinUsButton
             on:click={() => goto("/dashboard")}
-            class="w-1/4 text-base h-8">Join Us</JoinUsButton
+            class="w-1/4 text-base">Join Us</JoinUsButton
         >
     </div>
 

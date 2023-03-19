@@ -96,7 +96,7 @@
             <p class="px-4 font-light text-md text-[#515151] text-left">Booking details</p>
         </div>
         <div class="justify-self-end">
-            <SecondaryButton on:click class="p-4">Close</SecondaryButton>
+            <SecondaryButton on:click>Close</SecondaryButton>
         </div>
     </div>
 
