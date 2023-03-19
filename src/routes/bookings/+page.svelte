@@ -57,7 +57,7 @@
             </div>
 
           </div>
-          <div class="col-span-4 px-4 ml-20 mr-20">
+          <div class="col-span-4 px-4 ml-20 mt-20">
           <div class="ml-auto">
             <!--display selected bookings' information-->
             {#if i != -1}
