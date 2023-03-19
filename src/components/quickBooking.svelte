@@ -4,6 +4,10 @@
     let facilities;
     let selectedFacility : number;
 
+    // This variable controls whether the confirmation message should be displayed.
+    // It is set to 'false' by default.
+    let display_confirm = false
+
     function formatDate(date : number) {
       // converts date from DateTime to yr/mth/day
       var d = new Date(date),
@@ -36,12 +40,10 @@
       
       let userId = localStorage.getItem("uid");
       let facilitiesId = facilities[selectedFacility].id;
-      let createDate = formatDate(Date.now());
       let bookingDate = formatDate(Date.parse(data.date));
       let bookingTime = data.time;
       let bookingLength = data.length;
       let bookingType = "General";
-      let teamEvent = false;
 
       //create a request to the Auth API (make sure it is running on your machine to test)
       const res = await fetch('http://localhost:3002/booking', {
@@ -54,22 +56,27 @@
         body: JSON.stringify({
           userId,
           facilityId: facilitiesId,
-          activityId: 0,
-          createDate,
+          activityId: 1,
           bookingDate,
           bookingTime,
           bookingLength,
-          bookingEndTime: bookingTime,
           bookingType,
-          teamEvent
         })
       })
-
-
 
       // wait in the background for API response
       result = await res.json()
       const code = await res.status
+
+      // If the code returned from the Bookings API was 200
+      if (res.status == 200)
+      {
+        // Set the 'display_confirm' value to 'true'
+        display_confirm = true;
+      }
+
+      // Reset the input fields in case a user wishes to make another booking
+      e.target.reset();
 
       console.log(result);
   }
@@ -91,7 +98,7 @@
 </script>
 
 <div class="p-4 pt-8 mb-4 mt-4 shadow-md rounded-lg border-[1px] border-borderColor">
-    <p class="text-4xl text-center text-[#1A1A1A]">Quick booking</p>
+    <p class="text-4xl text-center text-[#1A1A1A]">New Booking</p>
     <p class="font-light text-md text-[#515151] text-center">Create a new booking at one of our facilities.</p>
 
     <hr class="m-6 mx-24 rounded bg-borderColor">
@@ -121,24 +128,34 @@
     </div>
 
     <form on:submit|preventDefault={createBooking}>
-        <div class="py-2">
-            <label for="date">Date</label> <br>
-            <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="date" id="date" name="date" value="" />
-        </div>
-        <div class="py-2">
-          <label for="time">Time</label> <br>
-          <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="time" name="time" value="" />
-        </div>
-        <div class="py-2">
-          <label for="length">Length</label> <br>
-          <select class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" name="length" id="length">
-            <option value="01:00">1 hour</option>
-            <option value="02:00">2 hours</option>
-          </select>
-        </div>
-    
-        <div class="grid">
-          <MainButton type="submit" class="mt-12 w-4/5 place-self-center">Checkout</MainButton>
-        </div>
-      </form>
+      <div class="py-2">
+          <label for="date">Date</label> <br>
+          <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="date" id="date" name="date" value="" />
+      </div>
+      <div class="py-2">
+        <label for="time">Time</label> <br>
+        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="time" name="time" value="" />
+      </div>
+      <div class="py-2">
+        <label for="length">Length</label> <br>
+        <select class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" name="length" id="length">
+          <option value="01:00">1 hour</option>
+          <option value="02:00">2 hours</option>
+        </select>
+      </div>
+  
+      <div class="grid">
+        <MainButton type="submit" class="mt-12 w-4/5 place-self-center">Checkout</MainButton>          
+      </div>
+    </form>
+
+    <!-- If the request was successful, display a confirmation message -->
+    {#if display_confirm==true}
+      <p class="mt-8 mb-4 ml-auto mr-auto w-4/5 place-self-center text-center"
+         style="font-size: 20px; color: green;">
+         The booking was completed successfully!
+      </p>
+      <!-- The list of bookings gets refreshed after each successful submission -->
+      <script>setTimeout(() => {location.reload();}, 1500);</script>
+    {/if}
 </div>

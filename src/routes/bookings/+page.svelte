@@ -3,12 +3,13 @@
   import NavBar from "../../components/navbar.svelte"
   import BookingCard from "../../components/bookingCard.svelte"
   import BookingInfo from "../../components/viewBooking.svelte"
-  
+  import QuickBooking from "../../components/quickBooking.svelte"
+
   export let data;
 
   // data fetched from server-side-rendering (SSR)
   // +page.server.ts
-  let bookings = data.bookings;
+  export let bookings = data.bookings;
   let user = data.user;
   let i = -1;
 
@@ -19,15 +20,15 @@
           day = '' + d.getDate(),
           year = d.getFullYear();
 
-      if (month.length < 2) 
+      if (month.length < 2)
           month = '0' + month;
-      if (day.length < 2) 
+      if (day.length < 2)
           day = '0' + day;
 
       return [year, month, day].join('-');
     }
 
-    // when clicking on bookings in the list (left) this is called. 
+    // when clicking on bookings in the list (left) this is called.
     // based on 'i' the BookingInfo component will display the appropriate
     // booking info
     function setViewFocus(id : number) {
@@ -44,23 +45,34 @@
           <div class="col-span-2">
             <p class="font-bold text-5xl text-[#1A1A1A]">Your bookings...</p>
             <p class="font-light text-2xl ml-2 text-[#515151]">view and manage your bookings</p>
-            
-            
-            <div class="overflow-y-auto mt-16">
+
+            <div class="overflow-y-auto h-[80vh] mt-16">
               <!--display all bookings-->
               {#each bookings as b, i}
-                <BookingCard on:click={() => setViewFocus(i)} class="my-2 transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none" heading="Booking #{b.id}" subheading={b.bookingType}/>
+                <BookingCard on:click={() => setViewFocus(i)}
+                  class="my-2 transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none"
+                  heading="Booking #{b.id}"
+                  subheading={b.bookingType}/>
               {/each}
             </div>
-          
+
           </div>
-          <div class="col-span-4 pt-16 px-4">
+          <div class="col-span-4 px-4 ml-20 mt-20">
+          <div class="ml-auto">
             <!--display selected bookings' information-->
             {#if i != -1}
-              <BookingInfo bookingNumber={bookings[i].id} bookedOn={bookings[i].createDate} bookingDate={formatDate(bookings[i].bookingDate)} bookingTime={bookings[i].bookingTime} bookingLength={bookings[i].bookingLength} facility={bookings[i].facilitiesId}/>
+              <BookingInfo on:click={()=> i=-1}
+                           bookingNumber={bookings[i].id}
+                           bookedOn={bookings[i].createDate}
+                           bookingDate={formatDate(bookings[i].bookingDate)}
+                           bookingTime={bookings[i].bookingTime}
+                           bookingLength={bookings[i].bookingLength}
+                           facility={bookings[i].facilitiesId}/>
             {:else}
-              <!--new booking-->
+              <!--booking creating component-->
+              <QuickBooking/>
             {/if}
+          </div>
           </div>
       </div>
    </div>
