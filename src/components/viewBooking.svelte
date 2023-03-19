@@ -1,6 +1,7 @@
 <script lang="ts">
-    import MainButton from "./mainButton.svelte"
-    import CancelButton from "./cancelButton.svelte"
+    import MainButton from "./mainButton.svelte";
+    import CancelButton from "./cancelButton.svelte";
+    import SecondaryButton from "./secondaryButton.svelte";
 
     // variables to be defined by page (currently bookings/+page.svelte)
     export let bookingNumber : number;
@@ -27,9 +28,9 @@
           month = '' + (d.getMonth() + 1),
           day = '' + d.getDate(),
           year = d.getFullYear();
-      if (month.length < 2) 
+      if (month.length < 2)
           month = '0' + month;
-      if (day.length < 2) 
+      if (day.length < 2)
           day = '0' + day;
 
       return [year, month, day].join('/');
@@ -51,8 +52,8 @@
 
         // Reset the input fields in case a user wishes to make another booking
         //e.target.reset();
-        
-        
+
+
     }
 
     async function amendBooking(e: { target: HTMLFormElement; }){
@@ -89,8 +90,15 @@
 </script>
 
 <div class="p-4 py-8 mt-4 shadow-md rounded-lg border-[1px] border-borderColor mt-20 ml-auto">
-    <p class="px-4 text-4xl text-left text-[#1A1A1A] font-semibold">Booking #{bookingNumber}</p>
-    <p class="px-4 font-light text-md text-[#515151] text-left">Booking details</p>
+    <div class="grid grid-cols-2">
+        <div>
+            <p class="px-4 text-4xl text-left text-[#1A1A1A] font-semibold">Booking #{bookingNumber}</p>
+            <p class="px-4 font-light text-md text-[#515151] text-left">Booking details</p>
+        </div>
+        <div class="justify-self-end">
+            <SecondaryButton on:click class="p-4">Close</SecondaryButton>
+        </div>
+    </div>
 
     <hr class="m-6 rounded bg-[#EDEDEF]">
 
@@ -108,7 +116,7 @@
             <p>{facility}</p>
         </div>
     </div>
-    
+
 
     <!--if viewing details, fields should be disabled-->
     {#if editMode == false}
@@ -143,7 +151,7 @@
 
         <div class="flex justify-between  space-x-6 px-4">
             <!--make API call-->
-            <CancelButton on:click={() => deleteBooking(bookingNumber)} class="mt-12 w-4/5 place-self-center">Cancel booking</CancelButton>            
+            <CancelButton on:click={() => deleteBooking(bookingNumber)} class="mt-12 w-4/5 place-self-center">Cancel booking</CancelButton>
             <!--go into edit mode to amend booking-->
             <MainButton on:click={() => toggleEdit()} class="mt-12 w-4/5 place-self-center">Amend booking</MainButton>
         </div>
@@ -170,10 +178,10 @@
             </div>
 
         <div class="flex justify-between  space-x-6 px-4">
-            <CancelButton on:click={() => toggleEdit()} class="mt-12 w-4/5 place-self-center">Cancel amend</CancelButton>            
+            <CancelButton on:click={() => toggleEdit()} class="mt-12 w-4/5 place-self-center">Cancel amend</CancelButton>
             <MainButton type="submit" class="mt-12 w-4/5 place-self-center">Confirm amend</MainButton>
-        </div>  
-        
+        </div>
+
     </form>
     {/if}
 
