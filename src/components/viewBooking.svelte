@@ -1,6 +1,7 @@
 <script lang="ts">
-    import MainButton from "./mainButton.svelte"
-    import CancelButton from "./cancelButton.svelte"
+    import MainButton from "./mainButton.svelte";
+    import CancelButton from "./cancelButton.svelte";
+    import SecondaryButton from "./secondaryButton.svelte";
 
     // variables to be defined by page (currently bookings/+page.svelte)
     export let bookingNumber : number;
@@ -11,6 +12,10 @@
     export let bookingLength : string;
 
     let editMode = false;
+
+    // This variable controls whether the confirmation message for booking cancellation
+    // should be displayed. It is set to 'false' by default.
+    let cancellation_confirm = false
 
     // toggle between view details and amend booking
     function toggleEdit() {
@@ -23,9 +28,9 @@
           month = '' + (d.getMonth() + 1),
           day = '' + d.getDate(),
           year = d.getFullYear();
-      if (month.length < 2) 
+      if (month.length < 2)
           month = '0' + month;
-      if (day.length < 2) 
+      if (day.length < 2)
           day = '0' + day;
 
       return [year, month, day].join('/');
@@ -37,6 +42,18 @@
             // enable credentials when they are implemented in the bookings API
             //credentials: 'include'
         })
+
+        // If the code returned from the Bookings API was 200
+        if (res.status == 200)
+        {
+            // Set the 'display_confirm' value to 'true'
+            cancellation_confirm = true;
+        }
+
+        // Reset the input fields in case a user wishes to make another booking
+        //e.target.reset();
+
+
     }
 
     async function amendBooking(e: { target: HTMLFormElement; }){
@@ -72,9 +89,16 @@
     }
 </script>
 
-<div class="p-4 py-8 mt-4 shadow-md rounded-lg border-[1px] border-borderColor mt-20 ml-8">
-    <p class="px-4 text-4xl text-left text-[#1A1A1A] font-semibold">Booking #{bookingNumber}</p>
-    <p class="px-4 font-light text-md text-[#515151] text-left">Booking details</p>
+<div class="p-4 py-8 mt-4 shadow-md rounded-lg border-[1px] border-borderColor mt-20 ml-auto">
+    <div class="grid grid-cols-2">
+        <div>
+            <p class="px-4 text-4xl text-left text-[#1A1A1A] font-semibold">Booking #{bookingNumber}</p>
+            <p class="px-4 font-light text-md text-[#515151] text-left">Booking details</p>
+        </div>
+        <div class="justify-self-end">
+            <SecondaryButton on:click class="p-4">Close</SecondaryButton>
+        </div>
+    </div>
 
     <hr class="m-6 rounded bg-[#EDEDEF]">
 
@@ -92,7 +116,7 @@
             <p>{facility}</p>
         </div>
     </div>
-    
+
 
     <!--if viewing details, fields should be disabled-->
     {#if editMode == false}
@@ -125,9 +149,9 @@
           </select>
         </div>
 
-        <div class="flex justify-between  space-x-6 px-4 pt-16">
+        <div class="flex justify-between  space-x-6 px-4">
             <!--make API call-->
-            <CancelButton on:click={() => deleteBooking(bookingNumber)} class="mt-12 w-4/5 place-self-center">Cancel booking</CancelButton>            
+            <CancelButton on:click={() => deleteBooking(bookingNumber)} class="mt-12 w-4/5 place-self-center">Cancel booking</CancelButton>
             <!--go into edit mode to amend booking-->
             <MainButton on:click={() => toggleEdit()} class="mt-12 w-4/5 place-self-center">Amend booking</MainButton>
         </div>
@@ -153,12 +177,22 @@
               </select>
             </div>
 
-        <div class="flex justify-between  space-x-6 px-4 pt-16">
-            <CancelButton on:click={() => toggleEdit()} class="mt-12 w-4/5 place-self-center">Cancel amend</CancelButton>            
+        <div class="flex justify-between  space-x-6 px-4">
+            <CancelButton on:click={() => toggleEdit()} class="mt-12 w-4/5 place-self-center">Cancel amend</CancelButton>
             <MainButton type="submit" class="mt-12 w-4/5 place-self-center">Confirm amend</MainButton>
-        </div>  
-        
+        </div>
+
     </form>
+    {/if}
+
+    <!-- If the booking deletion request was successful, display a confirmation message -->
+    {#if cancellation_confirm==true}
+        <p class="mt-8 mb-4 ml-auto mr-auto w-4/5 place-self-center text-center"
+            style="font-size: 20px; color: green;">
+            The booking was deleted successfully!
+        </p>
+        <!-- The list of bookings gets refreshed after each successful deletion -->
+        <script>setTimeout(() => {location.reload();}, 1500);</script>
     {/if}
 
 </div>
