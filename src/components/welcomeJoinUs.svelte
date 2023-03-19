@@ -1,5 +1,6 @@
 <script>
     import JoinUsButton from "./joinUsButton.svelte";
+    import { goto } from "$app/navigation";
 </script>
 
 <div class="flex flex-row w-full px-8 py-40">
@@ -7,7 +8,10 @@
         <h3 class="py-1 text-[34px] font-bold">Welcome to cleargym!</h3>
         <p>The most complete and beginner friendly gym in the UK.</p>
         <p>Join us to make use of all our fantastic facilities!</p>
-        <JoinUsButton class="w-1/4 text-base h-8">Join Us</JoinUsButton>
+        <JoinUsButton
+            on:click={() => goto("/dashboard")}
+            class="w-1/4 text-base h-8">Join Us</JoinUsButton
+        >
     </div>
 
     <div class="w-1/2 relative">
