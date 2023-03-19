@@ -3,6 +3,9 @@
     import BookingCard from "../../components/bookingCard.svelte"
     import QuickBooking from "../../components/quickBooking.svelte"
     import NavBar from "../../components/navbar.svelte"
+    import MembershipCard from "../../components/membershipCard.svelte";
+    import PricingTable from "../../components/pricingTable.svelte"
+    import SecondaryButton from "../../components/secondaryButton.svelte"
     import { onMount, onDestroy } from 'svelte';
       /** @type {import('./$types').PageData} */
     export let data;
@@ -31,6 +34,12 @@
                 <p class="font-bold text-5xl text-[#1A1A1A]">{user.firstName},</p>
                  <!--<p>{u._id}</p>-->
                 <p class="font-light text-2xl text-[#515151]">welcome back!</p>
+                <h1 class="text-4xl mt-4">Memberships</h1>
+                <SecondaryButton class="p-2 ml-96 mt-0">Manage membership</SecondaryButton>
+                <MembershipCard active=1 heading="No membership" subHeading="Pay as you go" bulletPoints={["Most flexible option.", "Pay whenever you want to book.","Perfect for newcomers who are looking to try out before committing to a membership."]} class="col-span-4"/>
+                <MembershipCard active=0 heading="Cleargym One" subHeading="All-inclusive membership" bulletPoints={["Highest cost savings.", "Unlimited access to all of our facilities.","One simple monthly payment.", "Cancel at any time."]} class="col-span-4"/>
+                <h1 class="text-4xl mt-8">Pricing</h1>
+                <PricingTable/>
             </div>
             <div class="col-span-2 px-4">
                 <!--if the user has at least 1 booking, show one here-->
@@ -38,10 +47,8 @@
                 <p class="text-4xl text-[#1A1A1A] pb-4">Next booking</p>
                 <BookingCard class="" heading={bookings[0].bookingType} subheading={bookings[0].bookingTime}></BookingCard>
                 {/if}
-
                 <!--booking creating component-->
                 <QuickBooking/>
-
             </div>
         </div>
      </div>
