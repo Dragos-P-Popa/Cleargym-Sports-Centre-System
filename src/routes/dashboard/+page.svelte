@@ -34,11 +34,13 @@
                 <p class="font-bold text-5xl text-[#1A1A1A]">{user.firstName},</p>
                  <!--<p>{u._id}</p>-->
                 <p class="font-light text-2xl text-[#515151]">welcome back!</p>
-                <h1 class="text-4xl mt-4">Memberships</h1>
-                <SecondaryButton class="p-2 ml-96 mt-0">Manage membership</SecondaryButton>
+                <div class="flex grid grid-cols-2 mt-12">
+                    <h1 class="text-4xl mt-4">Memberships</h1>
+                    <SecondaryButton class="p-4 ml-28 justify-self-end">Manage membership</SecondaryButton>
+                </div>
                 <MembershipCard active=1 heading="No membership" subHeading="Pay as you go" bulletPoints={["Most flexible option.", "Pay whenever you want to book.","Perfect for newcomers who are looking to try out before committing to a membership."]} class="col-span-4"/>
                 <MembershipCard active=0 heading="Cleargym One" subHeading="All-inclusive membership" bulletPoints={["Highest cost savings.", "Unlimited access to all of our facilities.","One simple monthly payment.", "Cancel at any time."]} class="col-span-4"/>
-                <h1 class="text-4xl mt-8">Pricing</h1>
+                <h1 class="text-4xl mt-12">Pricing</h1>
                 <PricingTable/>
             </div>
             <div class="col-span-2 px-4">
