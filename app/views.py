@@ -125,55 +125,44 @@ def post_booking():
         # Getting the facility details from facilities API
 
         # Getting the facility value from the user new booking
-        F_id = booking.facilityId
-        # Getting the facility details from facilities API
-        Facility_link = requests.get(f"http://127.0.0.1:3003/facility/{F_id}")
+        f_id = booking.facilityId
+        # Getting the facility details from facilities API.
+        # The first 'fa
+        # Facility_link = requests.get(f"http://127.0.0.1:3003/facility/{F_id}")
+        facility_link = requests.get(f"http://cleargym.live:3003/facility/{F_id}")
 
-        Facility_details = Facility_link.json()
+        facility_details = facility_link.json()
 
-        Open = Facility_details['openingTime']
-        Close = Facility_details['closingTime']
+        open = facility_details['openingTime']
+        close = facility_details['closingTime']
 
-        OpenTime = datetime.strptime(Open, '%H:%M:%S').time()
-        CloseTime = datetime.strptime(Close, '%H:%M:%S').time()
-        capacity = Facility_details['capacity']
+        openTime = datetime.strptime(open, '%H:%M:%S').time()
+        closeTime = datetime.strptime(close, '%H:%M:%S').time()
+        capacity = facility_details['capacity']
 
         # Calling the Availability Class and its functions to check the booking.
         # Check Facilities Begin
         # Create a new object:
-        B = Booking(booking.bookingDate,
+        b = Booking(booking.bookingDate,
                     booking.bookingTime,
                     booking.bookingLength,
                     booking.bookingEndTime,
-                    F_id,
-                    CloseTime,
-                    OpenTime,
+                    f_id,
+                    closeTime,
+                    openTime,
                     capacity)
 
-        print(booking.bookingTime)
-        print(booking.bookingLength)
-        print(booking.bookingEndTime)
-        print(capacity)
-        print(F_id)
-
-        B.check_time(booking.bookingTime,
+        b.check_time(booking.bookingTime,
                      booking.bookingEndTime,
-                     OpenTime,
-                     CloseTime)
-        print("test 1 passed")
-        B.check_length(booking,
+                     openTime,
+                     closeTime)
+
+        b.check_length(booking,
                        booking.bookingTime,
                        booking.bookingLength,
                        booking.bookingEndTime,
                        capacity,
-                       F_id)
-        print("test 2 passed")
-
-
-
-        # Check Facilities Done
-        # Check Activities Begin
-        # Check Activities Done
+                       f_id)
 
         # add and commit the booking details to the database (Booking.db)
         db.session.add(booking)
