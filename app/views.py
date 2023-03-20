@@ -128,8 +128,8 @@ def post_booking():
         f_id = booking.facilityId
         # Getting the facility details from facilities API.
         # The first 'fa
-        # Facility_link = requests.get(f"http://127.0.0.1:3003/facility/{F_id}")
-        facility_link = requests.get(f"http://cleargym.live:3003/facility/{F_id}")
+        # Facility_link = requests.get(f"http://127.0.0.1:3003/facility/{f_id}")
+        facility_link = requests.get(f"http://cleargym.live:3003/facility/{f_id}")
 
         facility_details = facility_link.json()
 
