@@ -126,9 +126,12 @@ def post_booking():
 
         # Getting the facility value from the user new booking
         f_id = booking.facilityId
+
         # Getting the facility details from facilities API.
-        # The first 'fa
-        # Facility_link = requests.get(f"http://127.0.0.1:3003/facility/{f_id}")
+        # The first 'facility_link' variable is used for local testing.
+        # The other, for remote testing on GitHub.
+
+        # facility_link = requests.get(f"http://127.0.0.1:3003/facility/{f_id}")
         facility_link = requests.get(f"http://cleargym.live:3003/facility/{f_id}")
 
         facility_details = facility_link.json()
@@ -167,6 +170,11 @@ def post_booking():
         # add and commit the booking details to the database (Booking.db)
         db.session.add(booking)
         db.session.commit()
+
+
+        test_bookings = models.Booking.query.all()
+        print("test bookings:" + str(test_bookings))
+
 
         # Create a new response
         response = get_response_for_post(booking)
@@ -230,7 +238,11 @@ def get_booking_uid(userId):
         # requesting all bookings from the database by using the selected user id
         bookings = models.Booking.query.filter_by(userId=userId).all()
 
+        print("bookings :" + str(bookings))
+
         booking_list = []
+
+
 
         for booking in bookings:
             # Adding all bookings in a list called booking_list
@@ -246,6 +258,7 @@ def get_booking_uid(userId):
                 'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
             })
 
+        print("bookings list:" + str(booking_list))
     # Check for possible errors in the submitted data
     except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
         raise error
