@@ -18,7 +18,9 @@ exports.routesConfig = function (app) {
     ])
     app.post('/logout', [
         // check the status of the token
-        BlacklistMiddleware.isBlacklisted,
+        
+        // TODO Fix bellow
+        //BlacklistMiddleware.isBlacklisted,
         // if not blacklisted, blacklist
         AuthController.logout
     ])
