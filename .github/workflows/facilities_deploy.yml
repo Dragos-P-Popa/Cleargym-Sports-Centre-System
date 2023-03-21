@@ -33,7 +33,7 @@ jobs:
 
           script: |
             pm2 stop facilities
-            cd /facilities/
+            cd facilities/
             git fetch --all
             git pull
             pm2 start facilities
