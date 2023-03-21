@@ -1,0 +1,1 @@
+This is a file used to test wether pushes to this branch are being added to the Digital Ocean droplet.
