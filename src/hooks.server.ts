@@ -31,12 +31,7 @@ const refreshToken = (async ({ event, resolve }) => {
         token = token[0].slice(14, -2)
 
         // set the cleaned token to the current event
-        event.cookies.set('accessToken', token, {
-            path: '/',
-            secure: true,
-            httpOnly: true,
-            domain: '.cleargym.live'
-        })
+        event.cookies.set('accessToken', token)
     } 
     return await resolve(event);
 }) satisfies Handle;
@@ -55,13 +50,13 @@ const routeProtection = (async ({ event, resolve }) => {
                 path: '/',
                 secure: true,
                 httpOnly: true,
-                domain: '.cleargym.live'
+                //domain: '.cleargym.live'
             })
             event.cookies.set('audience', "x", {
                 path: '/',
                 secure: true,
                 httpOnly: true,
-                domain: '.cleargym.live'
+                //domain: '.cleargym.live'
             })
             // then redirect to auth page
             if (event.url.pathname != "/auth") {
