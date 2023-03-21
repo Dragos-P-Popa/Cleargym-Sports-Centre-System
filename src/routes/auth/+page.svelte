@@ -5,6 +5,7 @@
   import { goto } from '$app/navigation';
   import MediaQuery from "../../MediaQuery.svelte";
   import "@fontsource/manrope";
+  import { PUBLIC_AUTH_URL } from "$env/static/public";
 
   let registerToggle = false;
 
@@ -164,7 +165,7 @@
     if (validateLogin(email, password)){
 
       //create a request to the Auth API (make sure it is running on your machine to test)
-      const res = await fetch('http://localhost:3001/login/', {
+      const res = await fetch(PUBLIC_AUTH_URL + 'login/', {
         method: 'POST',
         credentials: 'include',
         // essential to set the header
@@ -232,7 +233,7 @@
         }))
 
       //create a request to the Auth API (make sure it is running on your machine to test)
-      const res = await fetch('http://localhost:3001/users/', {
+      const res = await fetch(PUBLIC_AUTH_URL + 'users/', {
         method: 'POST',
         // essential to set the header
         headers: {

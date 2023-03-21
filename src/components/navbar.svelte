@@ -1,12 +1,13 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import { PUBLIC_AUTH_URL } from '$env/static/public'
 
      export let active : string = "0";
      export let firstName : string = "";
      export let lastName : string = "";
 
      async function logout() {
-          const res = await fetch('http://localhost:3001/logout/', {
+          const res = await fetch(PUBLIC_AUTH_URL + 'logout/', {
 			method: 'POST',
                credentials: 'include',
                // essential to set the header

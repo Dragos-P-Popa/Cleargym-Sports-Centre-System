@@ -4,11 +4,12 @@
   import BookingCard from "../../components/bookingCard.svelte"
   import BookingInfo from "../../components/viewBooking.svelte"
   import QuickBooking from "../../components/quickBooking.svelte"
+  import { PUBLIC_BOOKINGS_URL } from '$env/static/public'
 
   export let data;
 
   // data fetched from server-side-rendering (SSR)
-  // +page.server.ts
+  // +page.ts
   export let bookings = data.bookings;
   let user = data.user;
   let i = -1;
