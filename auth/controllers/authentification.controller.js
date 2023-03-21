@@ -68,5 +68,13 @@ exports.logout = (req, res) => {
     // if previous checks in routes.config pass and the token
     // has not been blacklisted already, it should be blacklisted now
     BlacklistModel.blacklistToken(req.body);
+
+    // remove all cookies by overriding existing with blank
+    res.clearCookie("accessToken");
+
+    res.clearCookie("refreshToken");
+
+    res.clearCookie("audience");
+
     return res.status(200).send({response: "Token has just been blacklisted"});
 }
