@@ -1,5 +1,6 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import { redirect, type Handle } from '@sveltejs/kit';
+import { PUBLIC_AUTH_URL } from '$env/static/public'
 
 /*
     This is svelte server side code that runs every time a fetch() 
@@ -12,7 +13,7 @@ import { redirect, type Handle } from '@sveltejs/kit';
 const refreshToken = (async ({ event, resolve }) => {
     if (event.cookies.get('refreshToken')){
         // make sure token is refreshed
-        const refreshRes = await fetch('http://localhost:3001/refresh/', {
+        const refreshRes = await fetch(PUBLIC_AUTH_URL + 'refresh/', {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
@@ -30,7 +31,12 @@ const refreshToken = (async ({ event, resolve }) => {
         token = token[0].slice(14, -2)
 
         // set the cleaned token to the current event
-        event.cookies.set('accessToken', token)
+        event.cookies.set('accessToken', token, {
+            path: '/',
+            secure: true,
+            httpOnly: true,
+            domain: '.cleargym.live'
+        })
     } 
     return await resolve(event);
 }) satisfies Handle;
@@ -45,8 +51,18 @@ const routeProtection = (async ({ event, resolve }) => {
             
             // refresh was unsuccessful
             // reset cookies
-            event.cookies.set('accessToken', "")
-            event.cookies.set('audience', "")
+            event.cookies.set('accessToken', "x", {
+                path: '/',
+                secure: true,
+                httpOnly: true,
+                domain: '.cleargym.live'
+            })
+            event.cookies.set('audience', "x", {
+                path: '/',
+                secure: true,
+                httpOnly: true,
+                domain: '.cleargym.live'
+            })
             // then redirect to auth page
             if (event.url.pathname != "/auth") {
                 throw redirect(307, '/auth')

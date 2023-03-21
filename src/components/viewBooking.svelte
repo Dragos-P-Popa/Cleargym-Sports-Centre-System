@@ -2,6 +2,7 @@
     import MainButton from "./mainButton.svelte";
     import CancelButton from "./cancelButton.svelte";
     import SecondaryButton from "./secondaryButton.svelte";
+    import { PUBLIC_BOOKINGS_URL } from '$env/static/public'
 
     // variables to be defined by page (currently bookings/+page.svelte)
     export let bookingNumber : number;
@@ -37,7 +38,7 @@
     }
 
     async function deleteBooking(id : number){
-        const res = await fetch('http://localhost:3002/bookings/'+id, {
+        const res = await fetch(PUBLIC_BOOKINGS_URL + 'bookings/'+id, {
 			method: 'DELETE'
             // enable credentials when they are implemented in the bookings API
             //credentials: 'include'
@@ -73,7 +74,7 @@
         console.log(data);
 
         let formattedDate = formatDate(data.date);
-        const res = await fetch('http://localhost:3002/bookings/'+bookingNumber, {
+        const res = await fetch(PUBLIC_BOOKINGS_URL + 'bookings/'+bookingNumber, {
 			method: 'PATCH',
             headers: {
                 "Content-Type": "application/json",

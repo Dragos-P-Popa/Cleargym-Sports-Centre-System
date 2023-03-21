@@ -1,5 +1,6 @@
 <script lang="ts">
     import MainButton from "./mainButton.svelte"
+    import { PUBLIC_BOOKINGS_URL, PUBLIC_FACILITIES_URL } from '$env/static/public'
 
     let facilities;
     let selectedFacility : number;
@@ -46,7 +47,7 @@
       let bookingType = "General";
 
       //create a request to the Auth API (make sure it is running on your machine to test)
-      const res = await fetch('http://localhost:3002/booking', {
+      const res = await fetch(PUBLIC_BOOKINGS_URL + 'booking', {
         method: 'POST',
         // essential to set the header
         headers: {
@@ -83,7 +84,7 @@
 
   async function facilityLoading() {
     // fetch all facilities
-		const res = await fetch('http://localhost:3003/facilities', {
+		const res = await fetch(PUBLIC_FACILITIES_URL + 'facilities', {
 			method: 'GET',
       headers: {
         "Content-Type": "application/json",
