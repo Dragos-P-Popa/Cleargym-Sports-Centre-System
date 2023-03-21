@@ -121,58 +121,67 @@ def post_booking():
             bookingLength=length,
             bookingEndTime=x
         )
+        print("Test input")
 
-        # Getting the facility details from facilities API
-
-        # Getting the facility value from the user new booking
+        # Getting the facility and activity ID values from the user new booking
         F_id = booking.facilityId
+        A_id = booking.activityId
+
         # Getting the facility details from facilities API
         Facility_link = requests.get(f"http://127.0.0.1:3003/facility/{F_id}")
-
         Facility_details = Facility_link.json()
+        F_Open = Facility_details['openingTime']
+        F_Close = Facility_details['closingTime']
+        F_OpenTime = datetime.strptime(F_Open, '%H:%M:%S').time()
+        F_CloseTime = datetime.strptime(F_Close, '%H:%M:%S').time()
+        F_capacity = Facility_details['capacity']
+        print("Test Facility request")
 
-        Open = Facility_details['openingTime']
-        Close = Facility_details['closingTime']
+        # Getting the activity details from facilities API
+        Activity_link = requests.get(f"http://127.0.0.1:3003/activity/{A_id}")  #
+        Activity_details = Activity_link.json()
+        A_Open = Activity_details['activityStartTime']
+        A_Close = Activity_details['activityEndTime']
+        A_OpenTime = datetime.strptime(A_Open, '%H:%M').time()
+        A_CloseTime = datetime.strptime(A_Close, '%H:%M').time()
+        A_day = Activity_details['activityDay']
+        print("Test Activity request")
 
-        OpenTime = datetime.strptime(Open, '%H:%M:%S').time()
-        CloseTime = datetime.strptime(Close, '%H:%M:%S').time()
-        capacity = Facility_details['capacity']
+        Alength = (datetime.combine(datetime.today(), A_CloseTime) -
+                   timedelta(hours=A_OpenTime.hour,
+                             minutes=A_OpenTime.minute,
+                             seconds=A_OpenTime.second)).time()
 
         # Calling the Availability Class and its functions to check the booking.
-        # Check Facilities Begin
-        # Create a new object:
         B = Booking(booking.bookingDate,
                     booking.bookingTime,
                     booking.bookingLength,
                     booking.bookingEndTime,
                     F_id,
-                    CloseTime,
-                    OpenTime,
-                    capacity)
-
-        print(booking.bookingTime)
-        print(booking.bookingLength)
-        print(booking.bookingEndTime)
-        print(capacity)
-        print(F_id)
-
-        B.check_time(booking.bookingTime,
-                     booking.bookingEndTime,
-                     OpenTime,
-                     CloseTime)
-        print("test 1 passed")
-        B.check_length(booking,
-                       booking.bookingTime,
-                       booking.bookingLength,
-                       booking.bookingEndTime,
-                       capacity,
-                       F_id)
-        print("test 2 passed")
-
-
-
+                    F_CloseTime,
+                    F_OpenTime,
+                    F_capacity,
+                    A_OpenTime,
+                    A_CloseTime,
+                    Alength,
+                    A_day
+                    )
+        # Check Facilities Begin
+        check_facility_time(B, F_CloseTime, F_OpenTime, booking)
+        check_facility_capacity(B, F_id, booking, F_capacity)
         # Check Facilities Done
+
         # Check Activities Begin
+        B.check_activity(Alength,
+                         A_day,
+                         booking.bookingLength,
+                         booking.bookingDate,
+                         booking.bookingTime,
+                         booking.bookingEndTime,
+                         A_OpenTime,
+                         A_CloseTime
+                         )
+
         # Check Activities Done
 
         # add and commit the booking details to the database (Booking.db)
@@ -188,6 +197,22 @@ def post_booking():
 
     # Return the response
     return jsonify(response), 200
+
+
+def check_facility_time(B, CloseTime, OpenTime, booking):
+    B.check_facility_time(booking.bookingTime,
+                          booking.bookingEndTime,
+                          OpenTime,
+                          CloseTime)
+
+
+def check_facility_capacity(B, F_id, booking, capacity):
+    B.check_facility_capacity(booking.bookingDate,
+                              booking.bookingTime,
+                              booking.bookingEndTime,
+                              F_id,
+                              capacity,
+                              booking.bookingLength)
 
 
 def get_response_for_post(booking):
