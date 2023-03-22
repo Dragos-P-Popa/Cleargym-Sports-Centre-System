@@ -2,6 +2,7 @@ from flask import abort
 import datetime
 from datetime import datetime, time, date, timedelta
 from app import app, db, models
+from flask import json, request, jsonify, abort
 
 
 class Booking:
@@ -25,8 +26,7 @@ class Booking:
     def length_one(self, Bdate, Btime, Bend, Capacity, FacilityId):
 
         twohours = time(2, 0, 0)
-        y = (datetime.combine(datetime.today(), Bend)
-             + timedelta(hours=twohours.hour, minutes=twohours.minute, seconds=twohours.second)).time()
+        # here i had bend + 2
 
         # All Bookings that starts at booking start time.
         a1 = models.Booking.query.filter_by(bookingDate=Bdate,
@@ -36,13 +36,13 @@ class Booking:
         # All Bookings that starts booking start time and ends in one hour
         a2 = models.Booking.query.filter_by(bookingDate=Bdate,
                                             bookingTime=Btime,
-                                            bookingEndTime=y,
+                                            bookingEndTime=Bend,
                                             facilityId=FacilityId
                                             ).all()
 
         # All bookings that ends after 1 hour of booking start time
         a3 = models.Booking.query.filter_by(bookingDate=Bdate,
-                                            bookingEndTime=y,
+                                            bookingEndTime=Bend,
                                             facilityId=FacilityId
                                             ).all()
         b1 = len(a1)
@@ -264,5 +264,8 @@ class Booking:
             abort(400, description='Wrong Activity for the selected time')
         else:
             return True
+
+
+
 
 # Activity Check Ends

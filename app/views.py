@@ -199,6 +199,58 @@ def post_booking():
     return jsonify(response), 200
 
 
+@app.route('/daily', methods=['GET'])
+def daily(facilityId=2, capacity=2):
+    results = []
+    the_date = date(2023, 3, 24)
+    one_hour = time(1, 0, 0)
+
+    for hour in range(8, 21):
+        current_time = time(hour, 0)
+        next_time = (datetime.combine(datetime.today(), current_time)
+                     + timedelta(hours=one_hour.hour, minutes=one_hour.minute, seconds=one_hour.second)).time()
+        bookings = models.Booking.query.filter_by(
+            bookingDate=the_date,
+            bookingTime=current_time,
+            bookingEndTime=next_time,
+            facilityId=facilityId).all()
+
+        # All Bookings that starts at booking current time of that facility.
+        a1 = models.Booking.query.filter_by(bookingDate=the_date,
+                                            bookingTime=current_time,
+                                            facilityId=facilityId).all()
+
+        # All Bookings that starts booking start time and ends in one hour
+        a2 = models.Booking.query.filter_by(bookingDate=the_date,
+                                            bookingTime=current_time,
+                                            bookingEndTime=next_time,
+                                            facilityId=facilityId
+                                            ).all()
+
+        # All bookings that ends after 1 hour of booking start time
+        a3 = models.Booking.query.filter_by(bookingDate=the_date,
+                                            bookingEndTime=next_time,
+                                            facilityId=facilityId
+                                            ).all()
+        b1 = len(a1)
+        b2 = len(a2)
+        b3 = len(a3)
+        #space = " "
+        #timing = current_time.strftime("%H:%M:%S")
+        #data = timing + space + str(status)
+
+        booking = b1 + b2 + b3
+        if booking > capacity:
+            status = False
+            results.append(status)
+        else:
+            status = True
+
+            results.append(status)
+
+    return jsonify(results), 200
+
+
 def check_facility_time(B, CloseTime, OpenTime, booking):
     B.check_facility_time(booking.bookingTime,
                           booking.bookingEndTime,
@@ -263,6 +315,7 @@ def delete_booking(id):
 @app.route('/bookings/user/<userId>', methods=['GET'])
 def get_booking_uid(userId):
     try:
+        # Booking_Time = post_booking(booking.bookingTime)
         # requesting all bookings from the database by using the selected user id
         bookings = models.Booking.query.filter_by(userId=userId).all()
 
