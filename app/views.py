@@ -9,8 +9,6 @@ from sqlalchemy.orm.exc import UnmappedInstanceError
 import requests
 
 
-# pip freeze > booking_requirements.txt
-
 ############################### ERROR HANDLERS ###############################
 
 
@@ -110,12 +108,12 @@ def post_booking():
 
     # Create a new booking
     try:
-        booking = models.Booking(
-            # createDate: default in models.py
+        booking = models.Booking(            
             id=ID,
             userId=info["userId"],
             facilityId=info["facilityId"],
             activityId=info["activityId"],
+            # createDate: default in models.py
             bookingDate=datetime.strptime(info["bookingDate"], '%Y/%m/%d').date(),
             bookingTime=start,
             bookingLength=length,
@@ -136,11 +134,11 @@ def post_booking():
 
         facility_details = facility_link.json()
 
-        open = facility_details['openingTime']
-        close = facility_details['closingTime']
+        open_time = facility_details['openingTime']
+        close_time = facility_details['closingTime']
 
-        openTime = datetime.strptime(open, '%H:%M:%S').time()
-        closeTime = datetime.strptime(close, '%H:%M:%S').time()
+        openTime = datetime.strptime(open_time, '%H:%M:%S').time()
+        closeTime = datetime.strptime(close_time, '%H:%M:%S').time()
         capacity = facility_details['capacity']
 
         # Calling the Availability Class and its functions to check the booking.
@@ -170,11 +168,6 @@ def post_booking():
         # add and commit the booking details to the database (Booking.db)
         db.session.add(booking)
         db.session.commit()
-
-
-        test_bookings = models.Booking.query.all()
-        print("test bookings:" + str(test_bookings))
-
 
         # Create a new response
         response = get_response_for_post(booking)
@@ -238,11 +231,7 @@ def get_booking_uid(userId):
         # requesting all bookings from the database by using the selected user id
         bookings = models.Booking.query.filter_by(userId=userId).all()
 
-        print("bookings :" + str(bookings))
-
         booking_list = []
-
-
 
         for booking in bookings:
             # Adding all bookings in a list called booking_list
@@ -258,7 +247,6 @@ def get_booking_uid(userId):
                 'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
             })
 
-        print("bookings list:" + str(booking_list))
     # Check for possible errors in the submitted data
     except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
         raise error
