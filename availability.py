@@ -6,6 +6,7 @@ from flask import json, request, jsonify, abort
 
 
 class Booking:
+
     def __init__(self, Bdate, Btime, Blength, Bend, FacilityId, Close, Open, Capacity, A_time, A_end, Alength, A_day
                  ):
         self.Bdate = Bdate
@@ -115,6 +116,7 @@ class Booking:
         b4 = len(a4)
         b5 = len(a5)
         b6 = len(a6)
+
         Block2 = (b1 + b3) - b6
         Block1 = (b4 + b2) - b5
         Block3 = 0
@@ -264,8 +266,6 @@ class Booking:
             abort(400, description='Wrong Activity for the selected time')
         else:
             return True
-
-
 
 
 # Activity Check Ends

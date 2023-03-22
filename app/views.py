@@ -107,11 +107,10 @@ def post_booking():
          timedelta(hours=length.hour,
                    minutes=length.minute,
                    seconds=length.second)).time()
-    print("Test 1")
+
     # Create a new booking
     try:
-        booking = models.Booking(
-            # createDate: default in models.py
+        booking = models.Booking(            
             id=ID,
             userId=info["userId"],
             facilityId=info["facilityId"],
@@ -121,64 +120,66 @@ def post_booking():
             bookingLength=length,
             bookingEndTime=x
         )
-        print("Test 2")
+
         # Getting the facility and activity ID values from the user new booking
-        F_id = booking.facilityId
-        A_id = booking.activityId
+        f_id = booking.facilityId
+        a_id = booking.activityId
 
         # Getting the facility details from facilities API
-        Facility_link = requests.get(f"http://127.0.0.1:3003/facility/{F_id}")
-        Facility_details = Facility_link.json()
-        F_OpenTime = datetime.strptime(Facility_details['openingTime'], '%H:%M:%S').time()
-        F_CloseTime = datetime.strptime(Facility_details['closingTime'], '%H:%M:%S').time()
-        F_capacity = Facility_details['capacity']
-        print("Test 3")
+        # facility_link = requests.get(f"http://127.0.0.1:3003/facility/{f_id}")
+        facility_link = requests.get(f"http://cleargym.live:3003/facility/{f_id}")
+
+        facility_details = facility_link.json()
+        f_openTime = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
+        f_closeTime = datetime.strptime(facility_details['closingTime'], '%H:%M:%S').time()
+        f_capacity = facility_details['capacity']
+
         # Getting the activity details from facilities API
-        Activity_link = requests.get(f"http://127.0.0.1:3003/activity/{A_id}")  #
-        Activity_details = Activity_link.json()
-        A_Open = Activity_details['activityStartTime']
-        A_Close = Activity_details['activityEndTime']
-        A_OpenTime = datetime.strptime(A_Open, '%H:%M').time()
-        A_CloseTime = datetime.strptime(A_Close, '%H:%M').time()
-        A_day = Activity_details['activityDay']
-        print("Test 4")
-        Alength = (datetime.combine(datetime.today(), A_CloseTime) -
-                   timedelta(hours=A_OpenTime.hour,
-                             minutes=A_OpenTime.minute,
-                             seconds=A_OpenTime.second)).time()
-        print("Test 5")
+        # activity_link = requests.get(f"http://127.0.0.1:3003/activity/{a_id}")
+        activity_link = requests.get(f"http://cleargym.live:3003/activity/{a_id}")
+
+        activity_details = activity_link.json()
+        a_open = activity_details['activityStartTime']
+        a_close = activity_details['activityEndTime']
+        a_openTime = datetime.strptime(a_open, '%H:%M').time()
+        a_closeTime = datetime.strptime(a_close, '%H:%M').time()
+        a_day = activity_details['activityDay']
+
+        a_length = (datetime.combine(datetime.today(), a_closeTime) -
+                   timedelta(hours=a_openTime.hour,
+                             minutes=a_openTime.minute,
+                             seconds=a_openTime.second)).time()
+
         # Calling the Availability Class and its functions to check the booking.
-        B = Booking(booking.bookingDate,
+        b = Booking(booking.bookingDate,
                     booking.bookingTime,
                     booking.bookingLength,
                     booking.bookingEndTime,
-                    F_id,
-                    F_CloseTime,
-                    F_OpenTime,
-                    F_capacity,
-                    A_OpenTime,
-                    A_CloseTime,
-                    Alength,
-                    A_day
+                    f_id,
+                    f_closeTime,
+                    f_openTime,
+                    f_capacity,
+                    a_openTime,
+                    a_closeTime,
+                    a_length,
+                    a_day
                     )
-        print("Test 6")
+
         # Check Facilities Begin
-        check_facility_time(B, F_CloseTime, F_OpenTime, booking)
-        check_facility_capacity(B, F_id, booking, F_capacity)
-        # Check Facilities Done
-        print("Test 7")
+        check_facility_time(b, f_closeTime, f_openTime, booking)
+        check_facility_capacity(b, f_id, booking, f_capacity)
+
         # Check Activities Begin
-        B.check_activity(Alength,
-                         A_day,
+        b.check_activity(a_length,
+                         a_day,
                          booking.bookingLength,
                          booking.bookingDate,
                          booking.bookingTime,
                          booking.bookingEndTime,
-                         A_OpenTime,
-                         A_CloseTime
+                         a_openTime,
+                         a_closeTime
                          )
-        print("Test 8")
-        # Check Activities Done
+
         # add and commit the booking details to the database (Booking.db)
         db.session.add(booking)
         db.session.commit()
@@ -205,18 +206,18 @@ def get_daily_availability(facilityId, month, day):
     # one_hour is an amount of time
     one_hour = time(1, 0, 0)
     # request facility
-    Facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
-    Facility_details = Facility_link.json()
-    F_OpenTime = datetime.strptime(Facility_details['openingTime'], '%H:%M:%S').time()
-    F_CloseTime = datetime.strptime(Facility_details['closingTime'], '%H:%M:%S').time()
-    F_capacity = Facility_details['capacity']
+    facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
+    facility_details = facility_link.json()
+    f_openTime = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
+    f_closeTime = datetime.strptime(facility_details['closingTime'], '%H:%M:%S').time()
+    f_capacity = facility_details['capacity']
     # Convert the facility start and end time hours to integers
-    Start = int(F_OpenTime.strftime('%H'))
-    End = int(F_CloseTime.strftime('%H'))
+    start = int(f_openTime.strftime('%H'))
+    end = int(f_closeTime.strftime('%H'))
     # Getting the end hour and add 1 to it ( to be used in the loop )
-    end_plus = End + 1
+    end_plus = end + 1
 
-    for hour in range(Start, end_plus):
+    for hour in range(start, end_plus):
 
         current_time = time(hour, 0)
 
@@ -254,7 +255,7 @@ def get_daily_availability(facilityId, month, day):
         # data = timing + space + str(status)
 
         booking = b1 + b2 + b3
-        if booking > F_capacity:
+        if booking > f_capacity:
             status = False
             daily_results.append([timing, status])
         else:
@@ -288,29 +289,29 @@ def get_monthly_availability(facilityId, month):
     one_hour = time(1, 0, 0)
 
     # request facility
-    Facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
-    Facility_details = Facility_link.json()
-    F_OpenTime = datetime.strptime(Facility_details['openingTime'], '%H:%M:%S').time()
-    F_CloseTime = datetime.strptime(Facility_details['closingTime'], '%H:%M:%S').time()
-    F_capacity = Facility_details['capacity']
+    facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
+    facility_details = facility_link.json()
+    f_openTime = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
+    f_closeTime = datetime.strptime(facility_details['closingTime'], '%H:%M:%S').time()
+    f_capacity = facility_details['capacity']
 
     # Convert the facility start and end time hours to integers
-    Start = int(F_OpenTime.strftime('%H'))
-    End = int(F_CloseTime.strftime('%H'))
+    start = int(f_openTime.strftime('%H'))
+    end = int(f_closeTime.strftime('%H'))
 
     # Getting the end hour and add 1 to it ( to be used in the 2 nd loop )
-    end_plus = End + 1
+    end_plus = end + 1
 
     # Convert the first and last days in a month to ints
-    First_day = start_date.day
-    Last_day = end_date.day
+    first_day = start_date.day
+    last_day = end_date.day
 
     # Getting the Last day and add 1 day to it ( to be used in the 1 st loop )
-    Last_day_plus = Last_day + 1
+    last_day_plus = last_day + 1
 
-    for day in range(First_day, Last_day_plus):
+    for day in range(first_day, last_day_plus):
 
-        for hour in range(Start, end_plus):
+        for hour in range(start, end_plus):
             current_time = time(hour, 0)
 
             next_time = (datetime.combine(datetime.today(), current_time)
@@ -347,7 +348,7 @@ def get_monthly_availability(facilityId, month):
             # data = timing + space + str(status)
 
             booking = b1 + b2 + b3
-        if booking > F_capacity:
+        if booking > f_capacity:
             status = False
             daily_results.append([timing, status])
         else:
@@ -516,18 +517,18 @@ def patch_booking(id):
     return jsonify(response), 200
 
 
-def check_facility_time(B, CloseTime, OpenTime, booking):
-    B.check_facility_time(booking.bookingTime,
+def check_facility_time(b, closeTime, openTime, booking):
+    b.check_facility_time(booking.bookingTime,
                           booking.bookingEndTime,
-                          OpenTime,
-                          CloseTime)
+                          openTime,
+                          closeTime)
 
 
-def check_facility_capacity(B, F_id, booking, capacity):
-    B.check_facility_capacity(booking.bookingDate,
+def check_facility_capacity(b, f_id, booking, capacity):
+    b.check_facility_capacity(booking.bookingDate,
                               booking.bookingTime,
                               booking.bookingEndTime,
-                              F_id,
+                              f_id,
                               capacity,
                               booking.bookingLength)
 
