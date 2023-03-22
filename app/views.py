@@ -121,7 +121,6 @@ def post_booking():
             bookingLength=length,
             bookingEndTime=x
         )
-        print("Test input")
 
         # Getting the facility and activity ID values from the user new booking
         F_id = booking.facilityId
@@ -135,7 +134,6 @@ def post_booking():
         F_OpenTime = datetime.strptime(F_Open, '%H:%M:%S').time()
         F_CloseTime = datetime.strptime(F_Close, '%H:%M:%S').time()
         F_capacity = Facility_details['capacity']
-        print("Test Facility request")
 
         # Getting the activity details from facilities API
         Activity_link = requests.get(f"http://127.0.0.1:3003/activity/{A_id}")  #
@@ -145,7 +143,6 @@ def post_booking():
         A_OpenTime = datetime.strptime(A_Open, '%H:%M').time()
         A_CloseTime = datetime.strptime(A_Close, '%H:%M').time()
         A_day = Activity_details['activityDay']
-        print("Test Activity request")
 
         Alength = (datetime.combine(datetime.today(), A_CloseTime) -
                    timedelta(hours=A_OpenTime.hour,
@@ -316,7 +313,6 @@ def get_monthly_availability(facilityId, month):
     for day in range(First_day, Last_day_plus):
 
         for hour in range(Start, end_plus):
-
             current_time = time(hour, 0)
 
             next_time = (datetime.combine(datetime.today(), current_time)
@@ -361,12 +357,12 @@ def get_monthly_availability(facilityId, month):
             daily_results.append([timing, status])
 
     for item in daily_results:
-            if False not in daily_results:
-                day_availability = True
-                monthly_results.append(day_availability)
-            elif True not in daily_results:
-                day_availability = False
-                monthly_results.append(day_availability)
+        if False not in daily_results:
+            day_availability = True
+            monthly_results.append(day_availability)
+        elif True not in daily_results:
+            day_availability = False
+            monthly_results.append(day_availability)
 
     return jsonify(monthly_results), 200
 
