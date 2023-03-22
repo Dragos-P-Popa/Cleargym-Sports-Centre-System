@@ -14,3 +14,4 @@ FENV/
 .github/
 __pycache__/
 .pytest_cache/
+/Booking.db
