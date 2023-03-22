@@ -199,85 +199,176 @@ def post_booking():
     return jsonify(response), 200
 
 
-@app.route('/daily', methods=['GET'])
-def daily(facilityId=2, capacity=2):
-    results = []
-    the_date = date(2023, 3, 24)
+@app.route('/availability/<int:facilityId>/<int:month>/<int:day>', methods=['GET'])
+def get_daily_availability(facilityId, month, day):
+    # Get the current year
+    current_year = datetime.now().year
+    # Create a date object with the given month, day, and current year
+    mydate = date(current_year, month, day)
+    # daily results is a list of boolean variables for each hour in a day
+    daily_results = []
+    # one_hour is an amount of time
     one_hour = time(1, 0, 0)
+    # request facility
+    Facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
+    Facility_details = Facility_link.json()
+    F_OpenTime = datetime.strptime(Facility_details['openingTime'], '%H:%M:%S').time()
+    F_CloseTime = datetime.strptime(Facility_details['closingTime'], '%H:%M:%S').time()
+    F_capacity = Facility_details['capacity']
+    # Convert the facility start and end time hours to integers
+    Start = int(F_OpenTime.strftime('%H'))
+    End = int(F_CloseTime.strftime('%H'))
+    # Getting the end hour and add 1 to it ( to be used in the loop )
+    end_plus = End + 1
 
-    for hour in range(8, 21):
+    for hour in range(Start, end_plus):
+
         current_time = time(hour, 0)
+
         next_time = (datetime.combine(datetime.today(), current_time)
                      + timedelta(hours=one_hour.hour, minutes=one_hour.minute, seconds=one_hour.second)).time()
+
         bookings = models.Booking.query.filter_by(
-            bookingDate=the_date,
+            bookingDate=mydate,
             bookingTime=current_time,
             bookingEndTime=next_time,
             facilityId=facilityId).all()
 
         # All Bookings that starts at booking current time of that facility.
-        a1 = models.Booking.query.filter_by(bookingDate=the_date,
+        a1 = models.Booking.query.filter_by(bookingDate=mydate,
                                             bookingTime=current_time,
                                             facilityId=facilityId).all()
 
         # All Bookings that starts booking start time and ends in one hour
-        a2 = models.Booking.query.filter_by(bookingDate=the_date,
+        a2 = models.Booking.query.filter_by(bookingDate=mydate,
                                             bookingTime=current_time,
                                             bookingEndTime=next_time,
                                             facilityId=facilityId
                                             ).all()
 
         # All bookings that ends after 1 hour of booking start time
-        a3 = models.Booking.query.filter_by(bookingDate=the_date,
+        a3 = models.Booking.query.filter_by(bookingDate=mydate,
                                             bookingEndTime=next_time,
                                             facilityId=facilityId
                                             ).all()
         b1 = len(a1)
         b2 = len(a2)
         b3 = len(a3)
-        #space = " "
-        #timing = current_time.strftime("%H:%M:%S")
-        #data = timing + space + str(status)
+        # space = " "
+        timing = current_time.strftime("%H:%M:%S")
+        # data = timing + space + str(status)
 
         booking = b1 + b2 + b3
-        if booking > capacity:
+        if booking > F_capacity:
             status = False
-            results.append(status)
+            daily_results.append([timing, status])
         else:
             status = True
+            daily_results.append([timing, status])
 
-            results.append(status)
-
-    return jsonify(results), 200
-
-
-def check_facility_time(B, CloseTime, OpenTime, booking):
-    B.check_facility_time(booking.bookingTime,
-                          booking.bookingEndTime,
-                          OpenTime,
-                          CloseTime)
+    return jsonify(daily_results), 200
 
 
-def check_facility_capacity(B, F_id, booking, capacity):
-    B.check_facility_capacity(booking.bookingDate,
-                              booking.bookingTime,
-                              booking.bookingEndTime,
-                              F_id,
-                              capacity,
-                              booking.bookingLength)
+@app.route('/availability/<int:facilityId>/<int:month>', methods=['GET'])
+def get_monthly_availability(facilityId, month):
+    # Get the current year
+    current_year = datetime.now().year
 
+    # The first day of the month
+    start_date = date(current_year, month, 1)
 
-def get_response_for_post(booking):
-    return {'id': booking.id,
-            'userId': booking.userId,
-            'facilityId': booking.facilityId,
-            'activityId': booking.activityId,
-            'createDate': booking.createDate.strftime('%Y/%m/%d'),
-            'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
-            'bookingTime': booking.bookingTime.strftime('%H:%M'),
-            'bookingLength': booking.bookingLength.strftime('%H:%M'),
-            'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
-            }
+    # get the number of days in the month
+    num_days = (date(current_year, month + 1, 1) - date(current_year, month, 1)).days
+
+    # The last day in the month
+    end_date = date(current_year, month, num_days)
+
+    # daily results is a list of boolean variables for each hour in a day
+    daily_results = []
+
+    # monthly results is a list of boolean variables for each day in a month
+    monthly_results = []
+
+    # one_hour is an amount of time
+    one_hour = time(1, 0, 0)
+
+    # request facility
+    Facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
+    Facility_details = Facility_link.json()
+    F_OpenTime = datetime.strptime(Facility_details['openingTime'], '%H:%M:%S').time()
+    F_CloseTime = datetime.strptime(Facility_details['closingTime'], '%H:%M:%S').time()
+    F_capacity = Facility_details['capacity']
+
+    # Convert the facility start and end time hours to integers
+    Start = int(F_OpenTime.strftime('%H'))
+    End = int(F_CloseTime.strftime('%H'))
+
+    # Getting the end hour and add 1 to it ( to be used in the 2 nd loop )
+    end_plus = End + 1
+
+    # Convert the first and last days in a month to ints
+    First_day = start_date.day
+    Last_day = end_date.day
+
+    # Getting the Last day and add 1 day to it ( to be used in the 1 st loop )
+    Last_day_plus = Last_day + 1
+
+    for day in range(First_day, Last_day_plus):
+
+        for hour in range(Start, end_plus):
+
+            current_time = time(hour, 0)
+
+            next_time = (datetime.combine(datetime.today(), current_time)
+                         + timedelta(hours=one_hour.hour, minutes=one_hour.minute, seconds=one_hour.second)).time()
+
+            bookings = models.Booking.query.filter_by(
+                bookingDate=day,
+                bookingTime=current_time,
+                bookingEndTime=next_time,
+                facilityId=facilityId).all()
+
+            # All Bookings that starts at booking current time of that facility.
+            a1 = models.Booking.query.filter_by(bookingDate=day,
+                                                bookingTime=current_time,
+                                                facilityId=facilityId).all()
+
+            # All Bookings that starts booking start time and ends in one hour
+            a2 = models.Booking.query.filter_by(bookingDate=day,
+                                                bookingTime=current_time,
+                                                bookingEndTime=next_time,
+                                                facilityId=facilityId
+                                                ).all()
+
+            # All bookings that ends after 1 hour of booking start time
+            a3 = models.Booking.query.filter_by(bookingDate=day,
+                                                bookingEndTime=next_time,
+                                                facilityId=facilityId
+                                                ).all()
+            b1 = len(a1)
+            b2 = len(a2)
+            b3 = len(a3)
+            # space = " "
+            timing = current_time.strftime("%H:%M:%S")
+            # data = timing + space + str(status)
+
+            booking = b1 + b2 + b3
+        if booking > F_capacity:
+            status = False
+            daily_results.append([timing, status])
+        else:
+            status = True
+            daily_results.append([timing, status])
+
+    for item in daily_results:
+            if False not in daily_results:
+                day_availability = True
+                monthly_results.append(day_availability)
+            elif True not in daily_results:
+                day_availability = False
+                monthly_results.append(day_availability)
+
+    return jsonify(monthly_results), 200
 
 
 # This function is to delete a booking by using the booking id
@@ -429,3 +520,32 @@ def patch_booking(id):
 
     # Return the response
     return jsonify(response), 200
+
+
+def check_facility_time(B, CloseTime, OpenTime, booking):
+    B.check_facility_time(booking.bookingTime,
+                          booking.bookingEndTime,
+                          OpenTime,
+                          CloseTime)
+
+
+def check_facility_capacity(B, F_id, booking, capacity):
+    B.check_facility_capacity(booking.bookingDate,
+                              booking.bookingTime,
+                              booking.bookingEndTime,
+                              F_id,
+                              capacity,
+                              booking.bookingLength)
+
+
+def get_response_for_post(booking):
+    return {'id': booking.id,
+            'userId': booking.userId,
+            'facilityId': booking.facilityId,
+            'activityId': booking.activityId,
+            'createDate': booking.createDate.strftime('%Y/%m/%d'),
+            'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
+            'bookingTime': booking.bookingTime.strftime('%H:%M'),
+            'bookingLength': booking.bookingLength.strftime('%H:%M'),
+            'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
+            }
