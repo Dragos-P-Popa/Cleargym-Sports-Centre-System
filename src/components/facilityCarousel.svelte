@@ -25,12 +25,12 @@
   
 <div class="pb-20 px-10 pl-40 w-11/12 relative">
     <div class="flex overflow-x-auto no-scroll drop-shadow-lg" bind:this={container}>
-        <img src="swimming_pool_c.jpg" class="block w-2/6" alt="Swimming pool" />
-        <img src="fitness_room_c.jpg" class="block w-2/6" alt="Fitness room" />
-        <img src="squash_court_c.jpg" class="block w-2/6" alt="Squash court" />
-        <img src="sports_hall_c.jpg" class="block w-2/6" alt="Sports hall" />
-        <img src="climbing_wall_c.jpg" class="block w-2/6" alt="Climbing wall" />
-        <img src="studio_c.jpg" class="block w-2/6" alt="Studio" />
+        <img src="swimming_pool_c.webp" class="block w-2/6" alt="Swimming pool" />
+        <img src="fitness_room_c.webp" class="block w-2/6" alt="Fitness room" />
+        <img src="squash_court_c.webp" class="block w-2/6" alt="Squash court" />
+        <img src="sports_hall_c.webp" class="block w-2/6" alt="Sports hall" />
+        <img src="climbing_wall_c.webp" class="block w-2/6" alt="Climbing wall" />
+        <img src="studio_c.webp" class="block w-2/6" alt="Studio" />
     </div>
     <div class="absolute flex justify-between items-center w-full transform -translate-y-1/2 top-1/3">
         <img class="cursor-pointer p-3 absolute top-1/2 rounded-full bg-white/50 left-2" src="arrowleft2.svg" alt="arrow-left" id="arrow-left" />
