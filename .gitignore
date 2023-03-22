@@ -11,6 +11,5 @@ venv/
 X/
 FENV/
 .idea/
-.github/
 __pycache__/
 .pytest_cache/
