@@ -9,6 +9,7 @@ def preload_data():
         # create the table and the database
         db.create_all()
 
+
 ################################ RETRIEVE DATA ################################
 
 

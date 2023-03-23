@@ -24,14 +24,12 @@ from sqlalchemy.orm.exc import UnmappedInstanceError
 # - refering to a non-existent attribute, e.g. in a NoneType object
 # - sent in an incorrect format (e.g. date/time)
 
-
 @app.errorhandler(IntegrityError)
 def integrity_error_handler(error):
     db.session.rollback()
     app.logger.error(str(error))
     # IntegrityError refers to invalid data type in database operations
     return jsonify({"IntegrityError": "Invalid data in one or more fields"}), 400
-
 
 @app.errorhandler(KeyError)
 def key_error_handler(error):
@@ -40,14 +38,12 @@ def key_error_handler(error):
     # KeyError refers to a missing key:value pair
     return jsonify({"KeyError": "Missing data in the request"}), 400
 
-
 @app.errorhandler(UnmappedInstanceError)
 def unmapped_error_handler(error):
     db.session.rollback()
     app.logger.error("UnmappedInstanceError detected")
     # UnmappedInstanceError is raised when trying to operate on a non-existent record
     return jsonify({"UnmappedInstanceError": "Record not found in the database"}), 400
-
 
 @app.errorhandler(TypeError)
 def type_error_handler(error):
@@ -56,7 +52,6 @@ def type_error_handler(error):
     # TypeError refers to invalid data type passed as an argument to a function
     return jsonify({"TypeError": "Endpoint function operating on a wrong data type"}), 400
 
-
 @app.errorhandler(AttributeError)
 def attribute_error_handler(error):
     db.session.rollback()
@@ -64,7 +59,6 @@ def attribute_error_handler(error):
     # AttributeError is raised when trying to access an attribute
     # of a NoneType object assigned to a variable in views.py
     return jsonify({"AttributeError": "The referenced record does not exist"}), 400
-
 
 @app.errorhandler(ValueError)
 def value_error_handler(error):
