@@ -122,8 +122,8 @@ def post_booking():
         # The first 'facility_link' variable is used for local testing.
         # The other, for remote testing on GitHub.
 
-        facility_link = requests.get(f"http://127.0.0.1:3003/facility/{f_id}")
-        #facility_link = requests.get(f"http://cleargym.live:3003/facility/{f_id}")
+        # facility_link = requests.get(f"http://127.0.0.1:3003/facility/{f_id}")
+        facility_link = requests.get(f"http://cleargym.live:3003/facility/{f_id}")
 
         facility_details = facility_link.json()
 
@@ -132,8 +132,8 @@ def post_booking():
         f_capacity = facility_details['capacity']
 
         # Getting the activity details from facilities API
-        activity_link = requests.get(f"http://127.0.0.1:3003/activity/{a_id}")
-        #activity_link = requests.get(f"http://cleargym.live:3003/activity/{a_id}")
+        # activity_link = requests.get(f"http://127.0.0.1:3003/activity/{a_id}")
+        activity_link = requests.get(f"http://cleargym.live:3003/activity/{a_id}")
 
         activity_details = activity_link.json()
         a_open = activity_details['activityStartTime']
@@ -211,8 +211,8 @@ def get_daily_availability(facilityId, month, day):
     one_hour = time(1, 0, 0)
 
     # request facility
-    facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
-    #facility_link = requests.get(f"http://cleargym.live:3003/facility/{facilityId}")
+    # facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
+    facility_link = requests.get(f"http://cleargym.live:3003/facility/{facilityId}")
 
     facility_details = facility_link.json()
     f_openTime = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
@@ -296,8 +296,8 @@ def get_monthly_availability(facilityId, month):
     one_hour = time(1, 0, 0)
 
     # request facility
-    facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
-    #facility_link = requests.get(f"http://cleargym.live:3003/facility/{facilityId}")
+    # facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
+    facility_link = requests.get(f"http://cleargym.live:3003/facility/{facilityId}")
 
     facility_details = facility_link.json()
     f_openTime = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
