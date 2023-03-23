@@ -3,8 +3,12 @@ from app import db
 association_table = db.Table(
     "association_table",
     db.Model.metadata,
-    db.Column("facilityID", db.ForeignKey("facility_table.id"),  primary_key=True),
-    db.Column("activityID", db.ForeignKey("activity_table.activityId"),  primary_key=True),
+    db.Column("facilityID", 
+              db.ForeignKey("facility_table.id", ondelete="CASCADE"),  
+              primary_key=True),
+    db.Column("activityID", 
+              db.ForeignKey("activity_table.activityId", ondelete="CASCADE"),  
+              primary_key=True),
 )
 
 # the Facilities table represents facilities in the Sports Centre
@@ -24,13 +28,6 @@ class Facility(db.Model):
                                back_populates="facility",
                                lazy='dynamic')
 
-
-def __init__(self, facilityName, capacity, openingTime, closingTime, managerId):
-    self.facilityName = facilityName
-    self.capacity = capacity
-    self.openingTime = openingTime
-    self.closingTime = closingTime
-    self.managerId = managerId
 
 # The model of the Activity table
 class Activity(db.Model):

@@ -6,7 +6,13 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import UnmappedInstanceError
 
 
-########################### ERROR HANDLERS ###########################
+############################### ERROR HANDLERS ###############################
+
+
+# The error handling was implemented and debugged
+# with the help of the following documentation and thread
+# https://flask.palletsprojects.com/en/2.2.x/errorhandling/#returning-api-errors-as-json
+# https://stackoverflow.com/questions/24522290/cannot-catch-sqlalchemy-integrityerror
 
 # The error handlers for IntegrityError, KeyError, UnmappedInstanceError,
 # TypeError, AttributeError and ValueError.
@@ -69,7 +75,9 @@ def create_tables():
     # preload some data in the database
     preload_data()
 
+
 ########################### FACILITY TABLE END POINTS ###########################
+
 
 # API endpoint that shows a facility either by facility id or facility name
 @app.route('/facility/<param>', methods=['GET'])
@@ -216,13 +224,19 @@ def get_all_facilities():
     # convert to json and return
     return jsonify(result), 200
 
+
 ########################### ACTIVITY TABLE END POINTS ###########################
+
 
 # This function is used to create a new activity
 @app.route('/activity', methods=['POST'])
 def post_activity():
     # requesting the data
     posted_activity = request.get_json()
+
+    # Find the facility associated with this activity
+    facility = models.Facility.query.filter_by(
+                    id=posted_activity["facilityId"]).first()
 
     # Create a new activity
     try:
@@ -233,6 +247,9 @@ def post_activity():
             activityEndTime=datetime.strptime(posted_activity['activityEndTime'],
                                              '%H:%M').time(),
             activityDay=posted_activity["activityDay"])
+
+        # Establish a relationship between this facility and activity
+        facility.activity.append(new_activity)
 
         # add and commit the activity details to the database
         db.session.add(new_activity)
