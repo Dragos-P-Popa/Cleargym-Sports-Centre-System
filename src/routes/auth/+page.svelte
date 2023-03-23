@@ -196,8 +196,30 @@
           serverError.style.display = "block";
         }
       } else {
-        // if response to login was 200 redirect to dashboard
-        goto('/dashboard');
+
+        // fetch current user
+        const res2 = await fetch(PUBLIC_AUTH_URL + 'user/', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            "Content-Type": "application/json",
+          }
+        })
+
+        // wait in the background for API response
+        result = await res2.json()
+
+        // check what kind of user has logged in
+        if (result.privilegeLevel == 1) {
+          goto('/dashboard');
+        }
+        if (1 < result.privilegeLevel && result.privilegeLevel <= 32) {
+          //employee
+          console.log('employee')
+        }
+        if (32 < result.privilegeLevel && result.privilegeLevel <= 1028) {
+          goto('/activities');
+        }
       }
     
     }
