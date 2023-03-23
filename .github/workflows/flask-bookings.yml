@@ -5,9 +5,9 @@ name: Flask-bookings CI
 
 on:
   push:
-    branches: [ "main-booking" ] # name of the branch being tested
+    branches: [ "main-bookings" ] # name of the branch being tested
   pull_request:
-    branches: [ "main-booking" ]
+    branches: [ "main-bookings" ]
 # This environment variable is used to make requests to the hosted Facilities API
 env:
   FACILITIES_API: http://cleargym.live:3003/facility/
