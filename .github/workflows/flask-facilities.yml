@@ -5,9 +5,9 @@ name: Flask-facilities CI
 
 on:
   push:
-    branches: [ "main-facilities" ] # name of the branch being tested
+    branches: [ "facilities-tests" ] # name of the branch being tested
   pull_request:
-    branches: [ "main-facilities" ]
+    branches: [ "facilities-tests" ]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
