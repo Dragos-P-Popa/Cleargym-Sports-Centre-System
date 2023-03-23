@@ -1,6 +1,7 @@
 const UsersController = require('./controllers/users.controller');
 const ValidationMiddleware = require('../auth/middlewares/validation.user.middleware');
 const VerificationMiddleware = require('../auth/middlewares/verification.user.middleware');
+const PermissionsMiddleware = require('../auth/middlewares/permissions.user.middleware');
 
 /*
     Defines the app's routes.
@@ -32,6 +33,7 @@ exports.routesConfig = function (app) {
     app.get('/users', [
         // user should be logged in to access this
         ValidationMiddleware.checkJWT,
+        PermissionsMiddleware.minimumPermissionLevelRequired(1028),
         UsersController.list
     ])
     // get current signed in user
