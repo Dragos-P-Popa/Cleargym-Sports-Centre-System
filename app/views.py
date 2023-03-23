@@ -256,7 +256,7 @@ def post_activity():
 
         # Establish a relationship between this facility and activity
         facility.activity.append(new_activity)
-        print("TEST")
+
         # add and commit the activity details to the database
         db.session.add(new_activity)
         db.session.commit()
@@ -284,7 +284,6 @@ def delete_activity(id):
     try:
         # requesting the data from the database by using the selected activity id
         activity = models.Activity.query.get(id)
-        print("activity: " + str(activity))
 
         # delete and commit the activity details from the database
         db.session.delete(activity)
