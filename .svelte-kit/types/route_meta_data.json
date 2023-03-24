@@ -1,5 +1,6 @@
 {
 	"/": [],
+	"/activities": [],
 	"/auth": [],
 	"/bookings": [
 		"src/routes/bookings/+page.ts"
