@@ -72,21 +72,32 @@ const permissionProtection = (async ({ event, resolve }) => {
         // unprotected route
         return await resolve(event);
     } 
-    if (event.url.pathname.includes("/management")) {
-        // fetch current user
-        const res = await fetch(PUBLIC_AUTH_URL + 'user/', {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                cookie: event?.request.headers.get('cookie'), // only relevant server-side
-                credentials: 'include', // only relevant client-side
-            }
-            })
-    
-        // wait in the background for API response
-        let user = await res.json()
 
+    // fetch current user
+    const res = await fetch(PUBLIC_AUTH_URL + 'user/', {
+        method: 'GET',
+        headers: {
+            "Content-Type": "application/json",
+            cookie: event?.request.headers.get('cookie'), // only relevant server-side
+            credentials: 'include', // only relevant client-side
+        }
+        })
+
+    // wait in the background for API response
+    let user = await res.json()
+
+    console.log(event.url.pathname)
+
+    if (event.url.pathname.includes("/management")) {
         if (32 < user.privilegeLevel && user.privilegeLevel <= 1028) {
+            // user has necessary privileges
+            return await resolve(event);
+        } else {
+            throw redirect(307, '/auth')
+        }
+    }
+    if (event.url.pathname.includes("/employees")) {
+        if (1 < user.privilegeLevel && user.privilegeLevel <= 32) {
             // user has necessary privileges
             return await resolve(event);
         } else {
@@ -102,4 +113,4 @@ const runFetch = (async ({ event, resolve }) => {
     return result
 }) satisfies Handle;
  
-export const handle = sequence(refreshToken, routeProtection, permissionProtection, runFetch);
+export const handle = sequence(refreshToken, routeProtection, /*permissionProtection,*/ runFetch);

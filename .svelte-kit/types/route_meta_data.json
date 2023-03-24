@@ -4,8 +4,15 @@
 	"/bookings": [
 		"src/routes/bookings/+page.ts"
 	],
+	"/checkout": [],
 	"/dashboard": [
 		"src/routes/dashboard/+page.ts"
 	],
-	"/management/activities": []
+	"/employees/amend": [],
+	"/employees/book": [],
+	"/employees/memberships": [],
+	"/management/activities": [],
+	"/management/analytics": [],
+	"/management/facilities": [],
+	"/management/staff": []
 }
