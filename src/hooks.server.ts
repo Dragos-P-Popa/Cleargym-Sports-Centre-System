@@ -66,6 +66,35 @@ const routeProtection = (async ({ event, resolve }) => {
     }
     return await resolve(event);
 }) satisfies Handle;
+
+const permissionProtection = (async ({ event, resolve }) => {
+    if (event.url.pathname == "/auth" || event.url.pathname == "/") {
+        // unprotected route
+        return await resolve(event);
+    } 
+    if (event.url.pathname.includes("/management")) {
+        // fetch current user
+        const res = await fetch(PUBLIC_AUTH_URL + 'user/', {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                cookie: event?.request.headers.get('cookie'), // only relevant server-side
+                credentials: 'include', // only relevant client-side
+            }
+            })
+    
+        // wait in the background for API response
+        let user = await res.json()
+
+        if (32 < user.privilegeLevel && user.privilegeLevel <= 1028) {
+            // user has necessary privileges
+            return await resolve(event);
+        } else {
+            throw redirect(307, '/auth')
+        }
+    }
+    return await resolve(event);
+}) satisfies Handle;
  
 const runFetch = (async ({ event, resolve }) => {
     // run the event which triggered this hook
@@ -73,4 +102,4 @@ const runFetch = (async ({ event, resolve }) => {
     return result
 }) satisfies Handle;
  
-export const handle = sequence(refreshToken, routeProtection, runFetch);
+export const handle = sequence(refreshToken, routeProtection, permissionProtection, runFetch);

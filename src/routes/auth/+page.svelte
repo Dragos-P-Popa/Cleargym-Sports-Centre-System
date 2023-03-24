@@ -218,7 +218,7 @@
           console.log('employee')
         }
         if (32 < result.privilegeLevel && result.privilegeLevel <= 1028) {
-          goto('/activities');
+          goto('/management/activities');
         }
       }
     

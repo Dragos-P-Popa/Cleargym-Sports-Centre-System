@@ -6,5 +6,6 @@
 	],
 	"/dashboard": [
 		"src/routes/dashboard/+page.ts"
-	]
+	],
+	"/management/activities": []
 }
