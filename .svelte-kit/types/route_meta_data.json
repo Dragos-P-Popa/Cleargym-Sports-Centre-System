@@ -10,8 +10,16 @@
 	"/employees/amend": [],
 	"/employees/book": [],
 	"/employees/memberships": [],
-	"/management/activities": [],
-	"/management/analytics": [],
-	"/management/facilities": [],
-	"/management/staff": []
+	"/management/activities": [
+		"src/routes/management/activities/+page.ts"
+	],
+	"/management/analytics": [
+		"src/routes/management/analytics/+page.ts"
+	],
+	"/management/facilities": [
+		"src/routes/management/facilities/+page.ts"
+	],
+	"/management/staff": [
+		"src/routes/management/staff/+page.ts"
+	]
 }
