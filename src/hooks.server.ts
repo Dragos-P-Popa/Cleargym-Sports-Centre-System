@@ -31,7 +31,7 @@ const refreshToken = (async ({ event, resolve }) => {
         token = token[0].slice(14, -2)
 
         // set the cleaned token to the current event
-        event.cookies.set('accessToken', token)
+        event.cookies.set('accessToken', token, {path: '/'})
     } 
     return await resolve(event);
 }) satisfies Handle;
