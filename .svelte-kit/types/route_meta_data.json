@@ -7,9 +7,15 @@
 	"/dashboard": [
 		"src/routes/dashboard/+page.ts"
 	],
-	"/employees/amend": [],
-	"/employees/book": [],
-	"/employees/memberships": [],
+	"/employees/amend": [
+		"src/routes/employees/amend/+page.ts"
+	],
+	"/employees/book": [
+		"src/routes/employees/book/+page.ts"
+	],
+	"/employees/memberships": [
+		"src/routes/employees/memberships/+page.ts"
+	],
 	"/management/activities": [
 		"src/routes/management/activities/+page.ts"
 	],
