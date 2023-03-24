@@ -3,14 +3,8 @@
 </script>
 
 
-<style>
-  .backgroundClass {
-    background-image: url("gym.webp");
-    background-size: cover;
+<style lang="postcss">
+  :global(body) {
+    font-family: "manrope";
   }
-
-  .fontClass {
-    font-family: "Manrope";
-  }
-
 </style>

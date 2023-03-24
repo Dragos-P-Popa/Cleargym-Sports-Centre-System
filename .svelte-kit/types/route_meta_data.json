@@ -4,7 +4,6 @@
 	"/bookings": [
 		"src/routes/bookings/+page.ts"
 	],
-	"/checkout": [],
 	"/dashboard": [
 		"src/routes/dashboard/+page.ts"
 	],
