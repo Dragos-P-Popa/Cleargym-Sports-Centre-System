@@ -30,31 +30,15 @@
                <span>Book</span>
           </button> <br>
           <button on:click={() => goto('/employees/amend', { replaceState: false })} class="py-2 px-2 my-1 hover:bg-[#EEEEF2] transition-colors duration-200 hover:border-[#DDDDDD] border-[#FFFFFF] border-[1px] rounded-lg w-full text-left inline-flex items-center">
-               <span>Amend</span>
-          </button> <br>
-          <button on:click={() => goto('/employees/memberships', { replaceState: true })} class="py-2 px-2 my-1 transition-colors duration-200 hover:bg-[#EEEEF2] border-[#FFFFFF] transition-colors duration-200 hover:border-[#DDDDDD] border-[1px] rounded-lg w-full text-left inline-flex items-center">
-            <span>Memberships</span>
-          </button>
+               <span>Amendments</span>
+          </button> 
           {:else if active == "1"}
           <button on:click={() => goto('/employees/book', { replaceState: true })} class="py-2 px-2 my-1 transition-colors duration-200 hover:bg-[#EEEEF2] border-[#FFFFFF] transition-colors duration-200 hover:border-[#DDDDDD] border-[1px] rounded-lg w-full text-left inline-flex items-center">
                <span>Book</span>
           </button> <br>
           <button class="py-2 px-2 my-1 bg-[#EEEEF2] transition-colors duration-200 border-[#DDDDDD] border-[1px] rounded-lg w-full text-left inline-flex items-center">
-            <span>Amend</span>
-          </button> <br>
-          <button on:click={() => goto('/employees/memberships', { replaceState: true })} class="py-2 px-2 my-1 transition-colors duration-200 hover:bg-[#EEEEF2] border-[#FFFFFF] transition-colors duration-200 hover:border-[#DDDDDD] border-[1px] rounded-lg w-full text-left inline-flex items-center">
-            <span>Memberships</span>
-          </button>
-          {:else if active == "2"}
-          <button on:click={() => goto('/employees/book', { replaceState: false })} class="py-2 px-2 my-1 hover:bg-[#EEEEF2] transition-colors duration-200 hover:border-[#DDDDDD] border-[#FFFFFF] border-[1px] rounded-lg w-full text-left inline-flex items-center">
-            <span>Book</span>
-          </button> <br>
-          <button on:click={() => goto('/employees/amend', { replaceState: false })} class="py-2 px-2 my-1 hover:bg-[#EEEEF2] transition-colors duration-200 hover:border-[#DDDDDD] border-[#FFFFFF] border-[1px] rounded-lg w-full text-left inline-flex items-center">
-            <span>Amend</span>
-          </button> <br>
-          <button class="py-2 px-2 my-1 bg-[#EEEEF2] border-[#DDDDDD]  border-[1px] rounded-lg w-full text-left inline-flex items-center">
-               <span>Memberships</span>
-          </button>
+            <span>Amendments</span>
+          </button> 
           {/if}
      </div>
 

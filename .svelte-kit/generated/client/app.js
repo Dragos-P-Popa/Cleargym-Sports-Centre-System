@@ -20,24 +20,21 @@ export const nodes = [() => import('./nodes/0'),
 	() => import('./nodes/17'),
 	() => import('./nodes/18'),
 	() => import('./nodes/19'),
-	() => import('./nodes/20'),
-	() => import('./nodes/21'),
-	() => import('./nodes/22')];
+	() => import('./nodes/20')];
 
 export const server_loads = [];
 
 export const dictionary = {
-	"/": [12],
-	"/auth": [13,[2]],
-	"/bookings": [14,[3]],
-	"/dashboard": [15,[4]],
-	"/employees/amend": [16,[5]],
-	"/employees/book": [17,[6]],
-	"/employees/memberships": [18,[7]],
-	"/management/activities": [19,[8]],
-	"/management/analytics": [20,[9]],
-	"/management/facilities": [21,[10]],
-	"/management/staff": [22,[11]]
+	"/": [11],
+	"/auth": [12,[2]],
+	"/bookings": [13,[3]],
+	"/dashboard": [14,[4]],
+	"/employees/amend": [15,[5]],
+	"/employees/book": [16,[6]],
+	"/management/activities": [17,[7]],
+	"/management/analytics": [18,[8]],
+	"/management/facilities": [19,[9]],
+	"/management/staff": [20,[10]]
 };
 
 export const hooks = {
