@@ -1,10 +1,11 @@
 <script lang="ts">
-  import "@fontsource/manrope";
+  import "@fontsource/Manrope";
   import NavBar from "../../components/navbar.svelte"
   import BookingCard from "../../components/bookingCard.svelte"
   import BookingInfo from "../../components/viewBooking.svelte"
   import QuickBooking from "../../components/quickBooking.svelte"
-  import { PUBLIC_BOOKINGS_URL } from '$env/static/public'
+  import Calendar from "../../components/calendar.svelte"
+  import Toggle from "../../components/bookingTypeToggle.svelte"
 
   export let data;
 
@@ -13,6 +14,8 @@
   export let bookings = data.bookings;
   let user = data.user;
   let i = -1;
+  let selectedDate:Date;
+  let selection:number = 1;
 
   // format date
   function formatDate(date : number) {
@@ -58,7 +61,7 @@
             </div>
 
           </div>
-          <div class="col-span-4 px-4 ml-20 mt-20">
+          <div class="col-span-4 px-4 ml-20 mt-12">
           <div class="ml-auto">
             <!--display selected bookings' information-->
             {#if i != -1}
@@ -71,7 +74,22 @@
                            facility={bookings[i].facilitiesId}/>
             {:else}
               <!--booking creating component-->
-              <QuickBooking/>
+              <p class="font-bold text-3xl pb-8 text-[#1A1A1A]">Calendar</p>
+              <Calendar bind:selectedDate/>
+
+              {#if selectedDate}
+                <div class="grid"> 
+                  <div class="justify-self-center pt-6 pb-4">
+                    <Toggle bind:selection/>
+                  </div>
+                </div>
+
+                {#if selection == 1}
+                  <QuickBooking bind:selectedDate/>
+                {:else} 
+                  <!--activity booking-->
+                {/if}
+              {/if}
             {/if}
           </div>
           </div>
@@ -81,7 +99,5 @@
 
 
 <style lang="postcss">
-  :global(body) {
-      font-family:"Manrope",
-  }
+ 
 </style>

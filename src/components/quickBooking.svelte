@@ -2,6 +2,8 @@
     import MainButton from "./mainButton.svelte"
     import { PUBLIC_BOOKINGS_URL, PUBLIC_FACILITIES_URL } from '$env/static/public'
 
+    export let selectedDate:Date;
+
     let facilities;
     let selectedFacility : number;
 
@@ -9,7 +11,7 @@
     // It is set to 'false' by default.
     let display_confirm = false
 
-    function formatDate(date : number) {
+    function formatDate(date : number, char : string) {
       // converts date from DateTime to yr/mth/day
       var d = new Date(date),
           month = '' + (d.getMonth() + 1),
@@ -22,7 +24,7 @@
       if (day.length < 2) 
           day = '0' + day;
 
-      return [year, month, day].join('/');
+      return [year, month, day].join(char);
   }
 
     async function createBooking(e: { target: HTMLFormElement; }) {
@@ -41,7 +43,7 @@
       
       let userId = localStorage.getItem("uid");
       let facilitiesId = facilities[selectedFacility].id;
-      let bookingDate = formatDate(Date.parse(data.date));
+      let bookingDate = formatDate(Date.parse(data.date), '/');
       let bookingTime = data.time;
       let bookingLength = data.length;
       let bookingType = "General";
@@ -131,7 +133,11 @@
     <form on:submit|preventDefault={createBooking}>
       <div class="py-2">
           <label for="date">Date</label> <br>
+          {#if selectedDate}
+            <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="date" id="date" name="date" value="{formatDate(selectedDate, '-')}" disabled/>
+          {:else}
           <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="date" id="date" name="date" value="" />
+          {/if}
       </div>
       <div class="py-2">
         <label for="time">Time</label> <br>
