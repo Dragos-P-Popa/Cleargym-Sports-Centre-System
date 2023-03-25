@@ -2,6 +2,7 @@
   import "@fontsource/Manrope";
   import NavBar from "../../components/navbar.svelte"
   import BookingCard from "../../components/bookingCard.svelte"
+  import ActivityCard from "../../components/activityCard.svelte"
   import BookingInfo from "../../components/viewBooking.svelte"
   import QuickBooking from "../../components/quickBooking.svelte"
   import Calendar from "../../components/calendar.svelte"
@@ -88,6 +89,9 @@
                   <QuickBooking bind:selectedDate/>
                 {:else} 
                   <!--activity booking-->
+                  <ActivityCard class="my-3" heading="Test" location="Swimming pool" startTime="12:00" sessionLength="2"/>
+                  <ActivityCard class="my-3" heading="Test" location="Swimming pool" startTime="12:00" sessionLength="2"/>
+                  <ActivityCard class="my-3" heading="Test" location="Swimming pool" startTime="12:00" sessionLength="2"/>
                 {/if}
               {/if}
             {/if}
