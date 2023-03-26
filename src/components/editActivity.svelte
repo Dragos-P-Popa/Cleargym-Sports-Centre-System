@@ -1,6 +1,15 @@
 <script lang="ts">
     import MainButton from "./mainButton.svelte";
+    import CancelButton from "./cancelButton.svelte";
+    import { PUBLIC_FACILITIES_URL } from '$env/static/public'
   
+    let editMode : boolean = false;
+    let facilities : any = {};
+    export let activityName : string;
+    export let activityFacility : string;
+    export let activityStartTime : string;
+
+
     let activity = {
       name: "",
       facility: "",
@@ -38,12 +47,41 @@
   
       e.target.reset();
     }
+
+    async function facilityLoading() {
+      // fetch all facilities
+      const res = await fetch(PUBLIC_FACILITIES_URL + 'facilities', {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })
+
+      // this data is used to populate the facility selection UI element (line 97-112)
+      facilities = await res.json()
+      return facilities
+    }
+
   </script>
-<!-- Edit activity -->
-<div class="p-4 py-8 mt-4 shadow-md rounded-lg border-[1px] border-borderColor mt-20 ml-auto">
-    <!-- <p class="px-2 font-light text-md text-[#515151] text-left">Name</p> -->
-    <p class="px-2 text-4xl text-left text-[#1A1A1A]">Swimming class</p>
-  
+
+{#if editMode == false}
+<div class="p-4 pb-4 pt-8 mt-4 shadow-md rounded-lg border-[1px] border-borderColor mt-20 ml-auto">
+  <p class="px-2 text-4xl text-left text-[#1A1A1A]">{activityName}</p>
+  <div class="flex grid grid-cols-2">
+    <div>
+      <p class="px-2 pt-2 text-lg text-left text-[#1A1A1A]">{activityFacility}</p>
+      <p class="px-2 text-lg text-left text-[#1A1A1A]">Starts at {activityStartTime}.</p>
+    </div>
+    <div class="justify-self-end self-end">
+      <MainButton on:click={() => editMode = true} class="py-2 px-8 justify-self-end">Edit</MainButton>
+    </div>
+  </div>
+</div>
+{:else}
+  <!-- Edit activity -->
+  <div class="p-4 py-8 mt-4 shadow-md rounded-lg border-[1px] border-borderColor mt-20 ml-auto">
+    <p class="px-2 text-4xl text-left text-[#1A1A1A]">{activityName}</p>
+
     <hr class="m-6 place-self-start rounded bg-borderColor">
     
     <form on:submit={editActivity}>
@@ -54,13 +92,13 @@
       <div class="py-2">
         <label for="day">Facility</label> <br>
         <select class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" name="length" id="length">
-            <option value="">Swimming pool</option>
-            <option value="">Fitness Room</option>
-            <option value="">Squash Court 1</option>
-            <option value="">Squash Court 2</option>
-            <option value="">Sports Hall</option>
-            <option value="">Climbing Wall</option>
-            <option value="">Studio</option>
+          {#await facilityLoading()}
+          <option value="loading">Loading...</option>
+          {:then facilities}
+            {#each facilities as facility, i}
+              <option value={facility.facilitiesId}>{facility.facilityName}</option>
+            {/each}
+          {/await}
         </select>
       </div>
       <div class="flex space-x-6 text-[#1A1A1A]">
@@ -87,8 +125,11 @@
             <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="number" id="discount" name="discount" value="0" min="0" />
         </div>
       </div>
-      <div class="grid pr-5">
-        <MainButton type="submit" class="mt-5 w-1/5 place-self-end">Save</MainButton>          
+      <div class="">
+        <CancelButton on:click={() => editMode = false} class="mt-5 w-1/5 mx-2 place-self-end">Cancel</CancelButton>
+        <MainButton type="submit" class="mt-5 mx-2 w-1/5 place-self-end">Save</MainButton>          
       </div>
     </form>
-</div>
+  </div>
+{/if}
+
