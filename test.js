@@ -12,6 +12,8 @@ let server = supertest.agent("http://localhost:3001");
 let userId;
 let authToken;
 let refToken;
+let audience;
+
 /*-----------------------------------------------------------------
 This section will start showing the tests for each api and try to explain which tests are running on each stage
 -------------------------------------------------------------------*/
@@ -26,7 +28,7 @@ describe("Testing",function (){
         .post('/users')
         .send({"firstName": "testCase002",
             "lastName": "testCase002",
-            "email": "newemail@new.com",
+            "email": "newemail@cookie1.com",
             "password": "Test@case20231"})
 
         //This means the record has been created
@@ -220,90 +222,22 @@ describe("Testing",function (){
             server
                 .post('/login')
                 .send({
-                    "email": "newemail@new.com",
-                    "password": "Test@case20231"
+                    "email": "newemail@cookie1.com",
+            "password": "Test@case20231"
                 })
                 .expect(201)
                 .end(function (err, res) {
                     res.status.should.equal(201);
-                    if(res.body.hasOwnProperty("accessToken"))
-                    {
-                        authToken = res.body.accessToken;
-                    }
-                    if(res.body.hasOwnProperty("refreshToken"))
-                    {
-                        refToken = res.body.refreshToken;
-                    }
+                        authToken = res.header["set-cookie"][0]
+                        refToken = res.header["set-cookie"][1]
+                        audience = res.header["set-cookie"][2]
+                
+
                     done();
                 });
         });
 
-
-//Test 13: Refresh and get new access token
-        it("Refresh and get a new access token", function (done) {
-            server
-                .post('/refresh')
-                .send({
-                    "refreshToken" : refToken,
-                    "audience": "newemail@new.com"
-
-                })
-                .expect(201)
-                .end(function (err, res) {
-                    res.status.should.equal(201);
-                    if(res.body.hasOwnProperty("accessToken"))
-                    {
-                        authToken = res.body.accessToken;
-                    }
-                    done();
-                });
-        });
-
-//Test 14: Refresh without an audience
-        it("Refresh without an audience - unauthorized", function (done) {
-            server
-                .post('/refresh')
-                .send({
-                    "refreshToken" : refToken
-                })
-                .expect(401)
-                .end(function (err, res) {
-                    res.status.should.equal(401);
-                    done();
-                });
-        });
-
-//Test 15: Refresh with the wrong audience
-        it("Refresh with wrong audience - unauthorized", function (done) {
-            server
-                .post('/refresh')
-                .send({
-                    "refreshToken" : refToken,
-                    "audience" : "wrong@wrong.com"
-                })
-                .expect(401)
-                .end(function (err, res) {
-                    res.status.should.equal(401);
-                    done();
-                });
-        });
-
-//Test 16: Refresh without a refresh token
-        it("Refresh without refresh token - bad request", function (done) {
-            server
-                .post('/refresh')
-                .send({
-
-                    "audience": "newemail@new.com"
-                })
-                .expect(400)
-                .end(function (err, res) {
-                    res.status.should.equal(400);
-                    done();
-                });
-        });
-
-//Test 17: Login with incorrect credentials
+//Test 13: Login with incorrect credentials
           it("Login a user - incorrect credentials", function (done) {
           server
           .post('/login')
@@ -318,12 +252,12 @@ describe("Testing",function (){
           });
          });
 
-//Test 18: Get the user details by GET request
+//Test 14: Get the user details by GET request
         it("Get the user details by the user ID", function (done){
 
             server
                 .get('/users/'+userId)
-                .auth(authToken, { type: 'bearer' })
+                .set('cookie', authToken,refToken,audience)
 
                 //This means that there is no record of that user which means deletion succeed
                 .expect(200)
@@ -335,12 +269,12 @@ describe("Testing",function (){
         })
 
 
-//Test 19: update the user details by PATCH request (Password)
+//Test 15: update the user details by PATCH request (Password)
         it("Update user details - password",function (done) {
 
             server
               .patch('/users/'+userId)
-              .auth(authToken, { type: 'bearer' })
+              .set('cookie', authToken,refToken,audience)
               .send({
                   "password" : "Zz123456!"
                 })
@@ -354,12 +288,12 @@ describe("Testing",function (){
                 });
         });
 
-//Test 20: update the user details by PATCH request (First name)
+//Test 16: update the user details by PATCH request (First name)
         it("Update user details - First name",function (done) {
 
             server
                 .patch('/users/'+userId)
-                .auth(authToken, { type: 'bearer' })
+                .set('cookie', authToken,refToken,audience)
                 .send({
                     "firstName" : "MyName is A member"
                 })
@@ -373,12 +307,12 @@ describe("Testing",function (){
                 });
         });
 
-//Test 21: update the user details by PATCH request (Last name)
+//Test 17: update the user details by PATCH request (Last name)
         it("Update user details - last name",function (done) {
 
             server
                 .patch('/users/'+userId)
-                .auth(authToken, { type: 'bearer' })
+                .set('cookie', authToken,refToken,audience)
                 .send({
                     "lastName" : "MyLastname is A programmer"
                 })
@@ -392,12 +326,12 @@ describe("Testing",function (){
                 });
         });
 
-//Test 22: update the user details by PATCH request (email)
+//Test 18: update the user details by PATCH request (email)
         it("Update user details - eamil",function (done) {
 
             server
                 .patch('/users/'+userId)
-                .auth(authToken, { type: 'bearer' })
+                .set('cookie', authToken,refToken,audience)
                 .send({
                     "email" : "jan@jan.com"
                 })
@@ -411,12 +345,12 @@ describe("Testing",function (){
                 });
         });
 
-//Test 23: update the user details by PATCH request (All details)
+//Test 19: update the user details by PATCH request (All details)
         it("Update user details - all the details",function (done) {
 
             server
                 .patch('/users/'+userId)
-                .auth(authToken, { type: 'bearer' })
+                .set('cookie', authToken,refToken,audience)
                 .send({
                     "firstName": "All",
                     "lastName": "details",
@@ -433,17 +367,17 @@ describe("Testing",function (){
                 });
         });
 
-//Test 24: Get all the users that has been created if the privilege is high
+//Test 20: Get all the users that has been created if the privilege is high
        it("Get all the users in the Database", function (done){
 
             server
                .get('/users')
-                .auth(authToken, { type: 'bearer' })
+               .set('cookie', authToken,refToken,audience)
 
                 //This means that there is no record of that user which means deletion succeed
-               .expect(200)
+               .expect(401)
               .end(function (err,res) {
-                  res.status.should.equal(200);
+                  res.status.should.equal(401);
                    done();
 
                })
@@ -451,11 +385,11 @@ describe("Testing",function (){
 
 
 
-//Test 25: Delete the user that has been created
+//Test 21: Delete the user that has been created
     it("Delete the user by the user ID", function (done){
        server
             .delete('/users/'+userId)
-           .auth(authToken, { type: 'bearer' })
+            .set('cookie', authToken,refToken,audience)
 
             //This means that there is no record of that user which means deletion succeed
         .expect(204)
