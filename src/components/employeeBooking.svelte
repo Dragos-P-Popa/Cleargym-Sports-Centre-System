@@ -153,38 +153,39 @@
     </div>
 
     <form on:submit|preventDefault={createBooking}>
-        <div class="py-2">
-            <label for="date">Date</label> <br />
-            <input
-                class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full"
-                type="date"
-                id="date"
-                name="date"
-                value=""
-            />
+        <div class="flex flex-row items-start">
+            <div class="py-2 pr-2">
+                <label for="date">Date</label> <br />
+                <input
+                    class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full"
+                    type="date"
+                    id="date"
+                    name="date"
+                    value=""
+                />
+            </div>
+            <div class="py-2">
+                <label for="time">Time</label> <br />
+                <input
+                    class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full"
+                    type="time"
+                    id="time"
+                    name="time"
+                    value=""
+                />
+            </div>
+            <div class="py-2 px-2">
+                <label for="length">Length</label> <br />
+                <select
+                    class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full"
+                    name="length"
+                    id="length"
+                >
+                    <option value="01:00">1 hour</option>
+                    <option value="02:00">2 hours</option>
+                </select>
+            </div>
         </div>
-        <div class="py-2">
-            <label for="time">Time</label> <br />
-            <input
-                class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full"
-                type="time"
-                id="time"
-                name="time"
-                value=""
-            />
-        </div>
-        <div class="py-2">
-            <label for="length">Length</label> <br />
-            <select
-                class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full"
-                name="length"
-                id="length"
-            >
-                <option value="01:00">1 hour</option>
-                <option value="02:00">2 hours</option>
-            </select>
-        </div>
-
         <div class="py-2">
             <label for="customerEmail">Customer Email</label>
             <input
@@ -193,7 +194,6 @@
                 id="email"
             />
         </div>
-
         <div class="grid">
             <MainButton type="submit" class="mt-12 w-4/5 place-self-center"
                 >Checkout</MainButton
