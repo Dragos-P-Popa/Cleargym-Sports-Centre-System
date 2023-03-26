@@ -345,3 +345,27 @@ def patch_activity(id):
 
     # Return the response
     return jsonify(response), 200
+
+# API endpoint for fetching all activities
+@app.route('/activities', methods=['GET'])
+def get_all_activities():
+    try:
+        # get all activities in the database
+        activities = models.Activity.query.all()
+        # initialise list
+        result = []
+
+        # for each activity, steralise the object given by sqlalchemy
+        for activity in activities:
+            result.append({ 'activityId': activity.activityId,
+                'activityType': activity.activityType,
+                'activityStartTime': activity.activityStartTime.strftime('%H:%M:%S'),
+                'activityEndTime': activity.activityEndTime.strftime('%H:%M:%S'),
+                'activityDay': activity.activityDay   })
+    
+    # Check for possible errors in the submitted data
+    except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
+        raise error
+
+    # convert to json and return
+    return jsonify(result), 200
