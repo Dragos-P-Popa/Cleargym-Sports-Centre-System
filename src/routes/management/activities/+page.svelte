@@ -18,8 +18,8 @@
         <p class="font-light text-2xl text-[#515151]">view and manage activities</p>
 
         <!-- Need to move button to the right without just using padding -->
-        <div class="w-full pl-96">
-          <img class="cursor-pointer pt-4 pl-64" src="../plus.svg" alt="add" id="add" />
+        <div class="w-full grid">
+          <img class="cursor-pointer pt-4 justify-self-end" src="../plus.svg" alt="add" id="add" />
         </div>
         
         
