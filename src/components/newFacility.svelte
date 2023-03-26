@@ -1,32 +1,48 @@
 <script lang="ts">
     import MainButton from "./mainButton.svelte";
-  
-    let activity = {
-      name: "",
-      opening: "",
-      closing: "",
-      capacity: "",
-      manager: "",
-    };
+    import { PUBLIC_FACILITIES_URL } from '$env/static/public'
+
+
   
     async function addFacility(e: { target: HTMLFormElement; }) {
-      e.preventDefault();
-  
+
       // fetch form fields
       const formData = new FormData(e.target);
+
+      const facility : any = {};
   
       // for each form field, update the facility object with the inputted value
       for (let field of formData) {
         const [key, value] = field;
         facility[key] = value;
       }
+
+      let facilityName = facility.name;
+      let capacity = facility.capacity;
+      let openingTime = facility.opening;
+      let closingTime = facility.closing;
+      let managerId = facility.manager;
   
-      const res = await fetch(PUBLIC_FACILITIES_URL + 'facility/' + facility.id, {
-        method: 'PUT',
+      console.log(JSON.stringify({
+          facilityName,
+          capacity,
+          openingTime,
+          closingTime,
+          managerId
+        })
+        )
+      const res = await fetch(PUBLIC_FACILITIES_URL + 'facility', {
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(facility),
+        body: JSON.stringify({
+          facilityName,
+          capacity,
+          openingTime,
+          closingTime,
+          managerId
+        }),
       });
   
       if (res.status == 200) {
@@ -34,8 +50,6 @@
       } else {
         alert('Error adding facility.');
       }
-  
-      e.target.reset();
     }
 </script>
 
@@ -46,18 +60,18 @@
   
     <hr class="m-6 mx-24 rounded bg-borderColor">
   
-    <form on:submit={addFacility}>
+    <form on:submit|preventDefault={addFacility}>
       <div class="py-2">
         <label for="time">Name</label> <br>
         <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="name" id="name" name="name" value="Name" />
       </div>
       <div class="py-2">
         <label for="time">Opening Time</label> <br>
-        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="opening" name="opening" value="" />
+        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" step="1" id="opening" name="opening" value="" />
       </div>
       <div class="py-2">
         <label for="time">Closing Time</label> <br>
-        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="closing" name="closing" value="" />
+        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" step="1" id="closing" name="closing" value="" />
       </div>
       <div class="py-2">
         <label for="time">Capacity</label> <br>

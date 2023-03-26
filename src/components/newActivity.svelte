@@ -1,41 +1,61 @@
 <script lang="ts">
     import MainButton from "./mainButton.svelte";
-  
-    let activity = {
-      name: "",
-      time: "",
-      length: "",
-      day: "",
-      facility: "",
-    };
-  
-    async function addActivity(e: { target: HTMLFormElement; }) {
-      e.preventDefault();
-  
+    import { PUBLIC_FACILITIES_URL } from '$env/static/public'
+
+    let facilities;
+
+    async function addActivity(e: { target: HTMLFormElement; }) {  
       // fetch form fields
       const formData = new FormData(e.target);
+
+      const activity : any = {};
   
       // for each form field, update the activity object with the inputted value
       for (let field of formData) {
         const [key, value] = field;
         activity[key] = value;
       }
+
+      let facilityId = activity.facility;
+      let activityType = activity.name;
+      let activityStartTime = activity.time;
+      let activityEndTime = activity.time;
+      let activityDay = activity.day;
   
-      const res = await fetch(PUBLIC_ACTIVITIES_URL + 'activity/' + activity.id, {
-        method: 'PUT',
+      const res = await fetch(PUBLIC_FACILITIES_URL + 'activity', {
+        method: 'POST',
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(activity),
+        body: JSON.stringify({
+          facilityId,
+          activityType,
+          activityDay,
+          activityStartTime,
+          activityEndTime
+        }),
       });
   
+
       if (res.status == 200) {
         alert('Activity added successfully!');
       } else {
         alert('Error adding activity.');
       }
-  
-      e.target.reset();
+    }
+
+    async function facilityLoading() {
+      // fetch all facilities
+      const res = await fetch(PUBLIC_FACILITIES_URL + 'facilities', {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })
+
+      // this data is used to populate the facility selection UI element (line 97-112)
+      facilities = await res.json()
+      return facilities
     }
   </script>
   
@@ -46,7 +66,7 @@
   
     <hr class="m-6 mx-24 rounded bg-borderColor">
   
-    <form on:submit={addActivity}>
+    <form on:submit|preventDefault={addActivity}>
       <div class="py-2">
         <label for="time">Name</label> <br>
         <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="name" id="name" name="name" value="Name" />
@@ -78,13 +98,13 @@
       <div class="py-2">
         <label for="day">Facility</label> <br>
         <select class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" name="facility" id="facility">
-            <option value="">Swimming pool</option>
-            <option value="">Fitness Room</option>
-            <option value="">Squash Court 1</option>
-            <option value="">Squash Court 2</option>
-            <option value="">Sports Hall</option>
-            <option value="">Climbing Wall</option>
-            <option value="">Studio</option>
+          {#await facilityLoading()}
+            <option value="loading">Loading...</option>
+          {:then facilities}
+            {#each facilities as facility, i}
+              <option value={facility.facilitiesId}>{facility.facilityName}</option>
+            {/each}
+          {/await}
         </select>
       </div>
       <div class="grid">
