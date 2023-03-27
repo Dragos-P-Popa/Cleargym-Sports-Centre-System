@@ -154,7 +154,7 @@
 
     <form on:submit|preventDefault={createBooking}>
         <div class="flex flex-row items-start">
-            <div class="py-2 pr-2">
+            <div class="py-2 pr-3">
                 <label for="date">Date</label> <br />
                 <input
                     class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full"
@@ -164,7 +164,7 @@
                     value=""
                 />
             </div>
-            <div class="py-2">
+            <div class="py-2 px-2">
                 <label for="time">Time</label> <br />
                 <input
                     class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full"
@@ -174,7 +174,7 @@
                     value=""
                 />
             </div>
-            <div class="py-2 px-2">
+            <div class="py-2 px-3">
                 <label for="length">Length</label> <br />
                 <select
                     class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full"
