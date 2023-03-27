@@ -1,6 +1,7 @@
 <script lang="ts">
     import MainButton from "./mainButton.svelte";
     import {
+        PUBLIC_AUTH_URL,
         PUBLIC_BOOKINGS_URL,
         PUBLIC_FACILITIES_URL,
     } from "$env/static/public";
@@ -40,12 +41,39 @@
             data[key] = value;
         }
 
-        let userId = localStorage.getItem("uid");
+        console.log(data);
+
+        const userDetails = await fetch(
+            PUBLIC_AUTH_URL + "users/email/" + data.customerEmail,
+            {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+
+        const userD = await userDetails.json();
+
+        let userId = userD[0]._id;
         let facilitiesId = facilities[selectedFacility].id;
         let bookingDate = formatDate(Date.parse(data.date));
         let bookingTime = data.time;
         let bookingLength = data.length;
         let bookingType = "General";
+
+        console.log(
+            JSON.stringify({
+                userId,
+                facilityId: facilitiesId,
+                activityId: 1,
+                bookingDate,
+                bookingTime,
+                bookingLength,
+                bookingType,
+            })
+        );
 
         //create a request to the Auth API (make sure it is running on your machine to test)
         const res = await fetch(PUBLIC_BOOKINGS_URL + "booking", {
@@ -70,16 +98,8 @@
         result = await res.json();
         const code = await res.status;
 
-        // If the code returned from the Bookings API was 200
-        if (res.status == 200) {
-            // Set the 'display_confirm' value to 'true'
-            display_confirm = true;
-        }
-
         // Reset the input fields in case a user wishes to make another booking
         e.target.reset();
-
-        console.log(result);
     }
 
     async function facilityLoading() {
@@ -187,11 +207,12 @@
             </div>
         </div>
         <div class="py-2">
-            <label for="customerEmail">Customer Email</label>
+            <label for="customerEmail">Customer Email</label> <br />
             <input
                 class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full"
                 type="text"
-                id="email"
+                id="customerEmail"
+                name="customerEmail"
             />
         </div>
         <div class="grid">

@@ -5,6 +5,7 @@
   import NavBar from "../../../components/employeeNavbar.svelte";
   import JoinUsButton from "../../../components/joinUsButton.svelte";
   import MainButton from "../../../components/mainButton.svelte";
+  import MembershipCard from "../../../components/membershipCard.svelte";
   import ViewBooking from "../../../components/viewBooking.svelte";
 
   export let data;
@@ -37,7 +38,7 @@
         <MainButton class="m-8 w-5/6">Membership</MainButton>
       </div>
     </div>
-    <div class="flex flex-row">
+    <!--     <div class="flex flex-row">
       <div class="flex flex-col w-1/2 px-1">
         <BookingCard class="w-4/5" />
         <BookingCard class="w-4/5" />
@@ -46,7 +47,30 @@
       <div class="flex-1 w-1/2 items-start">
         <ViewBooking class="w-4/5" />
       </div>
-    </div>
+    </div> -->
+    <MembershipCard
+      active="1"
+      heading="No membership"
+      subHeading="Pay as you go"
+      bulletPoints={[
+        "Most flexible option.",
+        "Pay whenever you want to book.",
+        "Perfect for newcomers who are looking to try out before committing to a membership.",
+      ]}
+      class="col-span-4"
+    />
+    <MembershipCard
+      active="0"
+      heading="Cleargym One"
+      subHeading="All-inclusive membership"
+      bulletPoints={[
+        "Highest cost savings.",
+        "Unlimited access to all of our facilities.",
+        "One simple monthly payment.",
+        "Cancel at any time.",
+      ]}
+      class="col-span-4"
+    />
   </div>
 </div>
 

@@ -2,7 +2,6 @@
   import "@fontsource/manrope";
   import EmployeeBooking from "../../../components/employeeBooking.svelte";
   import NavBar from "../../../components/employeeNavbar.svelte";
-  import QuickBooking from "../../../components/quickBooking.svelte";
 
   export let data;
   let user = data.user;
