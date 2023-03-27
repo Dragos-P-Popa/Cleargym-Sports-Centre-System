@@ -29,6 +29,12 @@ exports.routesConfig = function (app) {
         VerificationMiddleware.verifyPatch,
         UsersController.patchById
     ]);
+    // update user by email
+    app.get('/users/email/:userEmail', [
+        // user should be logged in to access this
+        ValidationMiddleware.checkJWT,
+        UsersController.getByEmail
+    ]);
     // list users
     app.get('/users', [
         // user should be logged in to access this

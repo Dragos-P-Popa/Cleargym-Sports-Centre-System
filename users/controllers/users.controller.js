@@ -36,6 +36,13 @@ exports.insert = (req, res) => {
     });
  };
 
+ exports.getByEmail = (req, res) => {
+    // query db then respond
+    UserModel.findByEmail(req.params.userEmail).then((result) => {
+        res.status(200).send(result);
+    });
+ };
+
  exports.patchById = (req, res) => {
     // check if the updated field is the password
     // if it is make sure to encrypt before adding to database
