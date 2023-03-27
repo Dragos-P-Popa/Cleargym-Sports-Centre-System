@@ -125,9 +125,9 @@
             <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="number" id="discount" name="discount" value="0" min="0" />
         </div>
       </div>
-      <div class="">
-        <CancelButton on:click={() => editMode = false} class="mt-5 w-1/5 mx-2 place-self-end">Cancel</CancelButton>
-        <MainButton type="submit" class="mt-5 mx-2 w-1/5 place-self-end">Save</MainButton>          
+      <div class="flex space-x-6 pr-3">
+        <CancelButton on:click={() => editMode = false} class="mt-5 mx-2 flex-1">Cancel</CancelButton>
+        <MainButton type="submit" class="mt-5 mx-2 flex-1">Save</MainButton>          
       </div>
     </form>
   </div>

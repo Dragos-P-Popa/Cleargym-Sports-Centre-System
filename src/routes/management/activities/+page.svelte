@@ -16,12 +16,6 @@
       <div class="col-span-5">
         <p class="font-bold text-5xl text-[#1A1A1A]">Manage Activities</p>
         <p class="font-light text-2xl text-[#515151]">view and manage activities</p>
-
-        <!-- Need to move button to the right without just using padding -->
-        <div class="w-full grid">
-          <img class="cursor-pointer pt-4 justify-self-end" src="../plus.svg" alt="add" id="add" />
-        </div>
-        
         
         <div class="overflow-y-auto h-[80vh]">
           <div>
