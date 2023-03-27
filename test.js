@@ -242,7 +242,7 @@ describe("Testing",function (){
           server
           .post('/login')
            .send({
-                "email": "newemail@new.com",
+                "email": "newemail@cookie1.com",
                 "password": "wrongPassword"
             })
           .expect(400)
