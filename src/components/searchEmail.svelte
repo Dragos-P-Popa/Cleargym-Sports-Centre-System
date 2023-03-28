@@ -1,11 +1,19 @@
-<script>
+<script lang="ts">
     import JoinUsButton from "./joinUsButton.svelte";
     import ClientCard from "./clientCard.svelte";
     import MainButton from "./mainButton.svelte";
-
-    let searchButton = false;
+    import BookingCard from "./bookingCard.svelte";
+    import BookingInfo from "./viewBooking.svelte";
+    let found = false;
     let amendbooking = false;
     let amendMembership = false;
+    let fName = "Name";
+    let lName = "Surname";
+    let email = "Email";
+    let nonCustomer = false;
+    let i = -1;
+
+    let userId: string;
 
     import {
         PUBLIC_AUTH_URL,
@@ -14,9 +22,21 @@
     } from "$env/static/public";
     import MembershipCard from "./membershipCard.svelte";
 
-    function bookingSwitch() {
+    async function bookingSwitch() {
         amendbooking = true;
         amendMembership = false;
+
+        const res2 = await fetch(
+            PUBLIC_BOOKINGS_URL + "bookings/user/" + userId,
+            {
+                method: "GET",
+            }
+        );
+
+        let bookingsData = await res2.json();
+        let bookings = [...bookingsData];
+
+        return bookings;
     }
 
     function membershipSwitch() {
@@ -24,11 +44,28 @@
         amendMembership = true;
     }
 
-    function searchSwitch() {
-        searchButton = true;
+    function findClientCard() {
+        found = false;
+        nonCustomer = false;
     }
 
-    /*  async function accessClientData(e: { target: HTMLFormElement }) {
+    function setViewFocus(id: number) {
+        i = id;
+    }
+
+    function formatDate(date: number) {
+        var d = new Date(date),
+            month = "" + (d.getMonth() + 1),
+            day = "" + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = "0" + month;
+        if (day.length < 2) day = "0" + day;
+
+        return [year, month, day].join("-");
+    }
+
+    async function accessClientData(e: { target: HTMLFormElement }) {
         const formData = new FormData(e.target);
         let result = null;
         const data: any = {};
@@ -46,11 +83,20 @@
                 },
             }
         );
-        const userD = await userDetails.json();
-        let userId = userD[0]._id;
-        let fName = userD[0].firstName;
+        console.log(userDetails.status);
+        if (userDetails.status == 200) {
+            const userD = await userDetails.json();
+            console.log(userD);
+            userId = userD[0]._id;
+            fName = userD[0].firstName;
+            lName = userD[0].lastName;
+            email = userD[0].email;
+            found = true;
+        } else if (userDetails.status == 404) {
+            nonCustomer = true;
+        }
         e.target.reset();
-    } */
+    }
 </script>
 
 <div>
@@ -63,20 +109,25 @@
                     type="text"
                     id="customerEmail"
                     name="customerEmail"
+                    required
                 />
             </div>
             <div class="w-1/5">
                 <JoinUsButton
                     class="items-end m-5 w-3/4 mt-7 h-10"
-                    on:click={searchSwitch}
+                    on:click={findClientCard}
                     type="submit">Search</JoinUsButton
                 >
             </div>
         </div>
     </form>
-    {#if searchButton}
+    {#if found}
         <div class="flex flex-row">
-            <ClientCard class="w-5/6" heading="Name" subheading="email" />
+            <ClientCard
+                class="w-5/6"
+                heading="{fName}  {lName}"
+                subheading={email}
+            />
             <div class="flex flex-col">
                 <MainButton class="m-8 w-5/6" on:click={bookingSwitch}
                     >Bookings</MainButton
@@ -84,6 +135,43 @@
                 <MainButton class="m-8 w-5/6" on:click={membershipSwitch}
                     >Membership</MainButton
                 >
+            </div>
+        </div>
+    {/if}
+
+    {#if nonCustomer}
+        <p class="text-sm text-[#e20f14]">non existing customer</p>
+    {/if}
+
+    {#if amendbooking}
+        <div class="overflow-y-auto h-[80vh] mt-16 flex flex-row">
+            <div class="flex flex-col w-1/2">
+                <!--display all bookings-->
+                {#await bookingSwitch()}
+                    <p class="m-5">loading...</p>
+                    <!--when response is recieved, load data into the html-->
+                {:then bookings}
+                    {#each bookings as b, i}
+                        <BookingCard
+                            on:click={() => setViewFocus(i)}
+                            class="my-2 transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none"
+                            heading="Booking #{b.id}"
+                            subheading={b.bookingType}
+                        />
+                    {/each}
+
+                    {#if i != -1}
+                        <BookingInfo
+                            on:click={() => (i = -1)}
+                            bookingNumber={bookings[i].id}
+                            bookedOn={bookings[i].createDate}
+                            bookingDate={formatDate(bookings[i].bookingDate)}
+                            bookingTime={bookings[i].bookingTime}
+                            bookingLength={bookings[i].bookingLength}
+                            facility={bookings[i].facilitiesId}
+                        />
+                    {/if}
+                {/await}
             </div>
         </div>
     {/if}
