@@ -5,9 +5,12 @@ name: Flask-bookings CI
 
 on:
   push:
-    branches: [ "main-bookings" ] # name of the branch being tested
+    branches: [ "main-booking" ] # name of the branch being tested
   pull_request:
-    branches: [ "main-bookings" ]
+    branches: [ "main-booking" ]
+# This environment variable is used to make requests to the hosted Facilities API
+env:
+  FACILITIES_API: http://cleargym.live:3003/facility/
 
 jobs:
   build:
@@ -25,12 +28,20 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-        cache: 'pip'
-        cache-dependency-path: '**/bookings_requirements.txt' # path to dependencies file
+    - name: Cache for dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.cache/pip
+          ~/Library/Caches/pip
+          ~\AppData\Local\pip\Cache
+        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/bookings_requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-${{ matrix.python-version }}-
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 pytest requests
+        python -m pip install wheel flake8
         python -m pip install -r bookings_requirements.txt
     - name: Lint with flake8
       run: |
@@ -39,5 +50,7 @@ jobs:
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
+      env:
+        FACILITIES_API: ${{ env.FACILITIES_API }}
       run: | # -rP gives more meaningful output that includes programmer defined messages
         pytest -rP
