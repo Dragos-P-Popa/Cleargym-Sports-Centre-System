@@ -56,6 +56,8 @@
 
         const userD = await userDetails.json();
 
+        console.log(userD);
+
         let userId = userD[0]._id;
         let facilitiesId = facilities[selectedFacility].id;
         let bookingDate = formatDate(Date.parse(data.date));
