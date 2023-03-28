@@ -2,7 +2,7 @@
     let divProps = {
         class:
             [$$restProps.class] +
-            "  border-[1px] border-borderColor shadow-md rounded-lg bg-[url('/gym.jpg')] bg-cover select-none",
+            "  border-[1px] border-borderColor shadow-md rounded-lg bg-[url('/climbing_wall_c.jpg')] bg-cover select-none",
     };
 
     // export 2 variables, when a bookingCard is created on any page,
