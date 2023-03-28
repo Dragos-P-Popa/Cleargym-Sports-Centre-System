@@ -215,6 +215,7 @@
                 type="text"
                 id="customerEmail"
                 name="customerEmail"
+                required
             />
         </div>
         <div class="grid">
