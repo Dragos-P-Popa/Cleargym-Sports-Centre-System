@@ -8,6 +8,11 @@
 
     let facilities;
     let selectedFacility: number;
+    let nonCustomer = false;
+
+    function nonCustomerMessage() {
+        nonCustomer = false;
+    }
 
     // This variable controls whether the confirmation message should be displayed.
     // It is set to 'false' by default.
@@ -54,7 +59,14 @@
             }
         );
 
+        console.log(userDetails.status);
+        if (userDetails.status == 403 || userDetails.status == 404) {
+            nonCustomer = true;
+        }
+
         const userD = await userDetails.json();
+
+        console.log(userD);
 
         console.log(userD);
 
@@ -99,6 +111,9 @@
         // wait in the background for API response
         result = await res.json();
         const code = await res.status;
+        if (res.status == 200) {
+            display_confirm = true;
+        }
 
         // Reset the input fields in case a user wishes to make another booking
         e.target.reset();
@@ -219,8 +234,10 @@
             />
         </div>
         <div class="grid">
-            <MainButton type="submit" class="mt-12 w-4/5 place-self-center"
-                >Checkout</MainButton
+            <MainButton
+                type="submit"
+                class="mt-12 w-4/5 place-self-center"
+                on:click={nonCustomerMessage}>Checkout</MainButton
             >
         </div>
     </form>
@@ -239,5 +256,15 @@
                 location.reload();
             }, 1500);
         </script>
+    {/if}
+
+    {#if nonCustomer == true}
+        <p
+            class="mt-8 mb-4 ml-auto mr-auto w-4/5 place-self-center text-center"
+            style="font-size: 20px; color: red;"
+        >
+            Not a customer email
+        </p>
+        <!-- The list of bookings gets refreshed after each successful submission -->
     {/if}
 </div>
