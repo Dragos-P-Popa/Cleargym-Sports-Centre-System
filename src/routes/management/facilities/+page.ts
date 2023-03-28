@@ -1,4 +1,4 @@
-import { PUBLIC_AUTH_URL, PUBLIC_BOOKINGS_URL } from '$env/static/public'
+import { PUBLIC_AUTH_URL, PUBLIC_FACILITIES_URL } from '$env/static/public'
 
 /*
     This file runs on page load. It makes some API calls and forwards 
@@ -13,8 +13,16 @@ export async function load({ fetch, request }) {
     })
 
     let user = await res.json();
+
+    const res2 = await fetch(PUBLIC_FACILITIES_URL + 'facilities', {
+      method: 'GET',
+      credentials: 'include',
+    })
+
+    let facilitiesData = await res2.json();
+    let facilities = [...facilitiesData];
   
     if (user) {
-      return { user }
+      return { user, facilities }
     }
 }
