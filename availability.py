@@ -251,21 +251,19 @@ class Booking:
 
         day_name = Bdate.strftime('%A')
 
-        if Alength != Blength:
-            abort(400, description='Alength != Blength')
-
-        elif A_day != day_name:
-            abort(400, description='Invalid Activity for your booking date.')
-
-        elif A_time != Btime:
-            abort(400, description='Wrong Activity for the selected time')
-
-        elif A_end != Bend:
-            abort(400, description='Wrong Activity for the selected time')
+        if A_time > Btime:
+            abort(400, description='Invalid Start Time')
+        if Btime > A_end:
+            abort(400, description='Invalid Start Time')
+        if A_time > Bend:
+            abort(400, description='Invalid End Time')
+        if Bend > A_end:
+            abort(400, description='Invalid End Time')
+        if Alength < Blength:
+            abort(400, description='Invalid Length')
+        if A_day != "ANY" and A_day != day_name:
+            abort(400, description='Invalid Day')
         else:
             return True
-
-
-
 
 # Activity Check Ends

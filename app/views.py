@@ -168,6 +168,10 @@ def post_booking():
         # Check Facilities Done
         print("Test 7")
         # Check Activities Begin
+        print(A_OpenTime)
+        print(A_CloseTime)
+        print(Alength)
+        print(A_day)
         B.check_activity(Alength,
                          A_day,
                          booking.bookingLength,
