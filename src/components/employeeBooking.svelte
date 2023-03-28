@@ -265,6 +265,5 @@
         >
             Not a customer email
         </p>
-        <!-- The list of bookings gets refreshed after each successful submission -->
     {/if}
 </div>
