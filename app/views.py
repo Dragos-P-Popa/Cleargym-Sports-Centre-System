@@ -246,7 +246,10 @@ def post_activity():
                                                  '%H:%M').time(),
             activityEndTime=datetime.strptime(posted_activity['activityEndTime'],
                                              '%H:%M').time(),
-            activityDay=posted_activity["activityDay"])
+            activityDay=posted_activity["activityDay"],
+            price=posted_activity["price"],
+            productId=posted_activity["productId"]
+        )
 
         # Establish a relationship between this facility and activity
         facility.activity.append(new_activity)
