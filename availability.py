@@ -6,6 +6,7 @@ from flask import json, request, jsonify, abort
 
 
 class Booking:
+
     def __init__(self, Bdate, Btime, Blength, Bend, FacilityId, Close, Open, Capacity, A_time, A_end, Alength, A_day
                  ):
         self.Bdate = Bdate
@@ -235,7 +236,26 @@ class Booking:
         elif Blength == threehours:
             Booking.length_three(self, Bdate, Btime, Bend, Capacity, FacilityId)
         else:
+            abort(400, description=' Too Early / Late')
+
+    # check Facility done
+    # Activity Check Begins
+
+    def check_activity(self, Alength, A_day, Blength, Bdate, Btime, Bend, A_time, A_end):
+
+        day_name = Bdate.strftime('%A')
+
+        if A_time > Btime:
+            abort(400, description='Invalid Start Time')
+        if Btime > A_end:
+            abort(400, description='Invalid Start Time')
+        if A_time > Bend:
+            abort(400, description='Invalid End Time')
+        if Bend > A_end:
+            abort(400, description='Invalid End Time')
+        if Alength < Blength:
             abort(400, description='Invalid Length')
+
 
     def check_facility_time(self, Btime, Bend, Open, Close):
 
@@ -264,3 +284,4 @@ class Booking:
             abort(400, description='Wrong Activity for the selected time')
         else:
             return True
+

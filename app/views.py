@@ -9,6 +9,8 @@ from sqlalchemy.orm.exc import UnmappedInstanceError
 import requests
 
 
+# pip freeze > booking_requirements.txt
+
 ############################### ERROR HANDLERS ###############################
 
 
@@ -107,7 +109,6 @@ def post_booking():
             userId=info["userId"],
             facilityId=info["facilityId"],
             activityId=info["activityId"],
-            # createDate: default in models.py
             bookingDate=datetime.strptime(info["bookingDate"], '%Y/%m/%d').date(),
             bookingTime=start,
             bookingLength=length,
@@ -118,15 +119,11 @@ def post_booking():
         f_id = booking.facilityId
         a_id = booking.activityId
 
-        # Getting the facility details from facilities API.
-        # The first 'facility_link' variable is used for local testing.
-        # The other, for remote testing on GitHub.
-
+        # Getting the facility details from facilities API
         # facility_link = requests.get(f"http://127.0.0.1:3003/facility/{f_id}")
         facility_link = requests.get(f"http://cleargym.live:3003/facility/{f_id}")
 
         facility_details = facility_link.json()
-
         f_openTime = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
         f_closeTime = datetime.strptime(facility_details['closingTime'], '%H:%M:%S').time()
         f_capacity = facility_details['capacity']
@@ -148,7 +145,6 @@ def post_booking():
                              seconds=a_openTime.second)).time()
 
         # Calling the Availability Class and its functions to check the booking.
-
         b = Booking(booking.bookingDate,
                     booking.bookingTime,
                     booking.bookingLength,
@@ -167,11 +163,6 @@ def post_booking():
         check_facility_time(b, f_closeTime, f_openTime, booking)
         check_facility_capacity(b, f_id, booking, f_capacity)
 
-
-        print("a_closeTime :" + str(a_closeTime))
-        print("a_openTime.hour :" + str(a_openTime.hour))
-        print("a_length :" + str(a_length))
-        print("bookingLength :" + str(booking.bookingLength))
 
         # Check Activities Begin
         b.check_activity(a_length,
