@@ -8,14 +8,6 @@
   export let data;
   let user = data.user;
   let facilities = data.facilities;
-
-  // // window is undefined when this code is running on the server side.
-  // // svelte does some processing on the server side, see svelte docs for more info
-  // if (typeof window !== "undefined") {
-  //     // if its running on client side, save the user id as a local variable
-  //     localStorage.setItem("uid", user._id);
-  // }
-
 </script>
 
 <div class="grid grid-cols-12">
@@ -28,10 +20,10 @@
         <p class="font-light text-2xl text-[#515151]">view and manage facilities</p>
         
         <div class="overflow-y-auto h-[80vh]">
+          <!-- display all facilities -->
           <div>
-            <!-- <EditFacility></EditFacility> -->
             {#each facilities as facility}
-              <FacilityCard class="my-3" facilityName={facility.facilityName} capacity={facility.capacity} openingTime={facility.openingTime} closingTime={facility.closingTime}/>
+              <FacilityCard class="my-3" facilityName={facility.facilityName} capacity={facility.capacity} openingTime={facility.openingTime} closingTime={facility.closingTime} managerId={facility.managerId}/>
             {/each}
           </div> 
         </div>

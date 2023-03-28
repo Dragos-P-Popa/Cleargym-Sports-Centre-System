@@ -1,7 +1,8 @@
 <script lang="ts">
-    import MainButton from "./mainButton.svelte"
+    import MainButton from "./mainButton.svelte";
     import CancelButton from "./cancelButton.svelte";
-    import { PUBLIC_FACILITIES_URL } from '$env/static/public'
+    import { PUBLIC_FACILITIES_URL } from '$env/static/public';
+    
     let divProps = {
         class:[$$restProps.class] + "  border-[1px] border-borderColor shadow-md rounded-lg bg-cover select-none"
     }
@@ -38,7 +39,7 @@
           activityFacility : activity.length,
           activityDay : activity.day,
           activityStartTime : activity.time,
-          activityEndTime : activity.length,
+          activityEndTime : activity.time,
           activityPrice : activity.price
         }),
       });
@@ -129,13 +130,9 @@
                 <label for="time">Price £</label> <br>
                 <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="number" id="price" name="price" value="{activityPrice}" min="0" />
             </div>
-                <!-- <div class="py-2 flex-1">
-                    <label for="time">Discount %</label> <br>
-                    <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="number" id="discount" name="discount" value="0" min="0" />
-                </div> -->
             <div class="flex space-x-6 pr-3">
                 <CancelButton on:click={() => editMode = false} class="mt-5 mx-2 flex-1">Cancel</CancelButton>
-                <MainButton on:click={()=>editMode = false} type="submit" class="mt-5 mx-2 flex-1">Save</MainButton>          
+                <MainButton on:click={() => editMode = false} type="submit" class="mt-5 mx-2 flex-1">Save</MainButton>          
             </div>
         </form>
     </div>
