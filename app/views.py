@@ -170,17 +170,9 @@ def post_booking():
         check_facility_capacity(b, f_id, booking, f_capacity)
 
         # Check Activities Begin
-<<<<<<< HEAD
-        print(A_OpenTime)
-        print(A_CloseTime)
-        print(Alength)
-        print(A_day)
-        B.check_activity(Alength,
-                         A_day,
-=======
+
         b.check_activity(a_length,
                          a_day,
->>>>>>> 4365b96d5eefceddcd7b437130f2efe01256b33b
                          booking.bookingLength,
                          booking.bookingDate,
                          booking.bookingTime,
