@@ -116,6 +116,7 @@ class Booking:
         b4 = len(a4)
         b5 = len(a5)
         b6 = len(a6)
+
         Block2 = (b1 + b3) - b6
         Block1 = (b4 + b2) - b5
         Block3 = 0
@@ -236,6 +237,13 @@ class Booking:
         elif Blength == threehours:
             Booking.length_three(self, Bdate, Btime, Bend, Capacity, FacilityId)
         else:
+            abort(400, description='Invalid Length')
+
+    def check_facility_time(self, Btime, Bend, Open, Close):
+
+        if Close > Btime > Open and Close > Bend > Open:
+            return True
+        else:
             abort(400, description=' Too Early / Late')
 
     # check Facility done
@@ -255,33 +263,9 @@ class Booking:
             abort(400, description='Invalid End Time')
         if Alength < Blength:
             abort(400, description='Invalid Length')
-
-
-    def check_facility_time(self, Btime, Bend, Open, Close):
-
-        if Close > Btime > Open and Close > Bend > Open:
-            return True
-        else:
-            abort(400, description=' Too Early / Late')
-
-    # check Facility done
-    # Activity Check Begins
-
-    def check_activity(self, Alength, A_day, Blength, Bdate, Btime, Bend, A_time, A_end):
-
-        day_name = Bdate.strftime('%A')
-
-        if Alength != Blength:
-            abort(400, description='Alength != Blength')
-
-        elif A_day != day_name:
-            abort(400, description='Invalid Activity for your booking date.')
-
-        elif A_time != Btime:
-            abort(400, description='Wrong Activity for the selected time')
-
-        elif A_end != Bend:
-            abort(400, description='Wrong Activity for the selected time')
+        if A_day not in ["Any", day_name]:
+            abort(400, description='Invalid Day')
         else:
             return True
 
+# Activity Check Ends

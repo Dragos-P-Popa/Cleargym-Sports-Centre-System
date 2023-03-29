@@ -179,7 +179,7 @@ def test_get_bookings_valid_uid(app_fixture):
                                             'facilityId': 1,
                                             'activityId': 1,
                                             'bookingDate': "2023/01/02",
-                                            'bookingTime': "13:15",
+                                            'bookingTime': "13:00",
                                             'bookingLength': "01:00"})
 
     # POST second booking
@@ -188,7 +188,7 @@ def test_get_bookings_valid_uid(app_fixture):
                                             'facilityId': 2,
                                             'activityId': 1,
                                             'bookingDate': "2023/01/02",
-                                            'bookingTime': "14:15",
+                                            'bookingTime': "14:00",
                                             'bookingLength': "01:00"})
 
     # Attempt to GET the bookings
@@ -207,18 +207,18 @@ def test_get_bookings_valid_uid(app_fixture):
                             'activityId': 1,
                             'createDate': datetime.now().strftime('%Y/%m/%d'),
                             'bookingDate': "2023/01/02",
-                            'bookingTime': "13:15",
+                            'bookingTime': "13:00",
                             'bookingLength': "01:00",
-                            'bookingEndTime': "14:15"},
+                            'bookingEndTime': "14:00"},
                             {'id': 2,
                             'userId': "21345235",
                             'facilityId': 2,
                             'activityId': 1,
                             'createDate': datetime.now().strftime('%Y/%m/%d'),
                             'bookingDate': "2023/01/02",
-                            'bookingTime': "14:15",
+                            'bookingTime': "14:00",
                             'bookingLength': "01:00",
-                            'bookingEndTime': "15:15"}]
+                            'bookingEndTime': "15:00"}]
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_get_bookings_valid_uid")

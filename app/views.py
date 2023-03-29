@@ -104,6 +104,7 @@ def post_booking():
 
     # Create a new booking
     try:
+
         booking = models.Booking(            
             id=ID,
             userId=info["userId"],
@@ -162,7 +163,6 @@ def post_booking():
         # Check Facilities Begin
         check_facility_time(b, f_closeTime, f_openTime, booking)
         check_facility_capacity(b, f_id, booking, f_capacity)
-
 
         # Check Activities Begin
         b.check_activity(a_length,
@@ -523,7 +523,6 @@ def check_facility_time(b, closeTime, openTime, booking):
                           openTime,
                           closeTime)
 
-
 def check_facility_capacity(b, f_id, booking, capacity):
     b.check_facility_capacity(booking.bookingDate,
                               booking.bookingTime,
@@ -531,7 +530,6 @@ def check_facility_capacity(b, f_id, booking, capacity):
                               f_id,
                               capacity,
                               booking.bookingLength)
-
 
 def get_response_for_post(booking):
     return {'id': booking.id,
