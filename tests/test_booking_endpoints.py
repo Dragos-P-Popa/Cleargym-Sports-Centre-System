@@ -20,7 +20,7 @@ def test_post_valid_booking(app_fixture):
                                                 'facilityId': 1,
                                                 'activityId': 1,
                                                 'bookingDate': "2023/01/02",
-                                                'bookingTime': "13:15",
+                                                'bookingTime': "13:00",
                                                 'bookingLength': "01:00"})
 
     # Validate that the correct status code was returned
@@ -36,9 +36,9 @@ def test_post_valid_booking(app_fixture):
                             'activityId': 1,
                             'createDate': datetime.now().strftime('%Y/%m/%d'),
                             'bookingDate': "2023/01/02",
-                            'bookingTime': "13:15",
+                            'bookingTime': "13:00",
                             'bookingLength': "01:00",
-                            'bookingEndTime': "14:15"}
+                            'bookingEndTime': "14:00"}
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_post_valid_booking")

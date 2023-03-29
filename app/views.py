@@ -9,8 +9,6 @@ from sqlalchemy.orm.exc import UnmappedInstanceError
 import requests
 
 
-# pip freeze > booking_requirements.txt
-
 ############################### ERROR HANDLERS ###############################
 
 
@@ -163,17 +161,6 @@ def post_booking():
         # Check Facilities Begin
         check_facility_time(b, f_closeTime, f_openTime, booking)
         check_facility_capacity(b, f_id, booking, f_capacity)
-
-        # Check Activities Begin
-        b.check_activity(a_length,
-                         a_day,
-                         booking.bookingLength,
-                         booking.bookingDate,
-                         booking.bookingTime,
-                         booking.bookingEndTime,
-                         a_openTime,
-                         a_closeTime
-                         )
 
         # add and commit the booking details to the database (Booking.db)
         db.session.add(booking)
