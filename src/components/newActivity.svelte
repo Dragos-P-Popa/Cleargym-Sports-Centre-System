@@ -18,10 +18,12 @@
 
       let facilityId = activity.facility;
       let activityType = activity.name;
-      let activityStartTime = activity.time;
-      let activityEndTime = activity.time;
+      let activityStartTime = activity.startTime;
+      let activityEndTime = activity.endTime;
       let activityDay = activity.day;
-  
+      
+      console.log(activity);
+      
       const res = await fetch(PUBLIC_FACILITIES_URL + 'activity', {
         method: 'POST',
         headers: {
@@ -57,7 +59,7 @@
       facilities = await res.json()
       return facilities
     }
-  </script>
+</script>
   
   <!-- Add activity -->
   <div class="p-4 pt-8 mb-4 mt-4 shadow-md rounded-lg border-[1px] border-borderColor">
@@ -68,20 +70,16 @@
   
     <form on:submit|preventDefault={addActivity}>
       <div class="py-2">
-        <label for="time">Name</label> <br>
-        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="name" id="name" name="name" value="Name" />
+        <label for="name">Name</label> <br>
+        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="name" id="name" name="name" placeholder="Name" value="" />
       </div>
       <div class="py-2">
-        <label for="time">Time</label> <br>
-        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="time" name="time" value="" />
+        <label for="time">Start Time</label> <br>
+        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="startTime" name="startTime" value="" />
       </div>
       <div class="py-2">
-        <label for="length">Length</label> <br>
-        <select class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" name="length" id="length">
-          <option value="01:00">1 hour</option>
-          <option value="02:00">2 hours</option>
-          <option value="03:00">3 hours</option>
-        </select>
+        <label for="time">End Time</label> <br>
+        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="endTime" name="endTime" value="" />
       </div>
       <div class="py-2">
         <label for="day">Activity Day</label> <br>
@@ -96,16 +94,20 @@
         </select>
       </div>
       <div class="py-2">
-        <label for="day">Facility</label> <br>
+        <label for="facility">Facility</label> <br>
         <select class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" name="facility" id="facility">
           {#await facilityLoading()}
             <option value="loading">Loading...</option>
           {:then facilities}
             {#each facilities as facility, i}
-              <option value={facility.facilitiesId}>{facility.facilityName}</option>
+              <option value={facility.id}>{facility.facilityName}</option>
             {/each}
           {/await}
         </select>
+      </div>
+      <div class="py-2">
+        <label for="price">Price</label> <br>
+        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="number" id="price" name="price" placeholder="10" value="" min="0" />
       </div>
       <div class="grid">
         <MainButton type="submit" class="mt-12 w-4/5 place-self-center">Add</MainButton>          

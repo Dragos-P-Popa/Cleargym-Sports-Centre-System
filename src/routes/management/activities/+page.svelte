@@ -22,7 +22,7 @@
           <!--display all activities-->
             <div>
               {#each activities as activity}
-                <ActivityCard class="my-3" activityType={activity.activityType} location="Swimming pool" activityDay={activity.activityDay} activityStartTime={activity.activityStartTime} activityEndTime={activity.activityEndTime} activityPrice="10"/>
+                <ActivityCard class="my-3" activityType={activity.activityType} location="Swimming pool" activityDay={activity.activityDay} activityStartTime={activity.activityStartTime} activityEndTime={activity.activityEndTime} activityPrice="10" activityId={activity.activityId}/>
               {/each}
             </div>
         </div>
