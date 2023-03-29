@@ -237,7 +237,7 @@
             <MainButton
                 type="submit"
                 class="mt-12 w-4/5 place-self-center"
-                on:click={nonCustomerMessage}>Checkout</MainButton
+                on:click={nonCustomerMessage}>Book</MainButton
             >
         </div>
     </form>
