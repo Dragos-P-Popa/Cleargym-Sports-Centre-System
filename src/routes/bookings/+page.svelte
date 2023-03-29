@@ -15,7 +15,7 @@
   export let bookings = data.bookings;
   let user = data.user;
   let i = -1;
-  let selectedDate:Date;
+  let selectedDate:Date = new Date();
   let selection:number = 1;
 
   // format date
