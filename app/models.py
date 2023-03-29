@@ -1,21 +1,10 @@
 from app import db
 
-#association_table = db.Table(
- #   "association_table",
- #   db.Model.metadata,
-  #  db.Column("facilityID",
-     #         db.ForeignKey("facility_table.id", ondelete="CASCADE"),
-      #       primary_key=True),
-    #db.Column("activityID",
-     #         db.ForeignKey("activity_table.activityId", ondelete="CASCADE"),
-     #         primary_key=True),
-#)
 
 class Association(db.Model):
     __tablename__ = "association_table"
     facilityID = db.Column(db.Integer, db.ForeignKey('facility_table.id'), nullable=False , primary_key=True)
     activityID = db.Column(db.Integer, db.ForeignKey('activity_table.activityId'), nullable=False, primary_key=True)
-
 
 
 # the Facilities table represents facilities in the Sports Centre

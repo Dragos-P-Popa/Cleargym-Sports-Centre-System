@@ -245,8 +245,8 @@ def post_activity():
 
     # Create a new activity
     try:
+
         new_activity = models.Activity(
-            activityId=posted_activity["activityId"],
             activityType=posted_activity["activityType"],
             activityStartTime=datetime.strptime(posted_activity['activityStartTime'], '%H:%M').time(),
             activityEndTime=datetime.strptime(posted_activity['activityEndTime'], '%H:%M').time(),
@@ -296,7 +296,9 @@ def delete_activity(id):
                     'activityType': activity.activityType,
                     'activityStartTime': activity.activityStartTime.strftime('%H:%M'),
                     'activityEndTime': activity.activityEndTime.strftime('%H:%M'),
-                    'activityDay': activity.activityDay
+                    'activityDay': activity.activityDay,
+                    'price': activity.price,
+                    'productId': activity.productId
                     }
 
     # Check for possible errors in the submitted data
@@ -319,7 +321,9 @@ def get_activity_by_id(id):
                     'activityType': activity.activityType,
                     'activityStartTime': activity.activityStartTime.strftime('%H:%M'),
                     'activityEndTime': activity.activityEndTime.strftime('%H:%M'),
-                    'activityDay': activity.activityDay
+                    'activityDay': activity.activityDay,
+                    'price': activity.price,
+                    'productId': activity.productId
                     }
 
     # Check for possible errors in the submitted data
@@ -352,6 +356,10 @@ def patch_activity(id):
                 setattr(activity, attribute, datetime.strptime(value, '%H:%M').time())
             elif attribute == "activityDay":
                 activity.activityDay = value
+            elif attribute == "price":
+                activity.price = value
+            elif attribute == "productId":
+                activity.productId = value
 
         # Commit the changes made
         db.session.commit()
@@ -361,7 +369,9 @@ def patch_activity(id):
                     'activityType': activity.activityType,
                     'activityStartTime': activity.activityStartTime.strftime('%H:%M'),
                     'activityEndTime': activity.activityEndTime.strftime('%H:%M'),
-                    'activityDay': activity.activityDay
+                    'activityDay': activity.activityDay,
+                    'price': activity.price,
+                    'productId': activity.productId
                     }
 
     # Check for possible errors in the submitted data
@@ -385,9 +395,11 @@ def get_all_activities():
         for activity in activities:
             result.append({'activityId': activity.activityId,
                            'activityType': activity.activityType,
-                           'activityStartTime': activity.activityStartTime.strftime('%H:%M:%S'),
-                           'activityEndTime': activity.activityEndTime.strftime('%H:%M:%S'),
-                           'activityDay': activity.activityDay})
+                           'activityStartTime': activity.activityStartTime.strftime('%H:%M'),
+                           'activityEndTime': activity.activityEndTime.strftime('%H:%M'),
+                           'activityDay': activity.activityDay,
+                           'price': activity.price,
+                           'productId': activity.productId})
 
     # Check for possible errors in the submitted data
     except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
@@ -399,21 +411,21 @@ def get_all_activities():
 
 @app.route('/facilities/<int:facility_id>/activities', methods=['GET'])
 def get_facility_activities(facility_id):
-    print("Test 1")
+
     association_query = models.Association.query.filter_by(facilityID=facility_id).all()
-    print("Test 2")
+
     activity_ids = [association.activityID for association in association_query]
-    print("Test 3")
+
     activity_query = models.Activity.query.filter(models.Activity.activityId.in_(activity_ids)).all()
-    print("Test 4")
+
     result = []
 
     # for each activity, steralise the object given by sqlalchemy
     for activity in activity_query:
         result.append({'activityId': activity.activityId,
                        'activityType': activity.activityType,
-                       'activityStartTime': activity.activityStartTime.strftime('%H:%M:%S'),
-                       'activityEndTime': activity.activityEndTime.strftime('%H:%M:%S'),
+                       'activityStartTime': activity.activityStartTime.strftime('%H:%M'),
+                       'activityEndTime': activity.activityEndTime.strftime('%H:%M'),
                        'activityDay': activity.activityDay,
                        'price': activity.price,
                        'productId': activity.productId
