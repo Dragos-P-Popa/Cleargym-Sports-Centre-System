@@ -126,70 +126,90 @@ def preload_data():
                 activityType="General use", 
                 activityStartTime=datetime.strptime("08:00:00",'%H:%M:%S').time(), 
                 activityEndTime=datetime.strptime("22:00:00",'%H:%M:%S').time(), 
-                activityDay="Any")
+                activityDay="Any",
+                price=10,
+                productId=1)
 
         if not lane_swimming:
             lane_swimming = models.Activity(
                 activityType="Lane swimming", 
                 activityStartTime=datetime.strptime("08:00:00",'%H:%M:%S').time(), 
                 activityEndTime=datetime.strptime("22:00:00",'%H:%M:%S').time(), 
-                activityDay="Any")
+                activityDay="Any",
+                price=10,
+                productId=2)
 
         if not lessons:
             lessons = models.Activity(
                 activityType="Lessons", 
                 activityStartTime=datetime.strptime("08:00:00",'%H:%M:%S').time(), 
                 activityEndTime=datetime.strptime("22:00:00",'%H:%M:%S').time(), 
-                activityDay="Any")
+                activityDay="Any",
+                price=10,
+                productId=3)
 
         if not one_hour_session:
             one_hour_session = models.Activity(
                 activityType="1-hour session", 
                 activityStartTime=datetime.strptime("08:00:00",'%H:%M:%S').time(), 
                 activityEndTime=datetime.strptime("22:00:00",'%H:%M:%S').time(), 
-                activityDay="Any")
+                activityDay="Any",
+                price=10,
+                productId=4)
 
         if not pilates:
             pilates = models.Activity(
                 activityType="Pilates", 
                 activityStartTime=datetime.strptime("18:00:00",'%H:%M:%S').time(), 
                 activityEndTime=datetime.strptime("19:00:00",'%H:%M:%S').time(), 
-                activityDay="Monday")
+                activityDay="Monday",
+                price=10,
+                productId=5)
 
         if not aerobics1:
             aerobics1 = models.Activity(
                 activityType="Aerobics", 
                 activityStartTime=datetime.strptime("10:00:00",'%H:%M:%S').time(), 
                 activityEndTime=datetime.strptime("11:00:00",'%H:%M:%S').time(), 
-                activityDay="Tuesday")
+                activityDay="Tuesday",
+                price=10,
+                productId=6)
 
         if not aerobics2:
             aerobics2 = models.Activity(
                 activityType="Aerobics", 
                 activityStartTime=datetime.strptime("19:00:00",'%H:%M:%S').time(), 
                 activityEndTime=datetime.strptime("20:00:00",'%H:%M:%S').time(), 
-                activityDay="Thursday") 
+                activityDay="Thursday",
+                price=10,
+                productId=7) 
         
         if not aerobics3:
             aerobics3 = models.Activity(
                 activityType="Aerobics", 
                 activityStartTime=datetime.strptime("10:00:00",'%H:%M:%S').time(), 
                 activityEndTime=datetime.strptime("11:00:00",'%H:%M:%S').time(), 
-                activityDay="Saturday")
+                activityDay="Saturday",
+                price=10,
+                productId=8)
         
         if not yoga1:
             yoga1 = models.Activity(
                 activityType="Yoga", 
                 activityStartTime=datetime.strptime("19:00:00",'%H:%M:%S').time(), 
                 activityEndTime=datetime.strptime("20:00:00",'%H:%M:%S').time(), 
-                activityDay="Friday")
+                activityDay="Friday",
+                price=10,
+                productId=9)
         
         if not yoga2:
             yoga2 = models.Activity(
                 activityType="Yoga", 
                 activityStartTime=datetime.strptime("09:00:00",'%H:%M:%S').time(), 
                 activityEndTime=datetime.strptime("10:00:00",'%H:%M:%S').time(), 
-                activityDay="Sunday")
+                activityDay="Sunday",
+                price=10,
+                productId=10)
 
 
 ######################## POPULATE THE ASSOCIATION TABLE ########################
@@ -248,4 +268,3 @@ def preload_data():
 
 if __name__ == "__main__":
     preload_data()
-    
