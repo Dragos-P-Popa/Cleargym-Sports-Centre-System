@@ -8,6 +8,8 @@
 /dataSources.local.xml
 # Extra files
 venv/
+X/
+FENV/
 .idea/
-.github/
 __pycache__/
+.pytest_cache/
