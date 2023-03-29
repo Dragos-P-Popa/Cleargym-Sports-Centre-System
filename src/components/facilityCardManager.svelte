@@ -11,13 +11,16 @@
     export let openingTime:string;
     export let closingTime:string;
     export let managerId:string;
+    export let id; 
+
+    console.log(facilityName)
 
     let editMode : boolean = false;
   
     async function editFacility(e: { target: HTMLFormElement; }) {
       // fetch form fields
       const formData = new FormData(e.target);
-      
+
       const facility : any = {};
 
       // for each form field, update the facility object with the inputted value
@@ -26,17 +29,17 @@
         facility[key] = value;
       }
   
-      const res = await fetch(PUBLIC_FACILITIES_URL + 'facility', {
+      const res = await fetch(PUBLIC_FACILITIES_URL + '/facility/'+facilityName, {
         method: 'PATCH',
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           facilityName : facility.name,
-          capacity : facility.length,
-          openingTime : facility.time,
-          closingTime : facility.time,
-          managerId : facility.text,
+          capacity : facility.capacity,
+          openingTime : facility.opening,
+          closingTime : facility.closing,
+          managerId : facility.manager,
         }),
       });
   
@@ -74,33 +77,33 @@
         
         <form on:submit|preventDefault={editFacility}>
         <div class="py-2">
-            <label for="time">Name</label> <br>
+            <label for="name">Name</label> <br>
             <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="name" id="name" name="name" value="{facilityName}" />
         </div>
         <div class="flex space-x-6 text-[#1A1A1A]">
             <div class="py-2 flex-1">
-                <label for="time">Opening Time</label> <br>
-                <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="opening" name="opening" value="{openingTime}" />
+                <label for="opening">Opening Time</label> <br>
+                <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" step=1 id="opening" name="opening" value="{openingTime}" />
             </div>
             <div class="py-2 flex-1">
-                <label for="time">Closing Time</label> <br>
-                <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="closing" name="closing" value="{closingTime}" />
+                <label for="closing">Closing Time</label> <br>
+                <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" step=1 id="closing" name="closing" value="{closingTime}" />
             </div>
         </div>
         <div class="flex space-x-6 text-[#1A1A1A]">
             <div class="py-2 flex-1">
-                <label for="time">Capacity</label> <br>
+                <label for="capacity">Capacity</label> <br>
                 <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="number" id="capacity" name="capacity" value="{capacity}" min="0" />
             </div>
             <div class="py-2 flex-1">
-                <label for="time">Manager ID</label> <br>
-                <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="name" id="manager" name="manager" value="{managerId}" />
+                <label for="manager">Manager ID</label> <br>
+                <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="text" id="manager" name="manager" value="{managerId}" />
             </div>
         </div>
         
         <div class="flex space-x-6 pr-3">
-            <CancelButton on:click={() => editMode = false} class="mt-5 mx-2 flex-1">Cancel</CancelButton>
-            <MainButton on:click={() => editMode = false} type="submit" class="mt-5 flex-1">Save</MainButton>          
+            <CancelButton on:click={() => editMode = false} class="mt-5 mx-2 flex-1">Close</CancelButton>
+            <MainButton type="submit" class="mt-5 flex-1">Save</MainButton>          
         </div>
         </form>
     </div>

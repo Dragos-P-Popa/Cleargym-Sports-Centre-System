@@ -23,14 +23,6 @@
       let closingTime = facility.closing;
       let managerId = facility.manager;
   
-      console.log(JSON.stringify({
-          facilityName,
-          capacity,
-          openingTime,
-          closingTime,
-          managerId
-        })
-        )
       const res = await fetch(PUBLIC_FACILITIES_URL + 'facility', {
         method: 'POST',
         headers: {
@@ -63,7 +55,7 @@
     <form on:submit|preventDefault={addFacility}>
       <div class="py-2">
         <label for="time">Name</label> <br>
-        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="name" id="name" name="name" value="Name" />
+        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="name" id="name" name="name" placeholder="Name" value="" />
       </div>
       <div class="py-2">
         <label for="time">Opening Time</label> <br>

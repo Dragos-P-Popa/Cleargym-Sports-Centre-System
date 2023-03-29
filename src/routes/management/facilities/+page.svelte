@@ -1,7 +1,6 @@
 <script lang="ts">
   import "@fontsource/manrope";
   import NavBar from "../../../components/managementNavbar.svelte";
-  import EditFacility from "../../../components/editFacility.svelte";
   import AddFacility from "../../../components/newFacility.svelte";
   import FacilityCard from "../../../components/facilityCardManager.svelte";
   /** @type {import('./$types').PageData} */
