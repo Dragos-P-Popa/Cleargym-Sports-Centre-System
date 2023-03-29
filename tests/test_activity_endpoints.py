@@ -45,7 +45,7 @@ def test_post_valid_activity(app_fixture):
     decoded_string = json.loads(endpoint_response.data)
 
     # Validate that the returned data is correct
-    assert decoded_string == {'activityId': 1,
+    assert decoded_string == {'activityId': 11,
                               'activityType': 'General use',
                               'activityStartTime': "17:00",
                               'activityEndTime': "18:00",
