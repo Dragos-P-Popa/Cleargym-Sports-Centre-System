@@ -208,6 +208,4 @@
             class="col-span-4"
         />
     {/if}
-
-    <!-- if ammend booking -->
 </div>
