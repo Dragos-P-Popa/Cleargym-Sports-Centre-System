@@ -35,5 +35,6 @@ jobs:
             pm2 stop bookings
             cd bookings/
             git fetch --all
+            git reset --hard HEAD
             git pull
             pm2 start bookings
