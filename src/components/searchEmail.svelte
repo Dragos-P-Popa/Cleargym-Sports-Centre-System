@@ -12,6 +12,7 @@
     let email = "Email";
     let nonCustomer = false;
     let i = -1;
+    let bookings: any[];
 
     let userId: string;
 
@@ -47,6 +48,7 @@
     function findClientCard() {
         found = false;
         nonCustomer = false;
+        amendbooking = false;
     }
 
     function setViewFocus(id: number) {
@@ -145,32 +147,37 @@
 
     {#if amendbooking}
         <div class="overflow-y-auto h-[80vh] mt-16 flex flex-row">
-            <div class="flex flex-col w-1/2">
+            <div class="flex w-full">
                 <!--display all bookings-->
                 {#await bookingSwitch()}
                     <p class="m-5">loading...</p>
                     <!--when response is recieved, load data into the html-->
                 {:then bookings}
-                    {#each bookings as b, i}
-                        <BookingCard
-                            on:click={() => setViewFocus(i)}
-                            class="my-2 transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none"
-                            heading="Booking #{b.id}"
-                            subheading={b.bookingType}
-                        />
-                    {/each}
-
-                    {#if i != -1}
-                        <BookingInfo
-                            on:click={() => (i = -1)}
-                            bookingNumber={bookings[i].id}
-                            bookedOn={bookings[i].createDate}
-                            bookingDate={formatDate(bookings[i].bookingDate)}
-                            bookingTime={bookings[i].bookingTime}
-                            bookingLength={bookings[i].bookingLength}
-                            facility={bookings[i].facilitiesId}
-                        />
-                    {/if}
+                    <div class="flex-1">
+                        {#each bookings as b, i}
+                            <BookingCard
+                                on:click={() => setViewFocus(i)}
+                                class="my-2 transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none"
+                                heading="Booking #{b.id}"
+                                subheading={b.bookingType}
+                            />
+                        {/each}
+                    </div>
+                    <div class="flex-1 pl-5">
+                        {#if i != -1}
+                            <BookingInfo
+                                on:click={() => (i = -1)}
+                                bookingNumber={bookings[i].id}
+                                bookedOn={bookings[i].createDate}
+                                bookingDate={formatDate(
+                                    bookings[i].bookingDate
+                                )}
+                                bookingTime={bookings[i].bookingTime}
+                                bookingLength={bookings[i].bookingLength}
+                                facility={bookings[i].facilitiesId}
+                            />
+                        {/if}
+                    </div>
                 {/await}
             </div>
         </div>
