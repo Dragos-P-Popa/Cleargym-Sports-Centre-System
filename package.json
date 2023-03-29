@@ -29,11 +29,12 @@
 		"tailwindcss": "^3.2.7",
 		"tslib": "^2.4.1",
 		"typescript": "^4.9.3",
-		"vite": "^4.1.4"
+		"vite": "^4.2.1"
 	},
 	"type": "module",
 	"dependencies": {
 		"@fontsource/manrope": "^4.5.13",
+		"sleep-promise": "^9.1.0",
 		"svelte-cookie": "^1.0.1"
 	}
 }

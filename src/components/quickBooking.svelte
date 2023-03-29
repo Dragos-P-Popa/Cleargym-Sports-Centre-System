@@ -1,6 +1,6 @@
 <script lang="ts">
     import MainButton from "./mainButton.svelte"
-    import { PUBLIC_BOOKINGS_URL, PUBLIC_FACILITIES_URL } from '$env/static/public'
+    import { PUBLIC_BOOKINGS_URL, PUBLIC_FACILITIES_URL, PUBLIC_PAYMENTS_URL } from '$env/static/public'
 
     export let selectedDate:Date;
 
@@ -48,8 +48,9 @@
       let bookingLength = data.length;
       let bookingType = "General";
 
+      console.log(userId)
       //create a request to the Auth API (make sure it is running on your machine to test)
-      const res = await fetch(PUBLIC_BOOKINGS_URL + 'booking', {
+      const res = await fetch(PUBLIC_PAYMENTS_URL + 'basket/'+userId, {
         method: 'POST',
         // essential to set the header
         headers: {
@@ -57,7 +58,6 @@
         },
         // add email and password
         body: JSON.stringify({
-          userId,
           facilityId: facilitiesId,
           activityId: 1,
           bookingDate,
@@ -162,7 +162,5 @@
          style="font-size: 20px; color: green;">
          The booking was completed successfully!
       </p>
-      <!-- The list of bookings gets refreshed after each successful submission -->
-      <script>setTimeout(() => {location.reload();}, 1500);</script>
     {/if}
 </div>
