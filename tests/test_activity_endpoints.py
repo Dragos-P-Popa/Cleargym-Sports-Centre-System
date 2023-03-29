@@ -34,6 +34,8 @@ def test_post_valid_activity(app_fixture):
                                                  'activityStartTime': "17:00",
                                                  'activityEndTime': "18:00",
                                                  'activityDay': 'Monday',
+                                                 'price': 10.0,
+                                                 'productId': 1,
                                                  'facilityId': 1})
 
     # Validate that the correct status code was returned
@@ -47,7 +49,9 @@ def test_post_valid_activity(app_fixture):
                               'activityType': 'General use',
                               'activityStartTime': "17:00",
                               'activityEndTime': "18:00",
-                              'activityDay': 'Monday'}
+                              'activityDay': 'Monday',
+                              'price': 10.0,
+                              'productId': 1,}
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_post_valid_activity")
@@ -68,6 +72,8 @@ def test_post_invalid_activity(app_fixture):
                                                  'activityStartTime': "abcdef",
                                                  'activityEndTime': "18:00",
                                                  'activityDay': 'Monday',
+                                                 'price': 10.0,
+                                                 'productId': 1,
                                                  'facilityId': 1})
 
     # Validate that the correct error code and message was returned
@@ -121,11 +127,13 @@ def test_delete_valid_activity(app_fixture):
 
     # POST test data
     test_record = app_fixture.post('/activity',
-                                         json = {'activityType': 'General use',
-                                                 'activityStartTime': "17:00",
-                                                 'activityEndTime': "18:00",
-                                                 'activityDay': 'Monday',
-                                                 'facilityId': 1})
+                                    json = {'activityType': 'General use',
+                                            'activityStartTime': "17:00",
+                                            'activityEndTime': "18:00",
+                                            'activityDay': 'Monday',
+                                            'price': 10.0,
+                                            'productId': 1,
+                                            'facilityId': 1})
 
     # Attempt to DELETE data
     endpoint_response = app_fixture.delete("/activity/1")
@@ -138,10 +146,12 @@ def test_delete_valid_activity(app_fixture):
 
     # Validate that the returned data is correct
     assert decoded_string == {'activityId': 1,
-                            'activityType': 'General use',
-                            'activityStartTime': "17:00",
-                            'activityEndTime': "18:00",
-                            'activityDay': 'Monday'}
+                              'activityType': 'General use',
+                              'activityStartTime': "17:00",
+                              'activityEndTime': "18:00",
+                              'activityDay': 'Monday',
+                              'price': 10.0,
+                              'productId': 1}
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_delete_valid_activity")
@@ -162,6 +172,8 @@ def test_delete_missing_activity(app_fixture):
                                             'activityStartTime': "17:00",
                                             'activityEndTime': "18:00",
                                             'activityDay': 'Monday',
+                                            'price': 10.0,
+                                            'productId': 1,
                                             'facilityId': 1})
 
     # Attempt to DELETE data
@@ -196,6 +208,8 @@ def test_get_activity_valid_id(app_fixture):
                                             'activityStartTime': "17:00",
                                             'activityEndTime': "18:00",
                                             'activityDay': 'Monday',
+                                            'price': 10.0,
+                                            'productId': 1,
                                             'facilityId': 1})
 
     # Attempt to GET the activity
@@ -212,7 +226,9 @@ def test_get_activity_valid_id(app_fixture):
                               'activityType': 'General use',
                               'activityStartTime': "17:00",
                               'activityEndTime': "18:00",
-                              'activityDay': 'Monday'}
+                              'activityDay': 'Monday',
+                              'price': 10.0,
+                              'productId': 1}
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_get_activity_valid_id")
@@ -233,6 +249,8 @@ def test_get_activity_invalid_id(app_fixture):
                                             'activityStartTime': "17:00",
                                             'activityEndTime': "18:00",
                                             'activityDay': 'Monday',
+                                            'price': 10.0,
+                                            'productId': 1,
                                             'facilityId': 1})
 
     # Attempt to GET the activity by and invalid activity ID
@@ -266,6 +284,8 @@ def test_patch_valid_activity(app_fixture):
                                             'activityStartTime': "17:00",
                                             'activityEndTime': "18:00",
                                             'activityDay': 'Monday',
+                                            'price': 10.0,
+                                            'productId': 1,
                                             'facilityId': 1})
 
     # Decode the returned byte string
@@ -294,10 +314,12 @@ def test_patch_valid_activity(app_fixture):
 
     # Validate that the returned data is correctly updated
     assert decoded_string == {'activityId': 1,
-                              'activityType': 'General use',
+                              'activityType': "General use",
                               'activityStartTime': "14:00",
                               'activityEndTime': "18:00",
-                              'activityDay': "Tuesday",}
+                              'activityDay': "Tuesday",
+                              'price': 10.0,
+                              'productId': 1}
 
     # Inform that the end of this test was reached
     app.logger.info("END OF TEST: test_patch_valid_activity")
@@ -318,6 +340,8 @@ def test_patch_invalid_activity(app_fixture):
                                             'activityStartTime': "17:00",
                                             'activityEndTime': "18:00",
                                             'activityDay': 'Monday',
+                                            'price': 10.0,
+                                            'productId': 1,
                                             'facilityId': 1})
 
     # Decode the returned byte string
