@@ -73,12 +73,6 @@ def value_error_handler(error):
     return jsonify({"ValueError": "Data does not match the required format in one or more fields"}), 400
 
 
-# create the table and the database before running the first request
-# @app.before_first_request
-# def create_tables():
-#   # preload some data in the database
-#  preload_data()
-
 
 ########################### FACILITY TABLE END POINTS ###########################
 
