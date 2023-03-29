@@ -8,7 +8,7 @@ const cors = require('cors');
 
 app.use(cors());
 
-const DOMAIN = 'http://localhost:3004';
+const DOMAIN = 'http://localhost:5173';
 
 app.use(express.json())
 
@@ -60,8 +60,8 @@ app.post('/checkout/:userId', async (req, res) => {
       const session = await stripe.checkout.sessions.create({
         line_items,
         mode: 'payment',
-        success_url: `${DOMAIN}/success.html`,
-        cancel_url: `${DOMAIN}/cancel.html`,
+        success_url: `${DOMAIN}/success`,
+        cancel_url: `${DOMAIN}/cancel`,
       });
 
       res.redirect(303, session.url);
