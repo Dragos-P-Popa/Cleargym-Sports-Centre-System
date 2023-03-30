@@ -17,8 +17,8 @@ exports.addBasketItem = (req, res) => {
         // change to cookie
         console.log(req.params.userId)
 
-        Basket.findByUID(req.params.userId)
-        .then((basket) => {
+        Basket.findByUIDClean(req.params.userId)
+        .then(async (basket) => {
           if (!basket) {
             Basket.createBasket({userId: basketItem.userId}).then((newBasket) => {
               newBasket.items.push(basketItem);

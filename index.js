@@ -48,6 +48,12 @@ app.post('/checkout/:userId', async (req, res) => {
     .then(async (basket) => {
 
       let line_items = [];
+      let coupon;
+      let session;
+
+      if (basket.discount) {
+        coupon = await stripe.coupons.create({percent_off: basket.discount, duration: 'once'});
+      }
 
       for (let i = 0; i < basket.items.length; i++) {
         
@@ -55,16 +61,27 @@ app.post('/checkout/:userId', async (req, res) => {
         let price_data = {currency: "gbp", product_data, unit_amount: basket.prices[i] * 100}
         line_items[i] = {price_data: price_data, quantity: 1}
         
+      }    
+
+
+      if (coupon) {
+        session = await stripe.checkout.sessions.create({
+          line_items,
+          discounts: [{
+            coupon: coupon.id,
+          }],
+          mode: 'payment',
+          success_url: `${DOMAIN}/success`,
+          cancel_url: `${DOMAIN}/cancel`,
+        });
+      } else {
+        session = await stripe.checkout.sessions.create({
+          line_items,
+          mode: 'payment',
+          success_url: `${DOMAIN}/success`,
+          cancel_url: `${DOMAIN}/cancel`,
+        });
       }
-
-      console.log(line_items)      
-
-      const session = await stripe.checkout.sessions.create({
-        line_items,
-        mode: 'payment',
-        success_url: `${DOMAIN}/success`,
-        cancel_url: `${DOMAIN}/cancel`,
-      });
 
       res.redirect(303, session.url);
     });
