@@ -8,7 +8,6 @@
   let user = data.user;
 
   let itemWorkingCopy = basketItems;
-  let confirmed = false;
 
   function createBookings(){
     let item = itemWorkingCopy[0]

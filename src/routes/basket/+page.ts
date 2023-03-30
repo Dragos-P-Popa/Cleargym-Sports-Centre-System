@@ -1,4 +1,4 @@
-import { PUBLIC_AUTH_URL, PUBLIC_PAYMENTS_URL } from '$env/static/public'
+import { PUBLIC_AUTH_URL, PUBLIC_PAYMENTS_URL, PUBLIC_FACILITIES_URL } from '$env/static/public'
 
 export async function load({ fetch, request }) {
 
@@ -16,6 +16,7 @@ export async function load({ fetch, request }) {
       })
   
       basket = await res2.json();
+
     } catch (error) {
       console.error(error)
       basket = {}
