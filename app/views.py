@@ -1,4 +1,4 @@
-from app import app, db, models
+from app import app, db, models, mail
 import availability
 from availability import Booking
 # Do not forget to import Flask when you need it.
@@ -35,12 +35,14 @@ def integrity_error_handler(error):
     # IntegrityError refers to invalid data type in database operations
     return jsonify({"IntegrityError": "Invalid data in one or more fields"}), 400
 
+
 @app.errorhandler(KeyError)
 def key_error_handler(error):
     db.session.rollback()
     app.logger.error(str(error))
     # KeyError refers to a missing key:value pair
     return jsonify({"KeyError": "Missing data in the request"}), 400
+
 
 @app.errorhandler(UnmappedInstanceError)
 def unmapped_error_handler(error):
@@ -49,12 +51,14 @@ def unmapped_error_handler(error):
     # UnmappedInstanceError is raised when trying to operate on a non-existent record
     return jsonify({"UnmappedInstanceError": "Record not found in the database"}), 400
 
+
 @app.errorhandler(TypeError)
 def type_error_handler(error):
     db.session.rollback()
     app.logger.error("TypeError detected")
     # TypeError refers to invalid data type passed as an argument to a function
     return jsonify({"TypeError": "Endpoint function operating on a wrong data type"}), 400
+
 
 @app.errorhandler(AttributeError)
 def attribute_error_handler(error):
@@ -63,6 +67,7 @@ def attribute_error_handler(error):
     # AttributeError is raised when trying to access an attribute
     # of a NoneType object assigned to a variable in views.py
     return jsonify({"AttributeError": "The referenced record does not exist"}), 400
+
 
 @app.errorhandler(ValueError)
 def value_error_handler(error):
@@ -80,95 +85,107 @@ def value_error_handler(error):
 @app.route('/booking', methods=['POST'])
 def post_booking():
     # requesting the data
-    info = request.get_json()
+    information = request.get_json()
 
     # Getting all booking in the Database and count them
     all_bookings = models.Booking.query.all()
-    ID = len(all_bookings) + 1
+    bookingId = len(all_bookings) + 1
 
     # Giving the booking a booking ID automatically
     for item in all_bookings:
-        if models.Booking.query.get(ID):
-            ID = ID - 1
-        elif models.Booking.query.get(ID):
-            ID = ID + 1
+        if models.Booking.query.get(bookingId):
+            bookingId = bookingId - 1
+        elif models.Booking.query.get(bookingId):
+            bookingId = bookingId + 1
 
     # Calculating the end_time
-    start = datetime.strptime(info['bookingTime'], '%H:%M').time()
-    length = datetime.strptime(info['bookingLength'], '%H:%M').time()
-    x = (datetime.combine(datetime.today(), start) +
-         timedelta(hours=length.hour,
-                   minutes=length.minute,
-                   seconds=length.second)).time()
+    booking_start_time = datetime.strptime(information['bookingTime'], '%H:%M').time()
+    booking_length = datetime.strptime(information['bookingLength'], '%H:%M').time()
+    booking_end_time = (datetime.combine(datetime.today(), booking_start_time) +
+                        timedelta(hours=booking_length.hour,
+                                  minutes=booking_length.minute,
+                                  seconds=booking_length.second)).time()
 
     # Create a new booking
     try:
 
-        booking = models.Booking(            
-            id=ID,
-            userId=info["userId"],
-            facilityId=info["facilityId"],
-            activityId=info["activityId"],
-            bookingDate=datetime.strptime(info["bookingDate"], '%Y/%m/%d').date(),
-            bookingTime=start,
-            bookingLength=length,
-            bookingEndTime=x
+        booking = models.Booking(
+            id=bookingId,
+            userId=information["userId"],
+            facilityId=information["facilityId"],
+            activityId=information["activityId"],
+            bookingDate=datetime.strptime(information["bookingDate"], '%Y/%m/%d').date(),
+            bookingTime=booking_start_time,
+            bookingLength=booking_length,
+            bookingEndTime=booking_end_time
         )
 
         # Getting the facility and activity ID values from the user new booking
-        f_id = booking.facilityId
-        a_id = booking.activityId
+        facility_id = booking.facilityId
+        activity_id = booking.activityId
 
         # Getting the facility details from facilities API
-        # facility_link = requests.get(f"http://127.0.0.1:3003/facility/{f_id}")
-        facility_link = requests.get(f"http://cleargym.live:3003/facility/{f_id}")
 
+        # facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facility_id}")
+        facility_link = requests.get(f"http://cleargym.live:3003/facility/{facility_id}")
         facility_details = facility_link.json()
-        f_openTime = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
-        f_closeTime = datetime.strptime(facility_details['closingTime'], '%H:%M:%S').time()
-        f_capacity = facility_details['capacity']
+        facility_openTime = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
+        facility_closeTime = datetime.strptime(facility_details['closingTime'], '%H:%M:%S').time()
+        facility_capacity = facility_details['capacity']
 
         # Getting the activity details from facilities API
-        # activity_link = requests.get(f"http://127.0.0.1:3003/activity/{a_id}")
-        activity_link = requests.get(f"http://cleargym.live:3003/activity/{a_id}")
 
+        # activity_link = requests.get(f"http://127.0.0.1:3003/activity/{activity_id}")
+        activity_link = requests.get(f"http://cleargym.live:3003/activity/{activity_id}")
         activity_details = activity_link.json()
-        a_open = activity_details['activityStartTime']
-        a_close = activity_details['activityEndTime']
-        a_openTime = datetime.strptime(a_open, '%H:%M').time()
-        a_closeTime = datetime.strptime(a_close, '%H:%M').time()
-        a_day = activity_details['activityDay']
-
-        a_length = (datetime.combine(datetime.today(), a_closeTime) -
-                   timedelta(hours=a_openTime.hour,
-                             minutes=a_openTime.minute,
-                             seconds=a_openTime.second)).time()
+        activity_openTime = datetime.strptime(activity_details['activityStartTime'], '%H:%M').time()
+        activity_closeTime = datetime.strptime(activity_details['activityEndTime'], '%H:%M').time()
+        activity_day = activity_details['activityDay']
+        activity_length = (datetime.combine(datetime.today(), activity_closeTime) -
+                           timedelta(hours=activity_openTime.hour,
+                                     minutes=activity_openTime.minute,
+                                     seconds=activity_openTime.second)).time()
 
         # Calling the Availability Class and its functions to check the booking.
-        b = Booking(booking.bookingDate,
-                    booking.bookingTime,
-                    booking.bookingLength,
-                    booking.bookingEndTime,
-                    f_id,
-                    f_closeTime,
-                    f_openTime,
-                    f_capacity,
-                    a_openTime,
-                    a_closeTime,
-                    a_length,
-                    a_day
-                    )
+        Booking_object = Booking(booking.bookingDate,
+                                 booking_start_time,
+                                 booking_length,
+                                 booking_end_time,
+                                 facility_id,
+                                 facility_closeTime,
+                                 facility_openTime,
+                                 facility_capacity,
+                                 activity_openTime,
+                                 activity_closeTime,
+                                 activity_length,
+                                 activity_day
+                                 )
 
         # Check Facilities Begin
-        check_facility_time(b, f_closeTime, f_openTime, booking)
-        check_facility_capacity(b, f_id, booking, f_capacity)
+        Booking_object.check_facility_time(booking_start_time,
+                                           booking_end_time,
+                                           facility_openTime,
+                                           facility_closeTime)
+
+        Booking_object.check_facility_capacity(booking.bookingDate,
+                                               booking_start_time,
+                                               booking_end_time,
+                                               facility_id,
+                                               facility_capacity,
+                                               booking_length)
+        # Check Facilities Done
+
+        # Check Activities Begin
+        # Booking_object.check_activity(activity_length, activity_day, booking_length, booking.bookingDate,
+        #                             booking_start_time, booking_end_time, activity_openTime, activity_closeTime)
+        # Check Activities Done
 
         # add and commit the booking details to the database (Booking.db)
         db.session.add(booking)
         db.session.commit()
 
         # Create a new response
-        response = get_response_for_post(booking)
+        response = booking_response(booking)
 
     # Check for possible errors in the submitted data
     except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
@@ -183,65 +200,64 @@ def get_daily_availability(facilityId, month, day):
     # Get the current year
     current_year = datetime.now().year
     # Create a date object with the given month, day, and current year
-    mydate = date(current_year, month, day)
+    given_date = date(current_year, month, day)
     # daily results is a list of boolean variables for each hour in a day
     daily_results = []
     # one_hour is an amount of time
     one_hour = time(1, 0, 0)
+    # Getting the facility details from facilities API
 
-    # request facility
     # facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
     facility_link = requests.get(f"http://cleargym.live:3003/facility/{facilityId}")
-
     facility_details = facility_link.json()
-    f_openTime = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
-    f_closeTime = datetime.strptime(facility_details['closingTime'], '%H:%M:%S').time()
-    f_capacity = facility_details['capacity']
-    # Convert the facility start and end time hours to integers
-    start = int(f_openTime.strftime('%H'))
-    end = int(f_closeTime.strftime('%H'))
-    # Getting the end hour and add 1 to it ( to be used in the loop )
-    end_plus = end + 1
+    facility_openTime = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
+    facility_closeTime = datetime.strptime(facility_details['closingTime'], '%H:%M:%S').time()
+    facility_capacity = facility_details['capacity']
 
-    for hour in range(start, end_plus):
+    # Convert the facility start and end time hours to integers
+    int_start_time = int(facility_openTime.strftime('%H'))
+    int_end_time = int(facility_closeTime.strftime('%H'))
+    # Getting the end hour and add 1 to it ( to be used in the loop )
+    int_end_time_plus = int_end_time + 1
+
+    for hour in range(int_start_time, int_end_time_plus):
 
         current_time = time(hour, 0)
 
         next_time = (datetime.combine(datetime.today(), current_time)
                      + timedelta(hours=one_hour.hour, minutes=one_hour.minute, seconds=one_hour.second)).time()
 
-        bookings = models.Booking.query.filter_by(
-            bookingDate=mydate,
-            bookingTime=current_time,
-            bookingEndTime=next_time,
-            facilityId=facilityId).all()
+        #bookings = models.Booking.query.filter_by(
+         #   bookingDate=given_date,
+          #  bookingTime=current_time,
+           # bookingEndTime=next_time,
+            #facilityId=facilityId).all()
 
         # All Bookings that starts at booking current time of that facility.
-        a1 = models.Booking.query.filter_by(bookingDate=mydate,
+        a1 = models.Booking.query.filter_by(bookingDate=given_date,
                                             bookingTime=current_time,
                                             facilityId=facilityId).all()
 
         # All Bookings that starts booking start time and ends in one hour
-        a2 = models.Booking.query.filter_by(bookingDate=mydate,
+        a2 = models.Booking.query.filter_by(bookingDate=given_date,
                                             bookingTime=current_time,
                                             bookingEndTime=next_time,
                                             facilityId=facilityId
                                             ).all()
 
         # All bookings that ends after 1 hour of booking start time
-        a3 = models.Booking.query.filter_by(bookingDate=mydate,
+        a3 = models.Booking.query.filter_by(bookingDate=given_date,
                                             bookingEndTime=next_time,
                                             facilityId=facilityId
                                             ).all()
         b1 = len(a1)
         b2 = len(a2)
         b3 = len(a3)
-        # space = " "
-        timing = current_time.strftime("%H:%M:%S")
-        # data = timing + space + str(status)
 
-        booking = b1 + b2 + b3
-        if booking > f_capacity:
+        timing = current_time.strftime("%H:%M:%S")
+        # Live is the number of current booking in a time period
+        Live = b1 + b2 + b3
+        if Live > facility_capacity:
             status = False
             daily_results.append([timing, status])
         else:
@@ -366,16 +382,7 @@ def delete_booking(id):
         db.session.commit()
 
         # Create a new response
-        response = {'id': booking.id,
-                    'userId': booking.userId,
-                    'facilityId': booking.facilityId,
-                    'activityId': booking.activityId,
-                    'createDate': booking.createDate.strftime('%Y/%m/%d'),
-                    'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
-                    'bookingTime': booking.bookingTime.strftime('%H:%M'),
-                    'bookingLength': booking.bookingLength.strftime('%H:%M'),
-                    'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
-                    }
+        response = booking_response(booking)
 
     # Check for possible errors in the submitted data
     except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
@@ -389,12 +396,11 @@ def delete_booking(id):
 @app.route('/bookings/user/<userId>', methods=['GET'])
 def get_booking_uid(userId):
     try:
-
         # requesting all bookings from the database by using the selected user id
         bookings = models.Booking.query.filter_by(userId=userId).all()
-
+        # creating a booking list
         booking_list = []
-
+        # Iterate in the requested bookings from the database
         for booking in bookings:
             # Adding all bookings in a list called booking_list
             booking_list.append({
@@ -408,7 +414,6 @@ def get_booking_uid(userId):
                 'bookingLength': booking.bookingLength.strftime('%H:%M'),
                 'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
             })
-
     # Check for possible errors in the submitted data
     except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
         raise error
@@ -423,23 +428,11 @@ def get_booking_bid(id):
     try:
         # Requesting the data from the database by using the selected booking id
         booking = models.Booking.query.get(id)
-
         # Create a new response
-        response = {'id': booking.id,
-                    'userId': booking.userId,
-                    'facilityId': booking.facilityId,
-                    'activityId': booking.activityId,
-                    'createDate': booking.createDate.strftime('%Y/%m/%d'),
-                    'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
-                    'bookingTime': booking.bookingTime.strftime('%H:%M'),
-                    'bookingLength': booking.bookingLength.strftime('%H:%M'),
-                    'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
-                    }
-
+        response = booking_response(booking)
     # Check for possible errors in the submitted data
     except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
         raise error
-
     # Return the response
     return jsonify(response), 200
 
@@ -486,16 +479,7 @@ def patch_booking(id):
         db.session.commit()
 
         # Create a new response
-        response = {'id': booking.id,
-                    'userId': booking.userId,
-                    'facilityId': booking.facilityId,
-                    'activityId': booking.activityId,
-                    'createDate': booking.createDate.strftime('%Y/%m/%d'),
-                    'bookingDate': booking.bookingDate.strftime('%Y/%m/%d'),
-                    'bookingTime': booking.bookingTime.strftime('%H:%M'),
-                    'bookingLength': booking.bookingLength.strftime('%H:%M'),
-                    'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
-                    }
+        response = booking_response(booking)
 
     # Check for possible errors in the submitted data
     except (IntegrityError, KeyError, UnmappedInstanceError, TypeError, ValueError) as error:
@@ -505,21 +489,7 @@ def patch_booking(id):
     return jsonify(response), 200
 
 
-def check_facility_time(b, closeTime, openTime, booking):
-    b.check_facility_time(booking.bookingTime,
-                          booking.bookingEndTime,
-                          openTime,
-                          closeTime)
-
-def check_facility_capacity(b, f_id, booking, capacity):
-    b.check_facility_capacity(booking.bookingDate,
-                              booking.bookingTime,
-                              booking.bookingEndTime,
-                              f_id,
-                              capacity,
-                              booking.bookingLength)
-
-def get_response_for_post(booking):
+def booking_response(booking):
     return {'id': booking.id,
             'userId': booking.userId,
             'facilityId': booking.facilityId,
@@ -531,7 +501,8 @@ def get_response_for_post(booking):
             'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
             }
 
-@app.route('emails/confirmation/<email>', methods=['POST'])
+
+@app.route('/emails/confirmation/<email>', methods=['POST'])
 def Email_confirmation(email):
     Sub = "Get ready! Your session is booked"
     Sender = "cleargymstaff@gmail.com"
@@ -564,7 +535,7 @@ Cleargym Team
         return jsonify("Failed")
 
 
-@app.route('emails/cancellation/<email>', methods=['POST'])
+@app.route('/emails/cancellation/<email>', methods=['POST'])
 def Email_cancellation(email):
     Sub = "Cancellation of your session booking"
     Sender = "cleargymstaff@gmail.com"
