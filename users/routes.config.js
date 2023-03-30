@@ -19,13 +19,11 @@ exports.routesConfig = function (app) {
     // get user by Id
     app.get('/users/:userId', [
         // user should be logged in to access this
-        ValidationMiddleware.checkJWT,
         UsersController.getById
     ]);
     // update user by Id
     app.patch('/users/:userId', [
         // user should be logged in to access this
-        ValidationMiddleware.checkJWT,
         VerificationMiddleware.verifyPatch,
         UsersController.patchById
     ]);
@@ -39,6 +37,7 @@ exports.routesConfig = function (app) {
     app.get('/users', [
         // user should be logged in to access this
         ValidationMiddleware.checkJWT,
+        PermissionsMiddleware.minimumPermissionLevelRequired(1028),
         UsersController.list
     ])
     // get current signed in user
