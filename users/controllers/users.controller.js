@@ -21,7 +21,9 @@ exports.insert = (req, res) => {
     // replace plaintext password with encrypted password                                
     req.body.password = salt + "$" + hash;
     // set standard (lowest) permission level
-    req.body.privilegeLevel = 1;
+    if(!req.body.privilegeLevel) {
+        req.body.privilegeLevel = 0;
+    }
     req.body.emailVerified = false;
     UserModel.createUser(req.body)
         .then((result) => {
@@ -58,15 +60,13 @@ exports.insert = (req, res) => {
 
 exports.list = (req, res) => {
     // set a limit for the amount of users to return
-    let limit = req.query.limit && req.query.limit <= 100 ? parseInt(req.query.limit) : 10;
-    let page = 0;
     if (req.query) {
         if (req.query.page) {
             req.query.page = parseInt(req.query.page);
             page = Number.isInteger(req.query.page) ? req.query.page : 0;
         }
     }
-    UserModel.list(limit, page).then((result) => {
+    UserModel.list().then((result) => {
         res.status(200).send(result);
     })
 };
