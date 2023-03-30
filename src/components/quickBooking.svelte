@@ -136,7 +136,7 @@
           {#if selectedDate}
             <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="date" id="date" name="date" value="{formatDate(selectedDate, '-')}" readonly="true"/>
           {:else}
-          <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="date" id="date" name="date" value="" />
+          <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="date" id="date" name="date" value="{new Date()}" />
           {/if}
       </div>
       <div class="py-2">

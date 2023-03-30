@@ -34,11 +34,12 @@
         userId,
         facilityId: facilitiesId,
         activityId: 1,
-        bookingDate: "2023/03/31",
-        bookingTime: "11:00",
-        bookingLength,
-      }),
-    }).then((result) => {
+        bookingDate: bookingDate,
+        bookingTime: bookingTime,
+        bookingLength
+      })
+    }).then((result) =>{
+      console.log(result)
       if (result.status) {
         //if 200...
         itemWorkingCopy.shift();
