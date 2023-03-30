@@ -7,6 +7,7 @@ from datetime import datetime, time, date, timedelta
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import UnmappedInstanceError
 import requests
+from flask_mail import Mail, Message
 
 
 ############################### ERROR HANDLERS ###############################
@@ -529,3 +530,69 @@ def get_response_for_post(booking):
             'bookingLength': booking.bookingLength.strftime('%H:%M'),
             'bookingEndTime': booking.bookingEndTime.strftime('%H:%M')
             }
+
+@app.route('emails/confirmation/<email>', methods=['POST'])
+def Email_confirmation(email):
+    Sub = "Get ready! Your session is booked"
+    Sender = "cleargymstaff@gmail.com"
+    Recipient = [email]
+    Body = f'''Dear User,
+
+Thank you for booking a session through our app. We are excited to have you as a customer and look forward to providing you with a great experience.
+
+If you need to cancel or reschedule your session, please let us know or use our app.
+
+If you have any questions or concerns, please do not hesitate to contact us. We are always here to help.
+
+Thank you again for choosing our app for your booking needs. We hope you enjoy your session!
+
+Best regards,
+
+Cleargym Team
+    '''
+    message = Message(Sub,
+                      sender=Sender,
+                      recipients=Recipient)
+    print(type(message))
+    message.body = Body
+
+    try:
+        mail.send(message)
+        return jsonify("Sent")
+    except Exception as e:
+        print(e)
+        return jsonify("Failed")
+
+
+@app.route('emails/cancellation/<email>', methods=['POST'])
+def Email_cancellation(email):
+    Sub = "Cancellation of your session booking"
+    Sender = "cleargymstaff@gmail.com"
+    Recipient = [email]
+    Body = f'''Dear User,
+
+We're sorry to hear that you need to cancel your session booking. We understand that circumstances can change, and we're here to help make the cancellation process as easy as possible for you.
+
+If you would like to proceed with the cancellation, please reply to this email and let us know.
+
+We will process your cancellation request as soon as possible.
+
+If you have any questions or concerns, please do not hesitate to contact us. We are always here to help.
+
+Thank you for using our booking app, and we hope to have the opportunity to serve you again in the future.
+
+Best regards,
+
+    '''
+    message = Message(Sub,
+                      sender=Sender,
+                      recipients=Recipient)
+    print(type(message))
+    message.body = Body
+
+    try:
+        mail.send(message)
+        return jsonify("Sent")
+    except Exception as e:
+        print(e)
+        return jsonify("Failed")
