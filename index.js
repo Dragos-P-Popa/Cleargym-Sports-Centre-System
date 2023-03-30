@@ -68,7 +68,7 @@ app.post('/checkout/:userId', async (req, res) => {
       for (let i = 0; i < basket.items.length; i++) {
         
         let product_data = {name: basket.items[i].bookingType + " " + basket.items[i].bookingDate}
-        let price_data = {currency: "gbp", product_data, unit_amount: basket.prices[i] * 100}
+        let price_data = {currency: "gbp", product_data, unit_amount: basket.prices[i] * 100 /*, recurring: { "interval": "month", "interval_count": 1  }*/}
         line_items[i] = {price_data: price_data, quantity: 1}
         
       }    
@@ -79,6 +79,7 @@ app.post('/checkout/:userId', async (req, res) => {
           discounts: [{
             coupon: coupon.id,
           }],
+          //mode: 'subscription',
           mode: 'payment',
           success_url: `${DOMAIN}/success`,
           cancel_url: `${DOMAIN}/cancel`,
@@ -86,6 +87,7 @@ app.post('/checkout/:userId', async (req, res) => {
       } else {
         session = await stripe.checkout.sessions.create({
           line_items,
+          //mode: 'subscription',
           mode: 'payment',
           success_url: `${DOMAIN}/success`,
           cancel_url: `${DOMAIN}/cancel`,
