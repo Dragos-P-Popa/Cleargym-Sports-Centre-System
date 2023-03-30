@@ -2,7 +2,7 @@
         import { PUBLIC_FACILITIES_URL } from '$env/static/public'
 let facilities;
 let activities; 
-
+ 
      async function facilityLoading() {
     // fetch all facilities
 		const res = await fetch(PUBLIC_FACILITIES_URL + 'facilities', {
@@ -17,23 +17,18 @@ let activities;
     return facilities
 	}
 
-    async function activityLoading() {
+    async function activityLoading(id) {
     // fetch all activites
-		const res = await fetch(PUBLIC_FACILITIES_URL + 'activities', {
+		const res = await fetch(PUBLIC_FACILITIES_URL + `facilities/` + id +`/activities`, {
 			method: 'GET',
-      headers: {
-        "Content-Type": "application/json",
-      }
+      
 		})
 
     activities = await res.json()
+    console.log(activities)
     return activities
 	}
 </script>
-
-
-
-
 
     <table class="w-full border-borderColor border mt-4 table-auto border-spacing-6 border-collapse">
         <thead>
@@ -59,7 +54,7 @@ let activities;
             <td class=" border-borderColor border p-4">{facility.facilityName}</td>
             
             <td class=" border-borderColor border p-4">
-                {#await activityLoading()}
+                {#await activityLoading(facility.id)}
                 {:then activities}
                 {#each activities as activity}             
                 <ul>
@@ -72,6 +67,17 @@ let activities;
                 {/await}
             </td>
             <td class=" border-borderColor border p-4">
+                {#await activityLoading(facility.id)}
+                {:then activities}
+                {#each activities as activity}             
+                <ul>
+                    <li class="p-2">
+                        {activity.price}
+                        
+                    </li>
+                </ul>
+                {/each}
+                {/await}
 
             </td>
 
