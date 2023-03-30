@@ -27,9 +27,11 @@ app.post('/basket/:userId', async (req, res) => {
 
 //get basket
 app.get('/basket/:userId', async (req, res) => {
+  let prices = [];
+
   BasketModel.findByUID(req.params.userId)
-      .then((result) => {
-          res.status(201).send(result);
+      .then(async (basket) => {
+          res.status(201).send(basket);
       });
 })
 
@@ -50,7 +52,7 @@ app.post('/checkout/:userId', async (req, res) => {
       for (let i = 0; i < basket.items.length; i++) {
         
         let product_data = {name: basket.items[i].bookingType + " " + basket.items[i].bookingDate}
-        let price_data = {currency: "gbp", product_data, unit_amount: 1000}
+        let price_data = {currency: "gbp", product_data, unit_amount: basket.prices[i] * 100}
         line_items[i] = {price_data: price_data, quantity: 1}
         
       }

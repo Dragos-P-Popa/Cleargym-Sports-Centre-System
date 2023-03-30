@@ -16,8 +16,29 @@ exports.createBasket = (basketData) => {
 }
 
 exports.findByUID = async (userId) => {
-  const result = await Basket.findOne({ userId: userId }).populate('items');
-  return result;
+  let basket = await Basket.findOne({ userId: userId }).populate('items');
+  let prices = []
+
+  const res3 = await fetch('http://cleargym.live:3003/activities', {
+    method: 'GET'
+  })
+
+  let activities = await res3.json();
+
+  for (let i = 0; i < basket.items.length; i++) {
+    for (let k = 0; k < activities.length; k++) {
+      if (basket.items[i].activityId == activities[k].activityId){
+        
+        prices.push(activities[k].price * basket.items[i].bookingLength[1])
+
+        basket = JSON.stringify(basket)
+        basket = JSON.parse(basket)
+        basket.prices = prices
+      }
+    }
+  }
+
+  return basket;
 }
 
 exports.removeByUID = async (userId) => {
