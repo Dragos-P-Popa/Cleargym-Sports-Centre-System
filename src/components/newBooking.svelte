@@ -204,7 +204,7 @@
         </div>
         <div class="py-2">
           <label for="time">Time</label> <br>
-            {#if selectedFacility}
+          {#if selectedFacility !== undefined}
                 {#await timeLoading(selectedFacility + 1)}
                 <p class="m-5">loading...</p>
                 {:then available_times}
