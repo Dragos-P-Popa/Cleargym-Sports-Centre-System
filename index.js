@@ -5,12 +5,22 @@ app.use(express.static('public'));
 const BasketItemController = require('./controllers/basketItem.controller')
 const BasketModel = require('./models/basket.model')
 const cors = require('cors');
+require('dotenv').config();
 
 app.use(cors());
 
 const DOMAIN = 'http://localhost:5173';
 
 app.use(express.json())
+
+app.post('/discount/:discount' , (req, res) => {
+  process.env.DISCOUNT = req.params.discount;
+  res.status(200).send({"discount": process.env.DISCOUNT})
+})
+
+app.get('/discount', (req, res) => {
+  res.status(200).send({"discount": process.env.DISCOUNT})
+})
 
 //post add item to basket
 app.post('/basket/:userId', async (req, res) => {
@@ -48,11 +58,11 @@ app.post('/checkout/:userId', async (req, res) => {
     .then(async (basket) => {
 
       let line_items = [];
-      let coupon;
+      let coupon = null;
       let session;
 
-      if (basket.discount) {
-        coupon = await stripe.coupons.create({percent_off: basket.discount, duration: 'once'});
+      if (basket.discount == true) {
+        coupon = await stripe.coupons.create({percent_off: process.env.DISCOUNT, duration: 'once'});
       }
 
       for (let i = 0; i < basket.items.length; i++) {
@@ -62,7 +72,6 @@ app.post('/checkout/:userId', async (req, res) => {
         line_items[i] = {price_data: price_data, quantity: 1}
         
       }    
-
 
       if (coupon) {
         session = await stripe.checkout.sessions.create({

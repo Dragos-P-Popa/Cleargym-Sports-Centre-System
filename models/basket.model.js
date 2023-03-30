@@ -27,7 +27,7 @@ const discountCalculation = async (basket) => {
         count += 1
         //console.log(count)
         if (count >= 2) {
-          return 15
+          return true
         }
       }
     }

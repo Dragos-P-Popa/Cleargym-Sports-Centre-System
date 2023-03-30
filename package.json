@@ -19,6 +19,7 @@
   "homepage": "https://github.com/uol-feps-soc-comp2913-2223s2-classroom/project-squad7#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "mongoose": "^7.0.3"
   }
 }
