@@ -58,6 +58,11 @@
       i = id
     }
 
+    // Clear the available activities array when a new date is selected
+    $: if (selectedDate) {
+      available_activities = [];
+    }
+
     /* If the user selected a booking date, and it was assigned to the
        'selectDate' variable, update 'selectedMonth' and 'selectedDay'
        values to match the user's choice. The months start at 0,
