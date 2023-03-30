@@ -179,6 +179,7 @@ def post_booking():
 
 @app.route('/availability/<int:facilityId>/<int:month>/<int:day>', methods=['GET'])
 def get_daily_availability(facilityId, month, day):
+    respo=[]
     # Get the current year
     current_year = datetime.now().year
     # Create a date object with the given month, day, and current year
@@ -235,19 +236,37 @@ def get_daily_availability(facilityId, month, day):
         b1 = len(a1)
         b2 = len(a2)
         b3 = len(a3)
-        # space = " "
-        timing = current_time.strftime("%H:%M:%S")
-        # data = timing + space + str(status)
-
         booking = b1 + b2 + b3
+        #the_hour = current_time.strftime("%H:%M:%S")
+        #the_time = "Time : "
+        #result1 = the_time + the_hour
+        #the_status = "Availability"
+        data = {}
+        data["Hour"] = hour
         if booking > f_capacity:
             status = False
-            daily_results.append([timing, status])
+            data["Availability"] = status
+            respo.append(data)
         else:
             status = True
-            daily_results.append([timing, status])
+            #result2 = the_status + str(status)
+            #daily_results.append([result1, result2])
+            data["Availability"] = status
+            respo.append(data)
 
-    return jsonify(daily_results), 200
+        # data = timing + space + str(status)
+
+
+        #if booking > f_capacity:
+         #   status = False
+          #  result2 = the_status + str(status)
+           # daily_results.append([result1, result2])
+        #else:
+         #   status = True
+          #  result2 = the_status + str(status)
+           # daily_results.append([result1, result2])
+
+    return jsonify(respo), 200
 
 
 @app.route('/availability/<int:facilityId>/<int:month>', methods=['GET'])
@@ -276,7 +295,7 @@ def get_monthly_availability(facilityId, month):
     # request facility
     # facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
     facility_link = requests.get(f"http://cleargym.live:3003/facility/{facilityId}")
-
+    
     facility_details = facility_link.json()
     f_openTime = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
     f_closeTime = datetime.strptime(facility_details['closingTime'], '%H:%M:%S').time()
@@ -330,27 +349,32 @@ def get_monthly_availability(facilityId, month):
             b1 = len(a1)
             b2 = len(a2)
             b3 = len(a3)
-            # space = " "
-            timing = current_time.strftime("%H:%M:%S")
-            # data = timing + space + str(status)
 
             booking = b1 + b2 + b3
         if booking > f_capacity:
             status = False
-            daily_results.append([timing, status])
+            daily_results.append(status)
         else:
             status = True
-            daily_results.append([timing, status])
+            daily_results.append(status)
 
-    for item in daily_results:
-        if False not in daily_results:
-            day_availability = True
-            monthly_results.append(day_availability)
-        elif True not in daily_results:
-            day_availability = False
-            monthly_results.append(day_availability)
+    retValue = []
 
-    return jsonify(monthly_results), 200
+    #for item in daily_results:
+    for number in range(first_day, last_day+1):
+            data = {}
+            data["Day"] = number
+
+            if False not in daily_results:
+                day_availability = True
+                data["Availability"] = day_availability
+                retValue.append(data)
+            elif True not in daily_results:
+                day_availability = False
+                data["Availability"] = day_availability
+                retValue.append(data)
+
+    return jsonify(retValue), 200
 
 
 # This function is to delete a booking by using the booking id
