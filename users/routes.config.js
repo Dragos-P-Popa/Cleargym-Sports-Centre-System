@@ -39,7 +39,6 @@ exports.routesConfig = function (app) {
     app.get('/users', [
         // user should be logged in to access this
         ValidationMiddleware.checkJWT,
-        PermissionsMiddleware.minimumPermissionLevelRequired(1028),
         UsersController.list
     ])
     // get current signed in user
