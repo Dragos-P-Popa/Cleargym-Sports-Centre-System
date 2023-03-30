@@ -39,15 +39,15 @@
     
     function formatTime(time : number) {
         
-        console.log(time)
         // converts time from a double digit number to HH:MM format
         var t = time.toString();
 
         var hour = t
         var min = "00"
-        console.log([hour, min].join(':'))
+
         return [hour, min].join(':');
     }
+
 
     async function createBooking(e: Event) {
     // prevent the form from submitting prior to executing this logic
@@ -113,7 +113,6 @@
 
     function calculateEndTime(bookingTime : string, bookingLength : string) {
         
-        console.log("bookingTime: " + bookingTime, "bookingLength: " + bookingLength)
         // convert bookingTime and bookingLength to integers
         let bookTime = parseInt(bookingTime)
         let bookLength = parseInt(bookingLength)
@@ -123,7 +122,7 @@
 
         // Convert the combinedTime to a string and assign it to bookingEndTime
         let bookingEndTime = combinedTime.toString() + ":00"
-        console.log("bookingEndTime: " + bookingEndTime)
+
         // Return the bookingEndTime
         return bookingEndTime
     }
@@ -159,8 +158,8 @@
 
     // Debugging logs
     $: {
-        console.log("selectedFacility", selectedFacility + 1);
-        console.log("available_times", available_times);
+        //console.log("selectedFacility", selectedFacility + 1);
+        //console.log("available_times", available_times);
     }
 
   </script>

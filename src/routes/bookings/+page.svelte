@@ -40,6 +40,17 @@
       return [year, month, day].join('-');
     }
 
+  function formatTime(time : number) {
+      
+      // converts time from a double digit number to HH:MM format
+      var t = time.toString();
+
+      var hour = t
+      var min = "00"
+
+      return [hour, min].join(':');
+  }
+  
     // when clicking on bookings in the list (left) this is called.
     // based on 'i' the BookingInfo component will display the appropriate
     // booking info
@@ -96,7 +107,7 @@
     for (let i = 0; i < facility_activities.length; i++) {
       for(let j = 0; j < available_times.length; j++) {
         if (facility_activities[i].activityStartTime 
-            == available_times[j][0].slice(0, 5)) {
+            == formatTime(available_times[j].Hour)) {
           available_activities.push(facility_activities[i])
         }
       }
