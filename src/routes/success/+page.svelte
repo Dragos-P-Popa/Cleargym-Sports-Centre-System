@@ -1,4 +1,5 @@
 <script lang="ts">
+  import "@fontsource/Manrope";
   import { onMount } from "svelte";
   import { PUBLIC_BOOKINGS_URL, PUBLIC_PAYMENTS_URL } from "$env/static/public";
   import JoinUsButton from "../../components/joinUsButton.svelte";
@@ -119,10 +120,9 @@
     </svg>
   </div>
   <p class="px-20 text-lg pt-2">
-    Thank you for your payment! We have received your payment of [insert amount]
-    and it has been successfully processed. You will receive an email receipt
-    shortly. If you have any questions or concerns, please don't hesitate to
-    contact us.
+    Thank you for your payment! We have received your payment and it has been
+    successfully processed. You will receive an email receipt shortly. If you
+    have any questions or concerns, please don't hesitate to contact us.
   </p>
   <div class="flex flex-row pt-1 justify-center items-center">
     <img
@@ -133,7 +133,7 @@
     />
   </div>
   <div class="flex place-content-end">
-    <JoinUsButton class="w-1/5 items-end" on:click={() => goto("/bookings")}
+    <JoinUsButton class="w-1/5 items-end" on:click={() => goto("/dashboard")}
       >Return to Dashboard</JoinUsButton
     >
   </div>
