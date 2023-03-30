@@ -2,7 +2,9 @@
     import MainButton from "./mainButton.svelte";
     import { PUBLIC_AUTH_URL } from '$env/static/public'
 
-    let facilities;
+    // This variable controls whether the confirmation message should be displayed.
+    // It is set to 'false' by default.
+    let display_confirm = false
 
     async function addEmployee(e: { target: HTMLFormElement; }) {  
       // fetch form fields
@@ -12,7 +14,7 @@
 
       const data : any = {};
   
-      // for each form field, update the activity object with the inputted value
+      // for each form field, update the employee object with the inputted value
       for (let field of formData) {
         const [key, value] = field;
         data[key] = value;
@@ -22,9 +24,10 @@
       let lastName = data.lastName;
       let email = data.email;
       let password = data.password;
-  
+
       const res = await fetch(PUBLIC_AUTH_URL + 'users', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           "Content-Type": "application/json",
         },
@@ -32,35 +35,40 @@
           firstName,
           lastName,
           email,
-          password
+          password,
+          privilegeLevel: 32
         }),
       });
   
 
-      if (res.status == 200) {
-        alert('Activity added successfully!');
-      } else {
-        alert('Error adding activity.');
-      }
+
       // wait in the background for API response
         result = await res.json()
         const code = await res.status
 
-        if (code != 201){
-        // something occured other than successful regstration
+
+        // something occured other than successful registration
         console.log(result);
-        if (result.error){
-            // find the error <p>
-            var serverError = document.getElementById("serverError")!;
-            // set the text to the error revieved from the server
-            serverError.innerText = result.error
-            // set to visible
-            serverError.style.display = "block";
-        }
-        } else {
-        // if registration was successful change to login ui
-        toggle()
-        }
+        // if (result.error){
+        //     // find the error <p>
+        //     var serverError = document.getElementById("serverError")!;
+        //     // set the text to the error revieved from the server
+        //     serverError.innerText = result.error
+        //     // set to visible
+        //     serverError.style.display = "block";
+        // }
+        // } else {
+        // // if registration was successful change to login ui
+        // toggle()
+        // }
+
+      // If the code returned from the Auth API was 200
+      if (res.status == 204)
+      {
+        // Set the 'display_confirm' value to 'true'
+        display_confirm = true;
+      }
+      
     }
 </script>
   
@@ -92,4 +100,14 @@
         <MainButton type="submit" class="mt-12 w-4/5 place-self-center">Add</MainButton>          
       </div>
     </form>
+
+    <!-- If the request was successful, display a confirmation message -->
+    {#if display_confirm==true}
+      <p class="mt-8 mb-4 ml-auto mr-auto w-4/5 place-self-center text-center"
+         style="font-size: 20px; color: green;">
+         The employee was completed successfully!
+      </p>
+      <!-- The list of employees gets refreshed after each successful submission -->
+      <script>setTimeout(() => {location.reload();}, 1500);</script>
+    {/if}
 </div>

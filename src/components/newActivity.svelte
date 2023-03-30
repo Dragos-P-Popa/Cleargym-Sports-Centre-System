@@ -21,6 +21,7 @@
       let activityStartTime = activity.startTime;
       let activityEndTime = activity.endTime;
       let activityDay = activity.day;
+      let price = activity.price;
       
       console.log(activity);
       
@@ -34,7 +35,9 @@
           activityType,
           activityDay,
           activityStartTime,
-          activityEndTime
+          activityEndTime,
+          price,
+          productId: 0
         }),
       });
   
@@ -106,7 +109,7 @@
         </select>
       </div>
       <div class="py-2">
-        <label for="price">Price</label> <br>
+        <label for="price">Price per hour</label> <br>
         <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="number" id="price" name="price" placeholder="10" value="" min="0" />
       </div>
       <div class="grid">

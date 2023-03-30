@@ -7,12 +7,12 @@
         class:[$$restProps.class] + "  border-[1px] border-borderColor shadow-md rounded-lg bg-cover select-none"
     }
     export let activityType:string;
-    export let location:string;
+    export let activityFacility:string;
     export let activityStartTime:string;
     export let activityEndTime:string;
     export let activityDay:string;
     // set activity price, change later
-    export let activityPrice = 15;
+    export let price:string;
     export let activityId; 
 
     console.log(activityType)
@@ -39,11 +39,11 @@
         },
         body: JSON.stringify({
           activityType : activity.name,
-          activityFacility : activity.length,
+          activityFacility : activity.facility,
           activityDay : activity.day,
           activityStartTime : activity.startTime,
           activityEndTime : activity.endTime,
-          activityPrice : activity.price
+          price : activity.price
         }),
       });
   
@@ -72,6 +72,7 @@
 </script>
 
 <div on:click {...divProps}>
+    <!-- List of activities -->
     {#if editMode == false}
     <div class="backdrop-blur-sm w-full h-full p-4 rounded-lg">
         <p class="text-3xl pb-2 font-extrabold">{activityType}</p>
@@ -80,7 +81,7 @@
                 <!-- <p class="text-sm">Facility: {location}</p> -->
                 <p class="text-sm">Day: {activityDay}</p>
                 <p class="text-sm">Time: {activityStartTime} - {activityEndTime}</p>
-                <p class="text-sm">Price: £{activityPrice}</p>
+                <p class="text-sm">Price per hour: £{price}</p>
             </div>
             <div class="justify-self-end">
                 <MainButton on:click={()=>editMode=true} class="py-2 px-8">Edit</MainButton>
@@ -88,7 +89,7 @@
         </div>
     </div>
     {:else if editMode == true}
-    <!-- Edit activity -->
+    <!-- Edit selected activity -->
     <div class="p-4 py-8 shadow-md rounded-lg border-[1px] border-borderColor ml-auto">
         <p class="px-2 text-4xl text-left text-[#1A1A1A]">{activityType}</p>
 
@@ -127,17 +128,17 @@
             </div>
             <div class="flex space-x-6 text-[#1A1A1A]">
                 <div class="py-2 flex-1">
-                    <label for="time">Start Time</label> <br>
+                    <label for="startTime">Start Time</label> <br>
                     <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="startTime" name="startTime" value="{activityStartTime}"/>
                 </div>
                 <div class="py-2 flex-1">
-                    <label for="time">End Time</label> <br>
+                    <label for="endTime">End Time</label> <br>
                     <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="endTime" name="endTime" value="{activityEndTime}" />
                 </div>
             </div>
             <div class="py-2">
-                <label for="price">Price £</label> <br>
-                <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="number" id="price" name="price" value="{activityPrice}" min="0" />
+                <label for="price">Price per hour</label> <br>
+                <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="number" id="price" name="price" value="{price}" min="0" />
             </div>
             <div class="flex space-x-6 pr-3">
                 <CancelButton on:click={() => editMode = false} class="mt-5 mx-2 flex-1">Close</CancelButton>

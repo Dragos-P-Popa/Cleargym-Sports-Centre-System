@@ -54,6 +54,7 @@
 </script>
 
 <div on:click {...divProps}>
+    <!-- List of facilities -->
     {#if editMode == false}
     <div class="backdrop-blur-sm w-full h-full p-4 rounded-lg">
         <p class="text-3xl pb-2 font-extrabold">{facilityName}</p>
@@ -69,7 +70,7 @@
         </div>
     </div>
     {:else if editMode == true}
-    <!-- Edit facility -->
+    <!-- Edit selected facility -->
     <div class="p-4 py-8 shadow-md rounded-lg border-[1px] border-borderColor ml-auto">
         <p class="px-2 text-4xl text-left text-[#1A1A1A]">{facilityName}</p>
     

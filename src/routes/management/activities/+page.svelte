@@ -3,10 +3,12 @@
   import NavBar from "../../../components/managementNavbar.svelte";
   import AddActivity from "../../../components/newActivity.svelte";
   import ActivityCard from "../../../components/activityCardManager.svelte";
+  import ChangeDiscount from "../../../components/discountManager.svelte";
   /** @type {import('./$types').PageData} */
   export let data;
   let user = data.user;
   let activities = data.activities;
+  let discount = data.discount;
 </script>
 
 <div class="grid grid-cols-12">
@@ -22,12 +24,13 @@
           <!--display all activities-->
             <div>
               {#each activities as activity}
-                <ActivityCard class="my-3" activityType={activity.activityType} location="Swimming pool" activityDay={activity.activityDay} activityStartTime={activity.activityStartTime} activityEndTime={activity.activityEndTime} activityPrice="10" activityId={activity.activityId}/>
+                <ActivityCard class="my-3" activityType={activity.activityType} location={activity.facility} activityDay={activity.activityDay} activityStartTime={activity.activityStartTime} activityEndTime={activity.activityEndTime} price={activity.price} activityId={activity.activityId}/>
               {/each}
             </div>
         </div>
       </div>
       <div class="col-span-3 px-4 mt-20 ml-5">
+        <ChangeDiscount discount={discount.discount}></ChangeDiscount>
         <div class="ml-auto">
           <div><AddActivity></AddActivity></div> 
         </div>
