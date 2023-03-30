@@ -118,7 +118,7 @@
       />
     </svg>
   </div>
-  <p class="px-20 text-sm">
+  <p class="px-20 text-lg pt-2">
     Thank you for your payment! We have received your payment of [insert amount]
     and it has been successfully processed. You will receive an email receipt
     shortly. If you have any questions or concerns, please don't hesitate to

@@ -59,12 +59,12 @@
             />
         </svg>
     </div>
-    <p class="px-20 text-sm">Did you forget to book anything else?</p>
-    <p class="px-20 text-sm">
+    <p class="px-20 text-lg pt-2">Did you forget to book anything else?</p>
+    <p class="px-20 text-lg">
         We understand that you have chosen to abort the payment process. If you
         need any assistance with completing your payment or if you have any
-        questions or concerns, please don't hesitate to contact us at [insert
-        contact information]
+        questions or concerns, please don't hesitate to contact us at
+        07392086432
     </p>
     <div class="flex pt-5 place-self-center">
         <img
