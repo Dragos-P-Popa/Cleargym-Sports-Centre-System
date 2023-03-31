@@ -13,6 +13,8 @@
     export let bookingLength: string;
 
     let editMode = false;
+    let email_confirmation;
+    export let user: any;
 
     // This variable controls whether the confirmation message for booking cancellation
     // should be displayed. It is set to 'false' by default.
@@ -53,8 +55,23 @@
         if (res.status == 200) {
             // Set the 'display_confirm' value to 'true'
             cancellation_confirm = true;
-        }
 
+            // Make a POST request to the cancellation email endpoint
+            const res2 = await fetch(PUBLIC_BOOKINGS_URL + `/emails/cancellation/`+user.email, {
+                method: 'POST',
+                headers: {
+                "Content-Type": "application/json",
+                }
+            })
+            // The data returned by get_all_activities() endpoint in the Bookings API
+            email_confirmation = await res2.json()
+
+            if (email_confirmation === "Sent") {
+                console.log("The message was sent")
+            } else {
+                console.log("The message was not sent")
+            }
+        }
         // Reset the input fields in case a user wishes to make another booking
         //e.target.reset();
     }

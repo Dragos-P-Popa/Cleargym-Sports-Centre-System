@@ -8,7 +8,7 @@
   import Calendar from "../../components/calendar.svelte"
   import Toggle from "../../components/bookingTypeToggle.svelte"
   import { PUBLIC_BOOKINGS_URL, PUBLIC_FACILITIES_URL } from "$env/static/public";
-  
+
   export let data;
   let facilities;
   let available_times;
@@ -25,7 +25,7 @@
   export let selectedMonth:number;
   export let selectedDay:number;
   let selection:number = 1;
-  
+
   // format date
   function formatDate(date : number) {
       var d = new Date(date),
@@ -42,7 +42,7 @@
     }
 
   function formatTime(time : number) {
-      
+
       // converts time from a double digit number to HH:MM format
       var t = time.toString();
 
@@ -51,7 +51,7 @@
 
       return [hour, min].join(':');
   }
-  
+
     // when clicking on bookings in the list (left) this is called.
     // based on 'i' the BookingInfo component will display the appropriate
     // booking info
@@ -88,7 +88,7 @@
     })
     // this data is used to populate the facility selection UI element (line 97-112)
     facilities = await res1.json()*/
-  
+
 
     // fetch all activities for a given facility
     const res2 = await fetch(PUBLIC_FACILITIES_URL + `facilities/7/activities`, {
@@ -112,7 +112,7 @@
 
     for (let i = 0; i < facility_activities.length; i++) {
       for(let j = 0; j < available_times.length; j++) {
-        if (facility_activities[i].activityStartTime 
+        if (facility_activities[i].activityStartTime
             == formatTime(available_times[j].Hour)) {
           available_activities.push(facility_activities[i])
         }
@@ -154,14 +154,15 @@
                            bookingDate={formatDate(bookings[i].bookingDate)}
                            bookingTime={bookings[i].bookingTime}
                            bookingLength={bookings[i].bookingLength}
-                           facility={bookings[i].facilitiesId}/>
+                           facility={bookings[i].facilitiesId}
+                           user = {user}/>
             {:else}
               <!--booking creating component-->
               <p class="font-bold text-3xl pb-8 text-[#1A1A1A]">Calendar</p>
               <Calendar bind:selectedDate/>
 
               {#if selectedDate}
-                <div class="grid"> 
+                <div class="grid">
                   <div class="justify-self-center pt-6 pb-4">
                     <Toggle bind:selection/>
                   </div>
@@ -169,17 +170,17 @@
 
                 {#if selection == 1}
                   <NewBooking selectedMonth={selectedMonth} selectedDay={selectedDay} bind:selectedDate/>
-                {:else}     
+                {:else}
                       {#await activityLoading()}
                         <p class="m-5">loading...</p>
                       {:then available_activities}
                         {#each available_activities as activity}
-                          <ActivityCard class="my-3" heading={activity.activityType} 
-                                                     location='Studio' 
+                          <ActivityCard class="my-3" heading={activity.activityType}
+                                                     location='Studio'
                                                      startTime={activity.activityStartTime}
                                                      sessionLength="1"/>
                         {/each}
-                      {/await}                    
+                      {/await}
                 {/if}
               {/if}
             {/if}
@@ -190,5 +191,5 @@
 </div>
 
 <style lang="postcss">
- 
+
 </style>
