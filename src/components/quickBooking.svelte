@@ -1,28 +1,54 @@
 <script lang="ts">
   import MainButton from "./mainButton.svelte"
+  //import { selectedMonth, selectedDay } from "../routes/bookings/+page.svelte";
   import { PUBLIC_BOOKINGS_URL, PUBLIC_FACILITIES_URL } from '$env/static/public'
+  
+  export let selectedDate: Date;
+  export let selectedMonth: number;
+  export let selectedDay: number;
+
   let facilities: {
         /* Declaring the property 'facilityName' to prevent the error
             Property 'facilityName' does not exist on type '{ id: any; }'. */
         facilityName: any; id: any; 
   }[];
+
   let selectedFacility : number;
+  let available_times : any[] = [];
+     
   // This variable controls whether the confirmation message should be displayed.
   // It is set to 'false' by default.
   let display_confirm = false
-  function formatDate(date : number) {
+
+  function formatDate(date : Date, char : string) {
     // converts date from DateTime to yr/mth/day
     var d = new Date(date),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
         year = d.getFullYear();
+
     // if day or month is 1-9 return it as 01-09 instead
     if (month.length < 2) 
         month = '0' + month;
     if (day.length < 2) 
         day = '0' + day;
-    return [year, month, day].join('/');
+
+    return [year, month, day].join(char);
 }
+
+
+  function formatTime(time : number) {
+          
+          // converts time from a double digit number to HH:MM format
+          var t = time.toString();
+
+          var hour = t
+          var min = "00"
+
+          return [hour, min].join(':');
+      }
+
+
   async function createBooking(e: Event) {
     // prevent the form from submitting prior to executing this logic
     e.preventDefault();
@@ -32,8 +58,10 @@
 
     // fetch form fields
     const formData = new FormData(form);
+
     // initialise a variable for the API response
     let result = null
+
     const data : any = {};
     // for each form field, create new key and assign the correct value inputted
     // by the user
@@ -43,13 +71,14 @@
     }
     
     let userId = localStorage.getItem("uid");
-    let facilitiesId = facilities[selectedFacility].id;
-    let bookingDate = formatDate(Date.parse(data.date));
+    let facilityId = facilities[selectedFacility].id;
+    let bookingDate = formatDate(selectedDate, '/');
     let bookingTime = data.time;
     let bookingLength = data.length;
-    let bookingType = "General";
+    let bookingEndTime = calculateEndTime(bookingTime, bookingLength);
+
     //create a request to the Auth API (make sure it is running on your machine to test)
-    const res = await fetch(PUBLIC_BOOKINGS_URL + 'booking', {
+    const res = await fetch(PUBLIC_BOOKINGS_URL + `booking`, {
       method: 'POST',
       // essential to set the header
       headers: {
@@ -58,48 +87,96 @@
       // add email and password
       body: JSON.stringify({
         userId,
-        facilityId: facilitiesId,
+        facilityId: facilityId,
         activityId: 1,
         bookingDate,
         bookingTime,
         bookingLength,
-        bookingType,
+        bookingEndTime,
       })
     })
+
     // wait in the background for API response
     result = await res.json()
     const code = await res.status
+
     // If the code returned from the Bookings API was 200
     if (res.status == 200)
     {
       // Set the 'display_confirm' value to 'true'
       display_confirm = true;
     }
+
     // Reset the input fields in case a user wishes to make another booking
     form.reset();
-    console.log(result);
-}
-async function facilityLoading() {
-  // fetch all facilities
-  const res = await fetch(PUBLIC_FACILITIES_URL + 'facilities', {
-    method: 'GET',
-    headers: {
-      "Content-Type": "application/json",
+  }
+
+  function calculateEndTime(bookingTime : string, bookingLength : string) {
+      
+      // convert bookingTime and bookingLength to integers
+      let bookTime = parseInt(bookingTime)
+      let bookLength = parseInt(bookingLength)
+
+      // add bookingTime and bookingLength to get the bookingEndTime
+      let combinedTime = bookTime + bookLength
+
+      // Convert the combinedTime to a string and assign it to bookingEndTime
+      let bookingEndTime = combinedTime.toString() + ":00"
+
+      // Return the bookingEndTime
+      return bookingEndTime
+  }
+
+  $: {
+    if (selectedDate) {
+    let date = new Date(selectedDate);
+    selectedMonth = date.getMonth() + 1;
+    selectedDay = date.getDate();
     }
-  })
-  // this data is used to populate the facility selection UI element (line 97-112)
-  facilities = await res.json()
-  return facilities
-}
+  }
+
+  async function facilityLoading() {
+    // fetch all facilities
+    const res = await fetch(PUBLIC_FACILITIES_URL + `facilities`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+
+    // this data is used to populate the facility selection UI element (line 97-112)
+    facilities = await res.json()
+    return facilities
+  }
+
+  async function timeLoading(facilityId : number) {
+        
+        // fetch all available times for the selected day
+        const res3 = await fetch(PUBLIC_BOOKINGS_URL + `availability/${facilityId}/${selectedMonth}/${selectedDay}`, {
+        method: 'GET',
+        headers: {
+            "Content-Type": "application/json",
+        }
+        })
+        // The data returned by get_daily_availability() endpoint in the Bookings API
+        available_times = await res3.json() 
+
+        return available_times
+    }
+
+    // Debugging logs
+    $: {
+        //console.log("selectedFacility", selectedFacility + 1);
+        //console.log("available_times", available_times);
+    }
 
 </script>
 
 <div class="p-4 pt-8 mb-4 mt-4 shadow-md rounded-lg border-[1px] border-borderColor">
-  <p class="text-4xl text-center text-[#1A1A1A]">New Booking</p>
+  <p class="text-4xl text-center text-[#1A1A1A]">Quick Booking</p>
   <p class="font-light text-md text-[#515151] text-center">Create a new booking at one of our facilities.</p>
 
   <hr class="m-6 mx-24 rounded bg-borderColor">
-
 
   <div class="border-[1px] h-28 overflow-auto mb-4 select-none border-borderColor divide-borderColor rounded-lg shadow-sm divide-y" style="height: 7.8rem;">
     <!--call facilityLoading and wait for API response. While waiting display "loading..."-->
@@ -127,11 +204,21 @@ async function facilityLoading() {
   <form on:submit={createBooking}>
     <div class="py-2">
         <label for="date">Date</label> <br>
-        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="date" id="date" name="date" value="" />
+        <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="date" id="date" name="date" bind:value={selectedDate} />
     </div>
     <div class="py-2">
       <label for="time">Time</label> <br>
-      <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="time" id="time" name="time" value="" />
+      {#if selectedFacility !== undefined}
+        {#await timeLoading(selectedFacility + 1)}
+        <p class="m-5">loading...</p>
+        {:then available_times}
+          <select class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" name="time" id="time">
+          {#each available_times as time}
+            <option value={formatTime(time.Hour)}>{time.Hour + ":00"}</option>
+          {/each}
+          </select>
+        {/await}                    
+      {/if}
     </div>
     <div class="py-2">
       <label for="length">Length</label> <br>

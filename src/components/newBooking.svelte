@@ -3,7 +3,7 @@
     //import { selectedMonth, selectedDay } from "../routes/bookings/+page.svelte";
     import { PUBLIC_BOOKINGS_URL, PUBLIC_FACILITIES_URL } from '$env/static/public'
   
-    export let selectedDate:Date;
+    export let selectedDate: Date;
     export let selectedMonth: number;
     export let selectedDay: number;
 
