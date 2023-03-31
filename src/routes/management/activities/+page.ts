@@ -16,7 +16,6 @@ export async function load({ fetch, request }) {
     
     const res2 = await fetch(PUBLIC_FACILITIES_URL + 'activities', {
       method: 'GET',
-      credentials: 'include',
     })
 
     let activitiesData = await res2.json();
