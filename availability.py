@@ -255,15 +255,17 @@ class Booking:
 
         if A_time > Btime:
             abort(400, description='Invalid Start Time')
-        if Btime > A_end:
+        elif Btime > A_end:
             abort(400, description='Invalid Start Time')
-        if A_time > Bend:
+        elif A_time > Bend:
             abort(400, description='Invalid End Time')
-        if Bend > A_end:
+        elif Bend > A_end:
             abort(400, description='Invalid End Time')
-        if Alength < Blength:
+        elif Alength < Blength:
             abort(400, description='Invalid Length')
-        if A_day not in ["Any", day_name]:
+        elif A_day == "Any" or A_day == "ANY":
+            return True
+        elif day_name != A_day:
             abort(400, description='Invalid Day')
         else:
             return True
