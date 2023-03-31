@@ -214,11 +214,10 @@
           goto('/dashboard');
         }
         if (1 < result.privilegeLevel && result.privilegeLevel <= 32) {
-          //employee
-          console.log('employee')
+          goto('/employees/book');
         }
         if (32 < result.privilegeLevel && result.privilegeLevel <= 1028) {
-          goto('/activities');
+          goto('/management/activities');
         }
       }
     

@@ -16,19 +16,34 @@ export const nodes = [() => import('./nodes/0'),
 	() => import('./nodes/13'),
 	() => import('./nodes/14'),
 	() => import('./nodes/15'),
-	() => import('./nodes/16')];
+	() => import('./nodes/16'),
+	() => import('./nodes/17'),
+	() => import('./nodes/18'),
+	() => import('./nodes/19'),
+	() => import('./nodes/20'),
+	() => import('./nodes/21'),
+	() => import('./nodes/22'),
+	() => import('./nodes/23'),
+	() => import('./nodes/24'),
+	() => import('./nodes/25'),
+	() => import('./nodes/26')];
 
 export const server_loads = [];
 
 export const dictionary = {
-	"/": [9],
-	"/activities": [10,[2]],
-	"/auth": [11,[3]],
-	"/basket": [12,[4]],
-	"/bookings": [13,[5]],
-	"/cancel": [14,[6]],
-	"/dashboard": [15,[7]],
-	"/success": [16,[8]]
+	"/": [14],
+	"/auth": [15,[2]],
+	"/basket": [16,[3]],
+	"/bookings": [17,[4]],
+	"/cancel": [18,[5]],
+	"/dashboard": [19,[6]],
+	"/employees/amend": [20,[7]],
+	"/employees/book": [21,[8]],
+	"/management/activities": [22,[9]],
+	"/management/analytics": [23,[10]],
+	"/management/facilities": [24,[11]],
+	"/management/staff": [25,[12]],
+	"/success": [26,[13]]
 };
 
 export const hooks = {

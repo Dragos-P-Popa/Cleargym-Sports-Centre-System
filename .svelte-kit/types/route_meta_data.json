@@ -1,6 +1,5 @@
 {
 	"/": [],
-	"/activities": [],
 	"/auth": [],
 	"/basket": [
 		"src/routes/basket/+page.ts"
@@ -13,6 +12,24 @@
 	],
 	"/dashboard": [
 		"src/routes/dashboard/+page.ts"
+	],
+	"/employees/amend": [
+		"src/routes/employees/amend/+page.ts"
+	],
+	"/employees/book": [
+		"src/routes/employees/book/+page.ts"
+	],
+	"/management/activities": [
+		"src/routes/management/activities/+page.ts"
+	],
+	"/management/analytics": [
+		"src/routes/management/analytics/+page.ts"
+	],
+	"/management/facilities": [
+		"src/routes/management/facilities/+page.ts"
+	],
+	"/management/staff": [
+		"src/routes/management/staff/+page.ts"
 	],
 	"/success": [
 		"src/routes/success/+page.ts"
