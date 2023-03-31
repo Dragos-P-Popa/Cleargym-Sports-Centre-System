@@ -130,8 +130,8 @@ def post_booking():
         facility_capacity, facility_close_Time, facility_open_time = request_facility(facilityId)
 
         # Getting the activity details from facilities API
-        activity_link = requests.get(f"http://127.0.0.1:3003/activity/{activityId}")
-        # activity_link = requests.get(f"http://cleargym.live:3003/activity/{activityId}")
+        # activity_link = requests.get(f"http://127.0.0.1:3003/activity/{activityId}")
+        activity_link = requests.get(f"http://cleargym.live:3003/activity/{activityId}")
         activity_details = activity_link.json()
         activity_open_time = datetime.strptime(activity_details['activityStartTime'], '%H:%M').time()
         activity_end_time = datetime.strptime(activity_details['activityEndTime'], '%H:%M').time()
@@ -182,8 +182,8 @@ def post_booking():
 
 
 def request_facility(facilityId):
-    facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
-    # facility_link = requests.get(f"http://cleargym.live:3003/facility/{facilityId}")
+    # facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
+    facility_link = requests.get(f"http://cleargym.live:3003/facility/{facilityId}")
     facility_details = facility_link.json()
     facility_open_time = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
     facility_close_Time = datetime.strptime(facility_details['closingTime'], '%H:%M:%S').time()
@@ -282,7 +282,8 @@ def get_monthly_availability(facilityId, month):
     one_hour = time(1, 0, 0)
 
     # request facility
-    facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
+    # facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
+    facility_link = requests.get(f"http://cleargym.live:3003/facility/{facilityId}")
     facility_details = facility_link.json()
     f_openTime = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
     f_closeTime = datetime.strptime(facility_details['closingTime'], '%H:%M:%S').time()
