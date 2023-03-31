@@ -66,5 +66,5 @@ def Sales_response(Sales, result):
                        'SaleVal': sale.SaleVal,
                        'Facilityid': sale.Facilityid,
                        'Activityid': sale.Activityid,
-                       'SaleDate': sale.SaleDate
+                       'SaleDate': sale.SaleDate.strftime('%Y/%m/%d')
                        })
