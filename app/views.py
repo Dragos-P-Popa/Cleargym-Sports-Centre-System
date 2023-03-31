@@ -1,10 +1,6 @@
 from app import app, db, models
-
 from flask import json, request, jsonify, abort
-from datetime import datetime, time, date, timedelta
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm.exc import UnmappedInstanceError
-import requests
+
 
 
 # This function is to create a new booking
@@ -27,8 +23,7 @@ def post_sale():
         id=SaleId,
         SaleVal=user_input["SaleVal"],
         Facilityid=user_input["Facilityid"],
-        Activityid=user_input["Activityid"]
-    )
+        Activityid=user_input["Activityid"])
     db.session.add(new_Sale)
     db.session.commit()
     response = {'id': new_Sale.id,
