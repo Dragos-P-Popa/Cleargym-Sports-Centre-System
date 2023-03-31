@@ -111,7 +111,7 @@
     form.reset();
   }
 
-  async function calculateEndTime(bookingTime : string, bookingLength : string) {
+  function calculateEndTime(bookingTime : string, bookingLength : string) {
 
       // convert bookingTime and bookingLength to integers
       let bookTime = parseInt(bookingTime)

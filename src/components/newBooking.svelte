@@ -235,7 +235,5 @@
            style="font-size: 20px; color: green;">
            The booking was completed successfully!
         </p>
-        <!-- The list of bookings gets refreshed after each successful submission -->
-        <script>setTimeout(() => {location.reload();}, 1500);</script>
       {/if}
   </div>
