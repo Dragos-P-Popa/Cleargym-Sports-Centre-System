@@ -1,8 +1,8 @@
-import { PUBLIC_AUTH_URL, PUBLIC_BOOKINGS_URL } from '$env/static/public'
+import { PUBLIC_AUTH_URL} from '$env/static/public'
 
 /*
     This file runs on page load. It makes some API calls and forwards 
-    the data to the dashboard page
+    the data to the employee page
 */
 
 export async function load({ fetch, request }) {
@@ -13,8 +13,17 @@ export async function load({ fetch, request }) {
     })
 
     let user = await res.json();
+
+    const res2 = await fetch(PUBLIC_AUTH_URL + 'users/', {
+      method: 'GET',
+      credentials: 'include',
+    })
+
+    let usersData = await res2.json();
+    let employees = [...usersData];
+  
   
     if (user) {
-      return { user }
+      return { user, employees }
     }
 }

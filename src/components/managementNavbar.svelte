@@ -23,7 +23,7 @@
     
      <!--Logo and navigation buttons-->
      <div>
-          <img class="place-self-center pr-3 mb-16" src = "../logo.svg" alt="logo"/>
+          <img class="place-self-center pr-3 mb-16" src = "../logo_management.svg" alt="logo"/>
 
           {#if active == "0"}
           <button class="py-2 px-2 my-1 bg-[#EEEEF2] transition-colors duration-200 border-[#DDDDDD] border-[1px] rounded-lg w-full text-left inline-flex items-center">

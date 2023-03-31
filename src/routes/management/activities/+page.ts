@@ -1,8 +1,8 @@
-import { PUBLIC_AUTH_URL, PUBLIC_BOOKINGS_URL } from '$env/static/public'
+import { PUBLIC_AUTH_URL, PUBLIC_FACILITIES_URL, PUBLIC_PAYMENTS_URL } from '$env/static/public'
 
 /*
     This file runs on page load. It makes some API calls and forwards 
-    the data to the dashboard page
+    the data to the manager activities page
 */
 
 export async function load({ fetch, request }) {
@@ -13,8 +13,22 @@ export async function load({ fetch, request }) {
     })
 
     let user = await res.json();
+    
+    const res2 = await fetch(PUBLIC_FACILITIES_URL + 'activities', {
+      method: 'GET',
+      credentials: 'include',
+    })
+
+    let activitiesData = await res2.json();
+    let activities = [...activitiesData];
+
+    const res3 = await fetch(PUBLIC_PAYMENTS_URL + 'discount', {
+      method: 'GET',
+    })
+
+    let discount = await res3.json();
   
     if (user) {
-      return { user }
+      return { user, activities, discount }
     }
 }
