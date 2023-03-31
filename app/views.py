@@ -39,7 +39,7 @@ def post_sale():
     return jsonify(response), 200
 
 
-@app.route('/sales', methods=['POST'])
+@app.route('/sales', methods=['GET'])
 def get_all_sales():
     # get all Sales in the database
     Sales = models.Sales.query.all()
