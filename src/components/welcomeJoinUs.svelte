@@ -16,17 +16,17 @@
 
     <div class="w-1/2 relative">
         <img
-            src="climbing_wall.jpg"
+            src="climbing_wall.webp"
             alt="climbing wall"
             class="absolute w-1/3 rounded-lg z-20 left-[35%] top-[40%] transition-all hover:z-30 hover:scale-110"
         />
         <img
-            src="swimming_pool.jpg"
+            src="swimming_pool.webp"
             alt="swimming pool"
             class="absolute w-1/5 rounded-lg z-10 left-[20%] top-[50%] transition-all hover:z-30 hover:scale-110"
         />
         <img
-            src="sports_hall.jpg"
+            src="sports_hall.webp"
             alt="sports hall"
             class="absolute w-1/2 rounded-lg transition-all hover:z-30 hover:scale-110"
         />

@@ -35,7 +35,7 @@
                 </p>
                 <!--<p>{u._id}</p>-->
                 <p class="font-light text-2xl text-[#515151]">welcome back!</p>
-                <Carousel/>
+                <Carousel />
                 <div class="flex grid grid-cols-2 mt-2">
                     <h1 class="text-4xl mt-4">Memberships</h1>
                     <SecondaryButton class="p-4 ml-28 justify-self-end"
