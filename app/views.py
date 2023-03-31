@@ -193,7 +193,9 @@ def request_facility(facilityId):
 
 @app.route('/availability/<int:facilityId>/<int:month>/<int:day>', methods=['GET'])
 def get_daily_availability(facilityId, month, day):
+
     respo = []
+
     # Get the current year
     current_year = datetime.now().year
     # Create a date object with the given month, day, and current year
@@ -243,6 +245,7 @@ def get_daily_availability(facilityId, month, day):
         b1 = len(a1)
         b2 = len(a2)
         b3 = len(a3)
+
         Live = b1 + b2 + b3
         data = {}
         data["Hour"] = hour
@@ -252,6 +255,7 @@ def get_daily_availability(facilityId, month, day):
             respo.append(data)
         else:
             status = True
+
             data["Availability"] = status
             respo.append(data)
 
@@ -284,6 +288,7 @@ def get_monthly_availability(facilityId, month):
     # request facility
     # facility_link = requests.get(f"http://127.0.0.1:3003/facility/{facilityId}")
     facility_link = requests.get(f"http://cleargym.live:3003/facility/{facilityId}")
+
     facility_details = facility_link.json()
     f_openTime = datetime.strptime(facility_details['openingTime'], '%H:%M:%S').time()
     f_closeTime = datetime.strptime(facility_details['closingTime'], '%H:%M:%S').time()
