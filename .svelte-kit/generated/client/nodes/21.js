@@ -1,3 +1,3 @@
-import * as universal from "../../../../src/routes/management/facilities/+page.ts";
+import * as universal from "../../../../src/routes/employees/book/+page.ts";
 export { universal };
-export { default as component } from "../../../../src/routes/management/facilities/+page.svelte";
+export { default as component } from "../../../../src/routes/employees/book/+page.svelte";

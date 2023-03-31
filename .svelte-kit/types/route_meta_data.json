@@ -1,8 +1,14 @@
 {
 	"/": [],
 	"/auth": [],
+	"/basket": [
+		"src/routes/basket/+page.ts"
+	],
 	"/bookings": [
 		"src/routes/bookings/+page.ts"
+	],
+	"/cancel": [
+		"src/routes/cancel/+page.ts"
 	],
 	"/dashboard": [
 		"src/routes/dashboard/+page.ts"
@@ -24,5 +30,8 @@
 	],
 	"/management/staff": [
 		"src/routes/management/staff/+page.ts"
+	],
+	"/success": [
+		"src/routes/success/+page.ts"
 	]
 }

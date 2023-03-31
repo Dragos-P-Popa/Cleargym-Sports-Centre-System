@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     let divProps = {
         class:[$$restProps.class] + "  border-[1px] border-borderColor shadow-md rounded-lg bg-[url('/gym.jpg')] bg-cover select-none"
     }
@@ -7,14 +7,8 @@
     // it will accept these variables like so;
     // <BookingCard heading="foo" subheading="bar"/>
 
-    /**
-     * @type {String}
-     */
-    export let heading;
-    /**
-     * @type {String}
-     */
-    export let subheading;
+    export let heading:string;
+    export let subheading:string;
 </script>
 
 <div on:click {...divProps}>
