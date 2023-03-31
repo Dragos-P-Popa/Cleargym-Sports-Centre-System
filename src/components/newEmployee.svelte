@@ -39,31 +39,12 @@
           privilegeLevel: 32
         }),
       });
-  
-
 
       // wait in the background for API response
-        result = await res.json()
-        const code = await res.status
-
-
-        // something occured other than successful registration
-        console.log(result);
-        // if (result.error){
-        //     // find the error <p>
-        //     var serverError = document.getElementById("serverError")!;
-        //     // set the text to the error revieved from the server
-        //     serverError.innerText = result.error
-        //     // set to visible
-        //     serverError.style.display = "block";
-        // }
-        // } else {
-        // // if registration was successful change to login ui
-        // toggle()
-        // }
-
-      // If the code returned from the Auth API was 200
-      if (res.status == 204)
+      result = await res.json()
+      const code = await res.status
+      // If the code returned from the Auth API was 201
+      if (code == 201)
       {
         // Set the 'display_confirm' value to 'true'
         display_confirm = true;
@@ -96,18 +77,17 @@
         <label for="password">Password</label> <br>
         <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="password" id="password" placeholder="password" name="password" value="" />
       </div>
+      <!-- If the request was successful, display a confirmation message -->
+      {#if display_confirm==true}
+        <p class="mt-8 mb-4 ml-auto mr-auto w-4/5 place-self-center text-center"
+          style="font-size: 20px; color: green;">
+          The employee was added successfully!
+        </p>
+        <!-- The list of employees gets refreshed after each successful submission -->
+        <script>setTimeout(() => {location.reload();}, 1500);</script>
+      {/if}
       <div class="grid">
         <MainButton type="submit" class="mt-12 w-4/5 place-self-center">Add</MainButton>          
       </div>
     </form>
-
-    <!-- If the request was successful, display a confirmation message -->
-    {#if display_confirm==true}
-      <p class="mt-8 mb-4 ml-auto mr-auto w-4/5 place-self-center text-center"
-         style="font-size: 20px; color: green;">
-         The employee was completed successfully!
-      </p>
-      <!-- The list of employees gets refreshed after each successful submission -->
-      <script>setTimeout(() => {location.reload();}, 1500);</script>
-    {/if}
 </div>

@@ -2,6 +2,10 @@
     import MainButton from "./mainButton.svelte";
     import { PUBLIC_FACILITIES_URL } from '$env/static/public'
 
+    // This variable controls whether the confirmation message should be displayed.
+    // It is set to 'false' by default.
+    let display_confirm = false
+
     let facilities;
 
     async function addActivity(e: { target: HTMLFormElement; }) {  
@@ -41,11 +45,11 @@
         }),
       });
   
-
-      if (res.status == 200) {
-        alert('Activity added successfully!');
-      } else {
-        alert('Error adding activity.');
+      // If the code returned from the Facilities API was 200
+      if (res.status == 200)
+      {
+        // Set the 'display_confirm' value to 'true'
+        display_confirm = true;
       }
     }
 
@@ -112,6 +116,15 @@
         <label for="price">Price per hour</label> <br>
         <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="number" id="price" name="price" placeholder="10" value="" min="0" />
       </div>
+      <!-- If the request was successful, display a confirmation message -->
+      {#if display_confirm==true}
+        <p class="mt-8 mb-4 ml-auto mr-auto w-4/5 place-self-center text-center"
+          style="font-size: 20px; color: green;">
+          The activity was added successfully!
+        </p>
+        <!-- The list of activities gets refreshed after each successful submission -->
+        <script>setTimeout(() => {location.reload();}, 1500);</script>
+      {/if}
       <div class="grid">
         <MainButton type="submit" class="mt-12 w-4/5 place-self-center">Add</MainButton>          
       </div>

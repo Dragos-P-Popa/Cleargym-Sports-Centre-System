@@ -30,7 +30,9 @@
         </div>
       </div>
       <div class="col-span-3 px-4 mt-20 ml-5">
+        <!-- Change discount amount field-->
         <ChangeDiscount discount={discount.discount}></ChangeDiscount>
+        <!-- Add new activity-->
         <div class="ml-auto">
           <div><AddActivity></AddActivity></div> 
         </div>
