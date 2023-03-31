@@ -6,7 +6,7 @@
   import { goto } from "$app/navigation";
 
   export let data;
-  let confirmation;
+  let email_confirmation;
 
   let basketItems = data.basket.items;
   let user = data.user;
@@ -62,8 +62,9 @@
     });
   }
 
+
   async function successEmail() {
-    // fetch all activities for a given facility
+    // Make a POST request to the confirmation email endpoint
     const res2 = await fetch(PUBLIC_BOOKINGS_URL + `/emails/confirmation/`+user.email, {
       method: 'POST',
       headers: {
@@ -71,14 +72,14 @@
       }
     })
     // The data returned by get_all_activities() endpoint in the Bookings API
-    confirmation = await res2.json()
+    email_confirmation = await res2.json()
 
-    if (confirmation === "Sent") {
+    if (email_confirmation === "Sent") {
       console.log("The message was sent")
     } else {
-      console.log("The messaege was not sent")
+      console.log("The message was not sent")
     }
-    }
+  }
 
 
   onMount(() => {
