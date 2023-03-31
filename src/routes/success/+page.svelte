@@ -6,6 +6,7 @@
   import { goto } from "$app/navigation";
 
   export let data;
+  let confirmation;
 
   let basketItems = data.basket.items;
   let user = data.user;
@@ -61,8 +62,28 @@
     });
   }
 
+  async function successEmail() {
+    // fetch all activities for a given facility
+    const res2 = await fetch(PUBLIC_BOOKINGS_URL + `/emails/confirmation/`+user.email, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    // The data returned by get_all_activities() endpoint in the Bookings API
+    confirmation = await res2.json()
+
+    if (confirmation === "Sent") {
+      console.log("The message was sent")
+    } else {
+      console.log("The messaege was not sent")
+    }
+    }
+
+
   onMount(() => {
     createBookings();
+    successEmail();
   });
 </script>
 
