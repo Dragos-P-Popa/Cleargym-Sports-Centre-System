@@ -8,6 +8,7 @@
 
     let facilities;
     let selectedFacility: number;
+    export let selectedDate: Date;
     let nonCustomer = false;
 
     function nonCustomerMessage() {
@@ -18,7 +19,7 @@
     // It is set to 'false' by default.
     let display_confirm = false;
 
-    function formatDate(date: number) {
+    function formatDate(date: number, char: string) {
         // converts date from DateTime to yr/mth/day
         var d = new Date(date),
             month = "" + (d.getMonth() + 1),
@@ -29,7 +30,7 @@
         if (month.length < 2) month = "0" + month;
         if (day.length < 2) day = "0" + day;
 
-        return [year, month, day].join("/");
+        return [year, month, day].join(char);
     }
 
     async function createBooking(e: { target: HTMLFormElement }) {
@@ -68,11 +69,9 @@
 
         console.log(userD);
 
-        console.log(userD);
-
         let userId = userD[0]._id;
         let facilitiesId = facilities[selectedFacility].id;
-        let bookingDate = formatDate(Date.parse(data.date));
+        let bookingDate = formatDate(Date.parse(data.date), "/");
         let bookingTime = data.time;
         let bookingLength = data.length;
         let bookingType = "General";
@@ -111,6 +110,7 @@
         // wait in the background for API response
         result = await res.json();
         const code = await res.status;
+        console.log(res.status);
         if (res.status == 200) {
             display_confirm = true;
         }
@@ -198,7 +198,7 @@
                     type="date"
                     id="date"
                     name="date"
-                    value=""
+                    value={formatDate(selectedDate, "-")}
                 />
             </div>
             <div class="py-2 px-2">
