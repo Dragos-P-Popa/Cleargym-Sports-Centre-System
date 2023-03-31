@@ -78,7 +78,7 @@
     let bookingEndTime = calculateEndTime(bookingTime, bookingLength);
 
     //create a request to the Auth API (make sure it is running on your machine to test)
-    const res = await fetch(PUBLIC_BOOKINGS_URL + `booking`, {
+    const res = await fetch(PUBLIC_PAYMENTS_URL + `basket/`+userId, {
       method: 'POST',
       // essential to set the header
       headers: {
@@ -111,33 +111,7 @@
     form.reset();
   }
 
-  function calculateEndTime(bookingTime : string, bookingLength : string) {
-      
-      let userId = localStorage.getItem("uid");
-      let facilitiesId = facilities[selectedFacility].id;
-      let bookingDate = formatDate(Date.parse(data.date), '/');
-      let bookingTime = data.time;
-      let bookingLength = data.length;
-      let bookingType = "General";
-
-      console.log(userId)
-      //create a request to the Auth API (make sure it is running on your machine to test)
-      const res = await fetch(PUBLIC_PAYMENTS_URL + 'basket/'+userId, {
-        method: 'POST',
-        // essential to set the header
-        headers: {
-          "Content-Type": "application/json",
-        },
-        // add email and password
-        body: JSON.stringify({
-          facilityId: facilitiesId,
-          activityId: 1,
-          bookingDate,
-          bookingTime,
-          bookingLength,
-          bookingType,
-        })
-      })
+  async function calculateEndTime(bookingTime : string, bookingLength : string) {
 
       // convert bookingTime and bookingLength to integers
       let bookTime = parseInt(bookingTime)

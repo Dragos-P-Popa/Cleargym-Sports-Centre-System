@@ -1,7 +1,7 @@
 <script lang="ts">
     import MainButton from "./mainButton.svelte"
     //import { selectedMonth, selectedDay } from "../routes/bookings/+page.svelte";
-    import { PUBLIC_BOOKINGS_URL, PUBLIC_FACILITIES_URL } from '$env/static/public'
+    import { PUBLIC_BOOKINGS_URL, PUBLIC_FACILITIES_URL, PUBLIC_PAYMENTS_URL } from '$env/static/public'
   
     export let selectedDate: Date;
     export let selectedMonth: number;
@@ -78,7 +78,7 @@
     let bookingEndTime = calculateEndTime(bookingTime, bookingLength);
 
     //create a request to the Auth API (make sure it is running on your machine to test)
-    const res = await fetch(PUBLIC_BOOKINGS_URL + `booking`, {
+    const res = await fetch(PUBLIC_PAYMENTS_URL + `basket/`+userId, {
         method: 'POST',
         // essential to set the header
         headers: {
