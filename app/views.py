@@ -34,8 +34,8 @@ def post_sale():
     response = {'id': new_Sale.id,
                 'SaleVal': new_Sale.SaleVal,
                 'Facilityid': new_Sale.Facilityid,
-                'Activityid': new_Sale.Activityid
-                }
+                'Activityid': new_Sale.Activityid,
+                'SaleDate': new_Sale.SaleDate.strftime('%Y/%m/%d')}
     return jsonify(response), 200
 
 
@@ -44,12 +44,7 @@ def get_all_sales():
     # get all Sales in the database
     Sales = models.Sales.query.all()
     result = []
-    for sale in Sales:
-        result.append({'id': sale.id,
-                       'SaleVal': sale.SaleVal,
-                       'Facilityid': sale.Facilityid,
-                       'Activityid': sale.Activityid
-                       })
+    Sales_response(Sales, result)
     return jsonify(result), 200
 
 @app.route('/sales/Facility/<int:Facilityid>', methods=['GET'])
@@ -57,30 +52,24 @@ def get_sales_by_facilityId(Facilityid):
     # Requesting the data from the database by using the selected Facilityid
     Sales = models.Sales.query.filter_by(Facilityid=Facilityid).all()
     result = []
-    # for each facility, steralise the object given by sqlalchemy
-    for sale in Sales:
-        result.append({'id': sale.id,
-                       'SaleVal': sale.SaleVal,
-                       'Facilityid': sale.Facilityid,
-                       'Activityid': sale.Activityid
-                       })
-    # convert to json and return
+    Sales_response(Sales, result)
+
     return jsonify(result), 200
-
-
-
-
 
 @app.route('/sales/Activity/<int:ActivityId>', methods=['GET'])
 def get_sales_by_ActivityId(ActivityId):
     # Requesting the data from the database by using the selected ActivityId
     Sales = models.Sales.query.filter_by(Activityid=ActivityId).all()
     result = []
+    Sales_response(Sales, result)
+
+    return jsonify(result), 200
+
+def Sales_response(Sales, result):
     for sale in Sales:
         result.append({'id': sale.id,
                        'SaleVal': sale.SaleVal,
                        'Facilityid': sale.Facilityid,
-                       'Activityid': sale.Activityid
+                       'Activityid': sale.Activityid,
+                       'SaleDate': sale.SaleDate
                        })
-    # convert to json and return
-    return jsonify(result), 200

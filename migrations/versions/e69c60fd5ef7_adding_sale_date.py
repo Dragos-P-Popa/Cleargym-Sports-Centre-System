@@ -1,8 +1,8 @@
-"""New and First Migration
+"""Adding sale date
 
-Revision ID: e6ee52add0c6
+Revision ID: e69c60fd5ef7
 Revises: 
-Create Date: 2023-03-31 02:19:16.137323
+Create Date: 2023-03-31 03:23:49.682551
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e6ee52add0c6'
+revision = 'e69c60fd5ef7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,6 +23,7 @@ def upgrade():
     sa.Column('SaleVal', sa.Float(), nullable=False),
     sa.Column('Facilityid', sa.Integer(), nullable=False),
     sa.Column('Activityid', sa.Integer(), nullable=False),
+    sa.Column('SaleDate', sa.Date(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###

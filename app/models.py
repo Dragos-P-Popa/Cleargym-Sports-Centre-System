@@ -10,6 +10,7 @@ class Sales(db.Model):
     SaleVal = db.Column(db.Float,  nullable=False)
     Facilityid = db.Column(db.Integer, nullable=False)
     Activityid = db.Column(db.Integer, nullable=False)
+    SaleDate = db.Column(db.Date, default=datetime.now())
 
 
 
