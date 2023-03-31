@@ -1,7 +1,7 @@
 <script lang="ts">
   import MainButton from "./mainButton.svelte"
   //import { selectedMonth, selectedDay } from "../routes/bookings/+page.svelte";
-  import { PUBLIC_BOOKINGS_URL, PUBLIC_FACILITIES_URL } from '$env/static/public'
+  import { PUBLIC_BOOKINGS_URL, PUBLIC_FACILITIES_URL, PUBLIC_PAYMENTS_URL } from '$env/static/public'
   
   export let selectedDate: Date;
   export let selectedMonth: number;
@@ -47,7 +47,7 @@
 
           return [hour, min].join(':');
       }
-
+      
 
   async function createBooking(e: Event) {
     // prevent the form from submitting prior to executing this logic
@@ -113,9 +113,36 @@
 
   function calculateEndTime(bookingTime : string, bookingLength : string) {
       
+      let userId = localStorage.getItem("uid");
+      let facilitiesId = facilities[selectedFacility].id;
+      let bookingDate = formatDate(Date.parse(data.date), '/');
+      let bookingTime = data.time;
+      let bookingLength = data.length;
+      let bookingType = "General";
+
+      console.log(userId)
+      //create a request to the Auth API (make sure it is running on your machine to test)
+      const res = await fetch(PUBLIC_PAYMENTS_URL + 'basket/'+userId, {
+        method: 'POST',
+        // essential to set the header
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // add email and password
+        body: JSON.stringify({
+          facilityId: facilitiesId,
+          activityId: 1,
+          bookingDate,
+          bookingTime,
+          bookingLength,
+          bookingType,
+        })
+      })
+
       // convert bookingTime and bookingLength to integers
       let bookTime = parseInt(bookingTime)
       let bookLength = parseInt(bookingLength)
+
 
       // add bookingTime and bookingLength to get the bookingEndTime
       let combinedTime = bookTime + bookLength
@@ -239,7 +266,5 @@
        style="font-size: 20px; color: green;">
        The booking was completed successfully!
     </p>
-    <!-- The list of bookings gets refreshed after each successful submission -->
-    <script>setTimeout(() => {location.reload();}, 1500);</script>
   {/if}
 </div>

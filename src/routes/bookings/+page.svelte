@@ -20,6 +20,7 @@
   export let bookings = data.bookings;
   let user = data.user;
   let i = -1;
+
   export let selectedDate:Date;
   export let selectedMonth:number;
   export let selectedDay:number;
