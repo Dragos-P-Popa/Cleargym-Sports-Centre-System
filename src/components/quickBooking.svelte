@@ -53,7 +53,7 @@
     // prevent the form from submitting prior to executing this logic
     e.preventDefault();
   
-    // Get the form element from the event target
+    // Convert the event's target to an HTML form element
     const form = e.target as HTMLFormElement;
 
     // fetch form fields

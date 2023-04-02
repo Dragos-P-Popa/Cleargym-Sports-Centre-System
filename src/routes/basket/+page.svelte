@@ -1,5 +1,5 @@
 <script lang="ts">
-  import "@fontsource/Manrope";
+  import "@fontsource/manrope";
   import NavBar from "../../components/navbar.svelte"
   import MainButton from "../../components/mainButton.svelte"
   import { PUBLIC_PAYMENTS_URL, PUBLIC_FACILITIES_URL } from '$env/static/public'
