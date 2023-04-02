@@ -8,7 +8,6 @@
   import Calendar from "../../components/calendar.svelte"
   import Toggle from "../../components/bookingTypeToggle.svelte"
   import { PUBLIC_BOOKINGS_URL, PUBLIC_FACILITIES_URL } from "$env/static/public";
-  import { onMount } from 'svelte';
 
   export let data;
   let facilities: any[];
@@ -145,12 +144,6 @@
       }
     }
   }
-
-  /* Call the activityLoading() function as soon as the page is loaded
-     to retrieve the array of currently existing facilities 
-  onMount(() => {
-    facilityLoading();
-  });*/
 
 </script>
 
