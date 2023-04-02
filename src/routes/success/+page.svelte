@@ -1,5 +1,5 @@
 <script lang="ts">
-  import "@fontsource/Manrope";
+  import "@fontsource/manrope";
   import { onMount } from "svelte";
   import { PUBLIC_BOOKINGS_URL, PUBLIC_PAYMENTS_URL } from "$env/static/public";
   import JoinUsButton from "../../components/joinUsButton.svelte";

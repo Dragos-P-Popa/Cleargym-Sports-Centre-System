@@ -452,7 +452,7 @@
   }
 
   .fontClass {
-    font-family: "Manrope";
+    font-family: "manrope";
   }
 
 </style>

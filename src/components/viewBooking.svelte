@@ -76,9 +76,15 @@
         //e.target.reset();
     }
 
-    async function amendBooking(e: { target: HTMLFormElement }) {
+    async function amendBooking(e: Event) {
+        // prevent the form from submitting prior to executing this logic
+        e.preventDefault();
+
+        // Convert the event's target to an HTML form element
+        const form = e.target as HTMLFormElement;
+
         // fetch form fields
-        const formData = new FormData(e.target);
+        const formData = new FormData(form);
 
         const data: any = {};
         // for each form field, create new key and assign the correct value inputted
@@ -108,6 +114,9 @@
                 }),
             }
         );
+
+        // Reset the input fields
+        form.reset();
     }
 </script>
 
@@ -210,7 +219,7 @@
         </div>
         <!--if editing, fields should be enabled-->
     {:else if editMode == true}
-        <form on:submit|preventDefault={amendBooking}>
+        <form on:submit={amendBooking}>
             <div class="py-2 flex space-x-6 px-4 text-[#1A1A1A]">
                 <div class="py-2 flex-1">
                     <label for="date">Date</label> <br />

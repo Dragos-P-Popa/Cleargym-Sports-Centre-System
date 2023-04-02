@@ -8,9 +8,10 @@
   import Calendar from "../../components/calendar.svelte"
   import Toggle from "../../components/bookingTypeToggle.svelte"
   import { PUBLIC_BOOKINGS_URL, PUBLIC_FACILITIES_URL } from "$env/static/public";
+  import { onMount } from 'svelte';
 
   export let data;
-  let facilities;
+  let facilities: any[];
   let available_times;
   let facility_activities;
   let available_activities: any[] = [];
@@ -122,72 +123,102 @@
     return available_activities
 
 	}
+
+  async function facilityLoading() {
+    // fetch all facilities
+    const res1 = await fetch(`http://cleargym.live:3003/facilities`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    // this data is used to populate the facility selection UI element (line 97-112)
+    facilities = await res1.json()
+  }
+
+  function findFacilityName(facilityId : number) {
+    // Iterate over the array of facilities
+    for (let i = 0; i < facilities.length; i++) {
+      // If a given 'facilityId' is found, return the facility's name
+      if (facilities[i].id == facilityId) {
+        return facilities[i].facilityName
+      }
+    }
+  }
+
+  /* Call the activityLoading() function as soon as the page is loaded
+     to retrieve the array of currently existing facilities 
+  onMount(() => {
+    facilityLoading();
+  });*/
+
 </script>
 
 <div class="grid grid-cols-12">
   <NavBar active=1 firstName={user.firstName} lastName={user.lastName}/>
-
   <div class="col-span-10 pt-12 px-8">
-      <div class="grid grid-cols-6">
-          <div class="col-span-2">
-            <p class="font-bold text-5xl text-[#1A1A1A]">Your bookings...</p>
-            <p class="font-light text-2xl ml-2 text-[#515151]">view and manage your bookings</p>
-
-            <div class="overflow-y-auto h-[80vh] mt-16">
-              <!--display all bookings-->
-              {#each bookings as b, i}
-                <BookingCard on:click={() => setViewFocus(i)}
-                  class="my-2 transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none"
-                  heading="Booking #{b.id}"
-                  subheading={b.bookingType}/>
-              {/each}
-            </div>
-
-          </div>
-          <div class="col-span-4 px-4 ml-20 mt-12">
-          <div class="ml-auto">
-            <!--display selected bookings' information-->
-            {#if i != -1}
-              <BookingInfo on:click={()=> i=-1}
-                           bookingNumber={bookings[i].id}
-                           bookedOn={bookings[i].createDate}
-                           bookingDate={formatDate(bookings[i].bookingDate)}
-                           bookingTime={bookings[i].bookingTime}
-                           bookingLength={bookings[i].bookingLength}
-                           facility={bookings[i].facilitiesId}
-                           user = {user}/>
-            {:else}
-              <!--booking creating component-->
-              <p class="font-bold text-3xl pb-8 text-[#1A1A1A]">Calendar</p>
-              <Calendar bind:selectedDate/>
-
-              {#if selectedDate}
-                <div class="grid">
-                  <div class="justify-self-center pt-6 pb-4">
-                    <Toggle bind:selection/>
-                  </div>
-                </div>
-
-                {#if selection == 1}
-                  <NewBooking selectedMonth={selectedMonth} selectedDay={selectedDay} bind:selectedDate/>
-                {:else}
-                      {#await activityLoading()}
-                        <p class="m-5">loading...</p>
-                      {:then available_activities}
-                        {#each available_activities as activity}
-                          <ActivityCard class="my-3" heading={activity.activityType}
-                                                     location='Studio'
-                                                     startTime={activity.activityStartTime}
-                                                     sessionLength="1"/>
-                        {/each}
-                      {/await}
-                {/if}
-              {/if}
-            {/if}
-          </div>
-          </div>
+    <div class="grid grid-cols-6">
+      <div class="col-span-2">
+        <p class="font-bold text-5xl text-[#1A1A1A]">Your bookings...</p>
+        <p class="font-light text-2xl ml-2 text-[#515151]">view and manage your bookings</p>
+        <div class="overflow-y-auto h-[80vh] mt-16">
+        <!--display all bookings-->
+          {#if bookings}
+            {#each bookings as b, i}
+              {#await facilityLoading()}
+                <p class="m-5">loading...</p>
+              {:then facilityName}
+              <BookingCard on:click={() => setViewFocus(i)}
+                class="my-2 transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none"
+                heading="Booking #{b.id}"
+                subheading={findFacilityName(b.facilityId)}/>
+              {/await}       
+            {/each}
+          {/if}
+        </div>
       </div>
-   </div>
+      <div class="col-span-4 px-4 ml-20 mt-12">
+        <div class="ml-auto">
+          <!--display selected bookings' information-->
+          {#if i != -1 && bookings}
+            <BookingInfo on:click={()=> i=-1}
+                        bookingNumber={bookings[i].id}
+                        bookedOn={bookings[i].createDate}
+                        bookingDate={formatDate(bookings[i].bookingDate)}
+                        bookingTime={bookings[i].bookingTime}
+                        bookingLength={bookings[i].bookingLength}
+                        facility={findFacilityName(bookings[i].facilityId)}
+                        user = {user}/>
+          {:else}
+          <!--booking creating component-->
+          <p class="font-bold text-3xl pb-8 text-[#1A1A1A]">Calendar</p>
+          <Calendar bind:selectedDate/>
+          {#if selectedDate}
+            <div class="grid">
+              <div class="justify-self-center pt-6 pb-4">
+                <Toggle bind:selection/>
+              </div>
+            </div>
+            {#if selection == 1}
+              <NewBooking selectedMonth={selectedMonth} selectedDay={selectedDay} bind:selectedDate/>
+            {:else}
+              {#await activityLoading()}
+                <p class="m-5">loading...</p>
+              {:then available_activities}
+                {#each available_activities as activity}
+                  <ActivityCard class="my-3" heading={activity.activityType}
+                                             location='Studio'
+                                             startTime={activity.activityStartTime}
+                                             sessionLength="1"/>
+                {/each}
+              {/await}
+            {/if}
+          {/if}
+          {/if}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <style lang="postcss">

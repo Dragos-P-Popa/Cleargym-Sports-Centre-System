@@ -1,5 +1,5 @@
 <script lang="ts">
-    import "@fontsource/Manrope";
+    import "@fontsource/manrope";
     import JoinUsButton from "../../components/joinUsButton.svelte";
     import { goto } from "$app/navigation";
 </script>

@@ -87,6 +87,6 @@
 
 <style lang="postcss">
     :global(body) {
-        font-family: "Manrope";
+        font-family: "manrope";
     }
 </style>
