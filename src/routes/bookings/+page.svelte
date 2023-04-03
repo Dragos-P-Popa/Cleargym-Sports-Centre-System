@@ -33,45 +33,53 @@
           day = '' + d.getDate(),
           year = d.getFullYear();
 
-      if (month.length < 2)
-          month = '0' + month;
-      if (day.length < 2)
-          day = '0' + day;
-
+      if (month.length < 2) {
+        month = '0' + month;
+      }
+          
+      if (day.length < 2) {
+        day = '0' + day;
+      }
+          
       return [year, month, day].join('-');
     }
 
   function formatTime(time : number) {
 
-      // converts time from a double digit number to HH:MM format
-      var t = time.toString();
+    // converts time from a double digit number to HH:MM format
+    var hour = time.toString();
 
-      var hour = t
-      var min = "00"
+    if (hour.length < 2) {
+        hour = "0" + hour;
+    } 
 
-      return [hour, min].join(':');
+    var min = "00"
+
+    console.log("RESULT",   [hour, min].join(':'))
+
+    return [hour, min].join(':');
   }
 
-    // when clicking on bookings in the list (left) this is called.
-    // based on 'i' the BookingInfo component will display the appropriate
-    // booking info
-    function setViewFocus(id : number) {
-      i = id
-    }
+  // when clicking on bookings in the list (left) this is called.
+  // based on 'i' the BookingInfo component will display the appropriate
+  // booking info
+  function setViewFocus(id : number) {
+    i = id
+  }
 
-    // Clear the available activities array when a new date is selected
-    $: if (selectedDate) {
-      available_activities = [];
-    }
+  // Clear the available activities array when a new date is selected
+  $: if (selectedDate) {
+    available_activities = [];
+  }
 
-    /* If the user selected a booking date, and it was assigned to the
-       'selectDate' variable, update 'selectedMonth' and 'selectedDay'
-       values to match the user's choice. The months start at 0,
-       hence the '+1' at the end. */
-    $: if (selectedDate) {
-      selectedMonth = selectedDate.getMonth() + 1;
-      selectedDay = selectedDate.getDay() + 1;
-    }
+  /* If the user selected a booking date, and it was assigned to the
+      'selectDate' variable, update 'selectedMonth' and 'selectedDay'
+      values to match the user's choice. The months start at 0,
+      hence the '+1' at the end. */
+  $: if (selectedDate) {
+    selectedMonth = selectedDate.getMonth() + 1;
+    selectedDay = selectedDate.getDay() + 1;
+  }
 
 
   async function activityLoading() {
@@ -199,10 +207,14 @@
                 <p class="m-5">loading...</p>
               {:then available_activities}
                 {#each available_activities as activity}
-                  <ActivityCard class="my-3" heading={activity.activityType}
+                  <ActivityCard class="my-3" userId = {user._id}
+                                             facilityId = {7}
+                                             activityId = {activity.activityId}
+                                             heading={activity.activityType}
                                              location='Studio'
-                                             startTime={activity.activityStartTime}
-                                             sessionLength="1"/>
+                                             bookingDate={selectedDate}
+                                             bookingTime={activity.activityStartTime}
+                                             bookingLength="01:00"/>
                 {/each}
               {/await}
             {/if}
