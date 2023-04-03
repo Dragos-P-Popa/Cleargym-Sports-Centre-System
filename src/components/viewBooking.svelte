@@ -97,9 +97,6 @@
             data[key] = value;
         }
 
-        // for debugging
-        console.log(data);
-
         let formattedDate = formatDate(data.date);
         const res = await fetch(
             PUBLIC_BOOKINGS_URL + "bookings/" + bookingNumber,
@@ -132,16 +129,12 @@
             }
         })
         
-
-        console.log("activityID: " + activityId)
         // Store the data returned by the API in the 'activityDetails' variable
         activityDetails = await res4.json()
     
-        console.log("activityDetails: " + activityDetails)
         // Assign the activity type to the 'activityType' variable
         activityType = activityDetails.activityType
 
-        console.log("activityType: " + activityType)
         // Return the activity type
         return activityType
     }

@@ -42,11 +42,6 @@
         // initialise a variable for the API response
         let result = null
         
-        console.log(userId)
-
-
-        console.log("activityId = " + activityId)
-
         //create a request to the Auth API (make sure it is running on your machine to test)
         const res = await fetch(PUBLIC_PAYMENTS_URL + `basket/`+userId, {
             method: 'POST',
@@ -67,7 +62,6 @@
 
         // Wait in the background for API response
         result = await res.json()
-        console.log("result = " + result)
         const code = await res.status
 
         // If the code returned from the Bookings API was 200

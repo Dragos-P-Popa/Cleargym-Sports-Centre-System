@@ -26,8 +26,6 @@
   export let selectedDay:number;
   let selection:number = 1;
 
-  console.log("bookings", bookings)
-
   // format date
   function formatDate(date : number) {
       var d = new Date(date),
