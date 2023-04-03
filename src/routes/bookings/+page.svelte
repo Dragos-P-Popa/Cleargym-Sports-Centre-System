@@ -26,6 +26,8 @@
   export let selectedDay:number;
   let selection:number = 1;
 
+  console.log("bookings", bookings)
+
   // format date
   function formatDate(date : number) {
       var d = new Date(date),
@@ -54,8 +56,6 @@
     } 
 
     var min = "00"
-
-    console.log("RESULT",   [hour, min].join(':'))
 
     return [hour, min].join(':');
   }
@@ -131,6 +131,7 @@
 
 	}
 
+
   async function facilityLoading() {
     // fetch all facilities
     const res1 = await fetch(`http://cleargym.live:3003/facilities`, {
@@ -142,6 +143,7 @@
     // this data is used to populate the facility selection UI element (line 97-112)
     facilities = await res1.json()
   }
+
 
   function findFacilityName(facilityId : number) {
     // Iterate over the array of facilities
@@ -168,7 +170,7 @@
             {#each bookings as b, i}
               {#await facilityLoading()}
                 <p class="m-5">loading...</p>
-              {:then facilityName}
+              {:then}
               <BookingCard on:click={() => setViewFocus(i)}
                 class="my-2 transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none"
                 heading="Booking #{b.id}"
@@ -189,6 +191,7 @@
                         bookingTime={bookings[i].bookingTime}
                         bookingLength={bookings[i].bookingLength}
                         facility={findFacilityName(bookings[i].facilityId)}
+                        activity={bookings[i].activityId}
                         user = {user}/>
           {:else}
           <!--booking creating component-->
