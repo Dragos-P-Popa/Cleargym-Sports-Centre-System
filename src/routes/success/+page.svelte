@@ -15,15 +15,12 @@
 
   function createBookings() {
     let item = itemWorkingCopy[0];
-
-    console.log("before: " + itemWorkingCopy);
-
     let userId = localStorage.getItem("uid");
     let facilitiesId = item.facilityId;
     let bookingDate = item.bookingDate;
     let bookingTime = item.bookingTime;
     let bookingLength = item.bookingLength;
-    let bookingType = item.bookingType;
+    let activityId = item.activityId;
 
     const res = fetch(PUBLIC_BOOKINGS_URL + "booking", {
       method: "POST",
@@ -34,18 +31,16 @@
       body: JSON.stringify({
         userId,
         facilityId: facilitiesId,
-        activityId: 1,
+        activityId: activityId,
         bookingDate: bookingDate,
         bookingTime: bookingTime,
         bookingLength
       })
     }).then((result) =>{
-      console.log(result)
+
       if (result.status) {
         //if 200...
         itemWorkingCopy.shift();
-
-        console.log("after: " + itemWorkingCopy);
 
         if (itemWorkingCopy.length > 0) {
           setTimeout(createBookings, 500);

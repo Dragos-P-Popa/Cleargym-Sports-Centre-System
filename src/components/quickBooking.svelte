@@ -165,12 +165,6 @@
         return available_times
     }
 
-    // Debugging logs
-    $: {
-        //console.log("selectedFacility", selectedFacility + 1);
-        //console.log("available_times", available_times);
-    }
-
 </script>
 
 <div class="p-4 pt-8 mb-4 mt-4 shadow-md rounded-lg border-[1px] border-borderColor">

@@ -42,8 +42,6 @@
         // initialise a variable for the API response
         let result = null
         
-        console.log(userId)
-
         //create a request to the Auth API (make sure it is running on your machine to test)
         const res = await fetch(PUBLIC_PAYMENTS_URL + `basket/`+userId, {
             method: 'POST',
@@ -62,7 +60,7 @@
             })
         })
 
-        // wait in the background for API response
+        // Wait in the background for API response
         result = await res.json()
         const code = await res.status
 
