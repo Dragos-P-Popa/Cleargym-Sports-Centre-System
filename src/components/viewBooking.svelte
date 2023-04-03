@@ -7,15 +7,18 @@
     // variables to be defined by page (currently bookings/+page.svelte)
     export let bookingNumber: number;
     export let bookedOn: string;
-    export let facility: number;
+    export let facility: string;
+    export let activity: number;
     export let bookingDate: string;
     export let bookingTime: string;
     export let bookingLength: string;
-
-    let editMode = false;
-    let email_confirmation;
     export let user: any;
 
+    let editMode = false;
+    let emailConfirmation;
+    let activityDetails: any;
+    let activityType: string;
+    
     // This variable controls whether the confirmation message for booking cancellation
     // should be displayed. It is set to 'false' by default.
     let cancellation_confirm = false;
@@ -64,9 +67,9 @@
                 }
             })
             // The data returned by get_all_activities() endpoint in the Bookings API
-            email_confirmation = await res2.json()
+            emailConfirmation = await res2.json()
 
-            if (email_confirmation === "Sent") {
+            if (emailConfirmation === "Sent") {
                 console.log("The message was sent")
             } else {
                 console.log("The message was not sent")
@@ -94,9 +97,6 @@
             data[key] = value;
         }
 
-        // for debugging
-        console.log(data);
-
         let formattedDate = formatDate(data.date);
         const res = await fetch(
             PUBLIC_BOOKINGS_URL + "bookings/" + bookingNumber,
@@ -118,6 +118,27 @@
         // Reset the input fields
         form.reset();
     }
+
+    async function findActivityName(activityId : number) {
+    
+        // Retrieve the information about an activity with this ID
+        const res4 = await fetch(`http://cleargym.live:3003/activity/${activityId}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+        
+        // Store the data returned by the API in the 'activityDetails' variable
+        activityDetails = await res4.json()
+    
+        // Assign the activity type to the 'activityType' variable
+        activityType = activityDetails.activityType
+
+        // Return the activity type
+        return activityType
+    }
+
 </script>
 
 <div
@@ -148,6 +169,15 @@
             <p class="font-semibold">Paid with</p>
             <p>Paypal</p>
         </div>
+        {#await findActivityName(activity)}
+            <p class="m-5">loading...</p>
+        {:then activityType} 
+            <div class="py-1">
+                <p class="font-semibold">Activity</p>
+                <p>{activityType}</p>
+            </div>
+        {/await}
+
         <div class="py-1">
             <p class="font-semibold">Booked venue</p>
             <p>{facility}</p>

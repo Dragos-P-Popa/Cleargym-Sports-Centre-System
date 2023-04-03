@@ -156,12 +156,6 @@
         return available_times
     }
 
-    // Debugging logs
-    $: {
-        //console.log("selectedFacility", selectedFacility + 1);
-        //console.log("available_times", available_times);
-    }
-
   </script>
   
   <div class="p-4 pt-8 mb-4 mt-4 shadow-md rounded-lg border-[1px] border-borderColor">
@@ -233,7 +227,7 @@
       {#if display_confirm==true}
         <p class="mt-8 mb-4 ml-auto mr-auto w-4/5 place-self-center text-center"
            style="font-size: 20px; color: green;">
-           The booking was completed successfully!
+           The booking was successfully added to the basket!
         </p>
       {/if}
   </div>
