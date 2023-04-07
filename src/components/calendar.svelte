@@ -20,13 +20,21 @@
     <div class="col-span-7 row-span-1 flex place-content-evenly select-none">
         {#each Array(7) as _, i} 
             {@const dateNum = new Date().setDate(new Date().getDate() + i)}
-            <p on:click={() => selectedDate = new Date(dateNum)} class="rounded-full hover:bg-babyBlue p-4 hover:drop-shadow-sm transition justify-self-center">{new Date(dateNum).getDate()}</p>
+            {#if new Date(dateNum).getDate() == new Date(selectedDate).getDate()}
+                <p on:click={() => selectedDate = new Date(dateNum)} class="rounded-full bg-[#d2ecfc] p-4 drop-shadow-sm transition justify-self-center">{new Date(dateNum).getDate()}</p>
+            {:else}
+                <p on:click={() => selectedDate = new Date(dateNum)} class="rounded-full hover:bg-babyBlue p-4 hover:drop-shadow-sm transition justify-self-center">{new Date(dateNum).getDate()}</p>
+            {/if}
         {/each}
     </div>
     <div class="col-span-7 row-span-1 flex place-content-evenly select-none">
         {#each Array(7) as _, i} 
             {@const dateNum = new Date().setDate(new Date().getDate() + i + 7)}
-            <p on:click={() => selectedDate = new Date(dateNum)} class="rounded-full hover:bg-babyBlue p-4 hover:drop-shadow-sm transition justify-self-center">{new Date(dateNum).getDate()}</p>
+            {#if new Date(dateNum).getDate() == new Date(selectedDate).getDate()}
+                <p on:click={() => selectedDate = new Date(dateNum)} class="rounded-full bg-[#d2ecfc] p-4 drop-shadow-sm transition justify-self-center">{new Date(dateNum).getDate()}</p>
+            {:else}
+                <p on:click={() => selectedDate = new Date(dateNum)} class="rounded-full hover:bg-babyBlue p-4 hover:drop-shadow-sm transition justify-self-center">{new Date(dateNum).getDate()}</p>
+            {/if}
         {/each}
     </div>
 </div>
