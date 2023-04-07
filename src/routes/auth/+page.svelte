@@ -447,7 +447,7 @@
 
 <style>
   .backgroundClass {
-    background-image: url("gym.jpg");
+    background-image: url("gym.webp");
     background-size: cover;
   }
 
