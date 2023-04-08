@@ -15,6 +15,8 @@
   let facility_activities;
   let available_activities: any[] = [];
 
+  let activityCount : number;
+
   // data fetched from server-side-rendering (SSR)
   // +page.ts
   export let bookings = data.bookings;
@@ -208,14 +210,16 @@
                 <p class="m-5">loading...</p>
               {:then available_activities}
                 {#each available_activities as activity}
-                  <ActivityCard class="my-3" userId = {user._id}
-                                             facilityId = {7}
-                                             activityId = {activity.activityId}
-                                             heading={activity.activityType}
-                                             location='Studio'
-                                             bookingDate={selectedDate}
-                                             bookingTime={activity.activityStartTime}
-                                             bookingLength="01:00"/>
+                  {#if activity.activityDay == selectedDate.toLocaleString('en-us', {weekday:'long'})}
+                    <ActivityCard class="my-3" userId = {user._id}
+                                              facilityId = {7}
+                                              activityId = {activity.activityId}
+                                              heading={activity.activityType}
+                                              location='Studio'
+                                              bookingDate={selectedDate}
+                                              bookingTime={activity.activityStartTime}
+                                              bookingLength="01:00"/>
+                  {/if}
                 {/each}
               {/await}
             {/if}
