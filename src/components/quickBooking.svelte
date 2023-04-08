@@ -173,37 +173,38 @@
 
   <hr class="m-6 mx-24 rounded bg-borderColor">
 
-  <div class="border-[1px] h-28 overflow-auto mb-4 select-none border-borderColor divide-borderColor rounded-lg shadow-sm divide-y" style="height: 7.8rem;">
-    <!--call facilityLoading and wait for API response. While waiting display "loading..."-->
-    {#await facilityLoading()}
-      <p class="m-5">loading...</p>
-    <!--when response is recieved, load data into the html-->
-    {:then facilities}
-      <!--create new div for each facility-->
-      {#each facilities as facility, i}
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <div on:click={() => selectedFacility = i} class="flex justify-between hover:bg-silver">
-          <p class="p-2 h-10">{facility.facilityName}</p> 
-          {#if selectedFacility == i}
-            <!--if a facility is selected by clicking on it, display a checkmark icon-->
-            <svg class="self-center mr-2" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke="#106EA2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M7.75 12L10.58 14.83L16.25 9.17" stroke="#106EA2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          {/if}
-        </div>
-      {/each}
-    {/await}
-  </div>
-
   <form on:submit={createBooking}>
     <div class="py-2">
         <label for="date">Date</label> <br>
         <input class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" type="date" id="date" name="date" bind:value={selectedDate} />
     </div>
+
+    <div class="border-[1px] mt-4 h-28 overflow-auto mb-4 select-none border-borderColor divide-borderColor rounded-lg shadow-sm divide-y" style="height: 7.8rem;">
+      <!--call facilityLoading and wait for API response. While waiting display "loading..."-->
+      {#await facilityLoading()}
+        <p class="m-5">loading...</p>
+      <!--when response is recieved, load data into the html-->
+      {:then facilities}
+        <!--create new div for each facility-->
+        {#each facilities as facility, i}
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <div on:click={() => selectedFacility = i} class="flex justify-between hover:bg-silver">
+            <p class="p-2 h-10">{facility.facilityName}</p> 
+            {#if selectedFacility == i}
+              <!--if a facility is selected by clicking on it, display a checkmark icon-->
+              <svg class="self-center mr-2" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22Z" stroke="#106EA2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7.75 12L10.58 14.83L16.25 9.17" stroke="#106EA2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            {/if}
+          </div>
+        {/each}
+      {/await}
+    </div>
+
     <div class="py-2">
       <label for="time">Time</label> <br>
-      {#if selectedFacility !== undefined}
+      {#if selectedFacility !== undefined && selectedDate !== undefined}
         {#await timeLoading(selectedFacility + 1)}
         <p class="m-5">loading...</p>
         {:then available_times}
