@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
     import "@fontsource/manrope";
     import BookingCard from "../../components/bookingCard.svelte";
     import QuickBooking from "../../components/quickBooking.svelte";
@@ -7,7 +7,7 @@
     import PricingTable from "../../components/pricingTable.svelte";
     import SecondaryButton from "../../components/secondaryButton.svelte";
     import Carousel from "../../components/homeCarousel.svelte";
-    import { onMount, onDestroy } from "svelte";
+    import { PUBLIC_FACILITIES_URL } from "$env/static/public";
     /** @type {import('./$types').PageData} */
     export let data;
 
@@ -15,6 +15,7 @@
     // +page.server.ts
     let user = data.user;
     let bookings = data.bookings;
+    let facilities: any[];
 
     // window is undefined when this code is running on the server side.
     // svelte does some processing on the server side, see svelte docs for more info
@@ -22,6 +23,29 @@
         // if its running on client side, save the user id as a local variable
         localStorage.setItem("uid", user._id);
     }
+
+
+  async function facilityLoading() {
+    // fetch all facilities
+    const res1 = await fetch(`http://cleargym.live:3003/facilities`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    // this data is used to populate the facility selection UI element (line 97-112)
+    facilities = await res1.json()
+  }
+
+    function findFacilityName(facilityId : number) {
+    // Iterate over the array of facilities
+    for (let i = 0; i < facilities.length; i++) {
+      // If a given 'facilityId' is found, return the facility's name
+      if (facilities[i].id == facilityId) {
+        return facilities[i].facilityName
+      }
+    }
+  }
 </script>
 
 <div class="grid grid-cols-12">
@@ -72,11 +96,15 @@
                 <!--if the user has at least 1 booking, show one here-->
                 {#if bookings?.length > 0}
                     <p class="text-4xl text-[#1A1A1A] pb-4">Next booking</p>
+                    {#await facilityLoading()}
+                        <p class="m-5">loading...</p>
+                    {:then}
                     <BookingCard
                         class=""
-                        heading={bookings[0].bookingType}
-                        subheading={bookings[0].bookingTime}
+                        heading="Booking #{bookings[0].id}"
+                        subheading={findFacilityName(bookings[0].facilityId)}
                     />
+                    {/await}
                 {/if}
                 <!--booking creating component-->
                 <QuickBooking />
