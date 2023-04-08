@@ -167,7 +167,7 @@
         </div>
         <div class="py-1">
             <p class="font-semibold">Paid with</p>
-            <p>Paypal</p>
+            <p>Stripe</p>
         </div>
         {#await findActivityName(activity)}
             <p class="m-5">loading...</p>
