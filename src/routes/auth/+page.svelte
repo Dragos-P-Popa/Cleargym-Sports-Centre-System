@@ -210,7 +210,7 @@
         result = await res2.json()
 
         // check what kind of user has logged in
-        if (result.privilegeLevel == 1) {
+        if (result.privilegeLevel == 1 || result.privilegeLevel == 0) {
           goto('/dashboard');
         }
         if (1 < result.privilegeLevel && result.privilegeLevel <= 32) {
