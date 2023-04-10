@@ -167,7 +167,7 @@
         <div class="overflow-y-auto h-[80vh] mt-16">
         <!--display all bookings-->
           {#if bookings}
-            {#each bookings as b, i}
+            {#each bookings.slice().reverse() as b, i}
               {#await facilityLoading()}
                 <p class="m-5">loading...</p>
               {:then}
