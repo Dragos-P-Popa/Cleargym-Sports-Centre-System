@@ -7,6 +7,13 @@ var cookieParser = require('cookie-parser')
     This file is the root of the application.
 */  
 
+/* 
+    Created using resources from;
+    https://www.toptal.com/nodejs/secure-rest-api-in-nodejs
+    https://www.section.io/engineering-education/how-to-build-authentication-api-with-jwt-token-in-nodejs/
+    https://www.sohamkamani.com/nodejs/jwt-authentication/
+*/
+
 // uses the routes defined in the routes.config file
 const UsersRouter = require('./users/routes.config');
 const AuthRouter = require('./auth/routes.config');
