@@ -60,6 +60,53 @@ app.delete('/basket/:userId', async (req, res) => {
       })
 })
 
+let facilities = [];
+let activities = [];
+
+async function dataLoading() {
+  // fetch all facilities
+  const res1 = await fetch(`http://cleargym.live:3003/facilities`, {
+    method: 'GET',
+    headers: {
+      "Content-Type": "application/json",
+    }
+  })
+  // this data is used to populate the 'facilities' array
+  facilities = await res1.json()
+
+  // fetch all activities
+  const res2 = await fetch(`http://cleargym.live:3003/activities`, {
+    method: 'GET',
+    headers: {
+      "Content-Type": "application/json",
+    }
+  })
+  // this data is used to populate the 'activities' array
+  activities = await res2.json()
+}
+
+
+function findFacilityName(facilityId) {
+  // Iterate over the array of facilities
+  for (let i = 0; i < facilities.length; i++) {
+    // If a given 'facilityId' is found, return the facility's name
+    if (facilities[i].id == facilityId) {
+      return facilities[i].facilityName
+    }
+  }
+}
+
+
+function findActivityName(activityId) {
+  // Iterate over the array of activities
+  for (let i = 0; i < activities.length; i++) {
+    // If a given 'activityId' is found, return the activity's name
+    if (activities[i].activityId == activityId) {
+      return activities[i].activityType
+    }
+  }
+}
+
 // create stripe checkout session and redirect
 app.post('/checkout/:userId', async (req, res) => {
 
@@ -80,7 +127,7 @@ app.post('/checkout/:userId', async (req, res) => {
       // format basket items
       for (let i = 0; i < basket.items.length; i++) {
         
-        let product_data = {name: basket.items[i].bookingType + " " + basket.items[i].bookingDate}
+        let product_data = {name: findFacilityName(basket.items[i].facilityId) + " - " + findActivityName(basket.items[i].activityId) + " - " + basket.items[i].bookingDate}
         let price_data = {currency: "gbp", product_data, unit_amount: basket.prices[i] * 100 /*, recurring: { "interval": "month", "interval_count": 1  }*/}
         line_items[i] = {price_data: price_data, quantity: 1}
         
@@ -115,5 +162,7 @@ app.post('/checkout/:userId', async (req, res) => {
     });
 });
 
+// load activities and facilities
+dataLoading();
 // debug log when starting module
 app.listen(3004, () => console.log('Running on port 3004'));
