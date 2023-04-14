@@ -3,21 +3,48 @@
   import NavBar from "../../../components/managementNavbar.svelte";
   import { browser } from '$app/environment'; 
   import { onMount } from "svelte";
+  import { PUBLIC_ANALYTICS_URL } from '$env/static/public'
 
   export let data;
   let user = data.user;
+  let facilities = data.facilities;
+  let sales = data.sales;
 
-  onMount(() => {
+  function preProcessFacilityNames() {
+    let facilityNames : any = [];
+
+    facilities.forEach((facility : any) => {
+      facilityNames.push(facility.facilityName)
+    });
+
+    return facilityNames;
+  }
+
+  function preProcessFacilitySales() {
+    let facilitySales = new Array(facilities.length).fill(0);
+
+    sales.forEach((sale : any) => {
+      facilitySales[sale.facilityId] = facilitySales[sale.facilityId] + 1
+    });
+
+    return facilitySales
+  }
+
+  onMount(async () => {
+
+  let facilityNames : any = await preProcessFacilityNames();
+  let facilitySales : any = await preProcessFacilitySales();
+
   if (browser) {
     const barFacilities = document.getElementById('barFacilities');
-
+    
     new Chart(barFacilities, {
       type: 'bar',
       data: {
-        labels: ['Swimming pool', 'Fitness room', 'Climbing wall', 'Sports hall', 'Studio', 'Squash court'],
+        labels: facilityNames,
         datasets: [{
-          label: '# of Visits per week',
-          data: [12, 19, 3, 5, 12, 3],
+          label: 'Total sales per facility (sessions)',
+          data: facilitySales,
           borderWidth: 1
         }]
       },
@@ -104,13 +131,13 @@
         <div class="w-full">
           <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Facilities</p>
           <canvas id="barFacilities"></canvas>
-          <canvas id="lineFacilities"></canvas>
+         <!-- <canvas id="lineFacilities"></canvas> -->
         </div>
-        <div>
+        <!-- <div>
           <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities</p>
           <canvas id="barActivities"></canvas>
           <canvas id="lineActivities"></canvas>
-        </div>
+        </div>-->
       </div>
     </div>
   </div>
