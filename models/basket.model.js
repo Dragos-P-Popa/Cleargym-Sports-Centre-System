@@ -10,23 +10,23 @@ const basketSchema = new Schema({
 // assign this schema to the 'Users' model
 const Basket = conn.model('basket', basketSchema);
 
+// calculate wether the basket should contain a discount
 const discountCalculation = async (basket) => {
   for (let i = 0; i < basket.items.length; i++) {
+    // instantiate 2 dates, from current booking's date to 7 days in the future
     let date = new Date(basket.items[i].bookingDate);
     let date2 = new Date(basket.items[i].bookingDate);
     date2.setDate(date.getDate() + 7)
 
     let count = 0;
 
+    // count the number of bookings which occur in this date range
     for (let k = 0 + i; k < basket.items.length; k++) {
       let date3 = new Date(basket.items[k].bookingDate);
-      //console.log("date1: "+date)
-      //console.log("date3: "+date3)
-      //console.log("date2: "+date2 + '\n')
-      if (date3.getTime() <= date2.getTime() && date3.getTime() >= date.getTime()){
+      if (date3.getTime() < date2.getTime() && date3.getTime() > date.getTime()){
         count += 1
-        //console.log(count)
         if (count >= 2) {
+          // if the threshold for discount has been reached, return 
           return true
         }
       }
@@ -36,15 +36,18 @@ const discountCalculation = async (basket) => {
   return 0
 }
 
+// create new DB entry
 exports.createBasket = (basketData) => {
   const basket = new Basket(basketData);
   return basket.save();
 }
 
+// query DB to find basket by ID
 exports.findByUID = async (userId) => {
   let basket = await Basket.findOne({ userId: userId }).populate('items');
   let prices = []
 
+  // fetch all activites
   const res3 = await fetch('http://cleargym.live:3003/activities', {
     method: 'GET'
   })
@@ -60,15 +63,17 @@ exports.findByUID = async (userId) => {
 
           basket = JSON.stringify(basket)
           basket = JSON.parse(basket)
+          // append price to the basket data
+          // this will be used later to initiate a checkout session
           basket.prices = prices
         }
       }
     }
 
     await discountCalculation(basket).then((discount) => {
-      //console.log(discount)
       basket = JSON.stringify(basket)
       basket = JSON.parse(basket)
+      // apply discount if discountCalculation() has returned true
       basket.discount = discount
     });
 
@@ -113,6 +118,7 @@ exports.getBasketDiscount = async (userId) => {
   }
 }
 
+// delete all baskets where ID matches
 exports.removeByUID = async (userId) => {
   const result = await Basket.deleteMany({userId: userId});
   return result
