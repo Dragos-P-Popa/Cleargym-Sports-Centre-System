@@ -23,7 +23,7 @@ const discountCalculation = async (basket) => {
     // count the number of bookings which occur in this date range
     for (let k = 0 + i; k < basket.items.length; k++) {
       let date3 = new Date(basket.items[k].bookingDate);
-      if (date3.getTime() <= date2.getTime() && date3.getTime() >= date.getTime()){
+      if (date3.getTime() < date2.getTime() && date3.getTime() > date.getTime()){
         count += 1
         if (count >= 2) {
           // if the threshold for discount has been reached, return 
