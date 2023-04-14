@@ -1,7 +1,7 @@
 <script lang="ts">
   import "@fontsource/manrope";
   import { onMount } from "svelte";
-  import { PUBLIC_BOOKINGS_URL, PUBLIC_PAYMENTS_URL } from "$env/static/public";
+  import { PUBLIC_BOOKINGS_URL, PUBLIC_PAYMENTS_URL, PUBLIC_ANALYTICS_URL } from "$env/static/public";
   import JoinUsButton from "../../components/joinUsButton.svelte";
   import { goto } from "$app/navigation";
 
@@ -9,12 +9,15 @@
   let email_confirmation;
 
   let basketItems = data.basket.items;
+  let prices : any = data.basket.prices;
   let user = data.user;
 
   let itemWorkingCopy = basketItems;
+  let pricesWorkingCopy = prices;
 
   function createBookings() {
     let item = itemWorkingCopy[0];
+    let price = pricesWorkingCopy[0];
     let userId = localStorage.getItem("uid");
     let facilitiesId = item.facilityId;
     let bookingDate = item.bookingDate;
@@ -37,6 +40,22 @@
         bookingLength
       })
     }).then((result) =>{
+
+      // Create sale record in the analytics API
+      const recordSaleRequest = fetch(PUBLIC_ANALYTICS_URL + "sales", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          saleValue: price,
+          facilityId: facilitiesId,
+          activityId: activityId
+        })
+      }).then((result) => {
+        console.log(result);
+        pricesWorkingCopy.shift();
+      })
 
       if (result.status) {
         //if 200...
