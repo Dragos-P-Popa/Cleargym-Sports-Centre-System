@@ -7,9 +7,13 @@
 
   export let data;
   let user = data.user;
+  // all facilities
   let facilities = data.facilities;
+  // all sales
   let sales = data.sales;
 
+  // creates an array of facility names which can be used for the graph labels
+  // ["swimming pool", "gym" ...]
   function preProcessFacilityNames() {
     let facilityNames : any = [];
 
@@ -20,9 +24,12 @@
     return facilityNames;
   }
 
+  // creates a list of total sessions sold per facility
+  // index correlates with facility ID so index 0 in facilitySales array is the total sales for facilityId 0
   function preProcessFacilitySales() {
     let facilitySales = new Array(facilities.length).fill(0);
 
+    // loop over every sale and increment index which current sale relates to. E.g. when sale has facilityId 4, the 4th index in the facilitySales array gets incremented
     sales.forEach((sale : any) => {
       facilitySales[sale.facilityId] = facilitySales[sale.facilityId] + 1
     });
@@ -32,6 +39,8 @@
 
   onMount(async () => {
 
+  // await so that code does not progress until values have been returned by the functions
+  // avoid undefined values
   let facilityNames : any = await preProcessFacilityNames();
   let facilitySales : any = await preProcessFacilitySales();
 
@@ -41,9 +50,11 @@
     new Chart(barFacilities, {
       type: 'bar',
       data: {
+        // set labels to all facilities
         labels: facilityNames,
         datasets: [{
           label: 'Total sales per facility (sessions)',
+          // sales data
           data: facilitySales,
           borderWidth: 1
         }]
