@@ -150,7 +150,7 @@
     // Convert the 'combinedTime' to a string and assign it to 'bookingEndTime'
     let bookingEndTime = combinedTime.toString() + ":00"
 
-    // Return the bookingEndTime
+    // Return the 'bookingEndTime'
     return bookingEndTime
   }
 
@@ -197,10 +197,10 @@
     // fetch all available times for the selected day
     const res3 = await fetch(
       PUBLIC_BOOKINGS_URL + `availability/${facilityId}/${selectedMonth}/${selectedDay}`, {
-    method: 'GET',
-    headers: {
-        "Content-Type": "application/json",
-    }
+      method: 'GET',
+      headers: {
+          "Content-Type": "application/json",
+      }
     })
 
     // The data returned by get_daily_availability() endpoint in the Bookings API
@@ -280,8 +280,8 @@
 
     <div class="py-2">
       <label for="time">Time</label> <br>
-      <!--if a facility and date have been selected, call the timeLoading() function
-          and wait for API response. While waiting display "loading..."-->
+      <!-- If a facility and date have been selected, call the timeLoading() function
+           and wait for API response. While waiting display "loading..."-->
       {#if selectedFacility !== undefined && selectedDate !== undefined}
         {#await timeLoading(selectedFacility + 1)}
         <p class="m-5">loading...</p>
@@ -292,11 +292,11 @@
             name="time" 
             id="time"
           >
-          <!-- Format each availabe time to display as "HH:MM" and display it
-               as a selectable option -->
-          {#each available_times as time}
-            <option value={formatTime(time.Hour)}>{time.Hour + ":00"}</option>
-          {/each}
+            <!-- Format each availabe time to display as "HH:MM" and display it
+                as a selectable option -->
+            {#each available_times as time}
+              <option value={formatTime(time.Hour)}>{time.Hour + ":00"}</option>
+            {/each}
           </select>
         {/await}                    
       {/if}
