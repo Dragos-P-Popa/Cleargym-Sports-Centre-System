@@ -154,7 +154,7 @@
   }
 
   /**
-   * Loads the facilities from the Bookings API.
+   * Loads the facilities from the Facilities API.
    * 
    * @returns {Promise<Array<any>>} - A Promise that resolves with an array 
    *                                  containing the facilities when they are loaded.
