@@ -72,10 +72,12 @@
     new Chart(lineFacilities, {
       type: 'line',
       data: {
-        labels: ['Swimming pool', 'Fitness room', 'Climbing wall', 'Sports hall', 'Studio', 'Squash court'],
+        // set labels to all facilities
+        labels: facilityNames,
         datasets: [{
-          label: '# of Visits per week',
-          data: [12, 19, 3, 5, 12, 3],
+          label: 'Total sales per facility (sessions)',
+          // sales data
+          data: facilitySales,
           borderWidth: 1
         }]
       },
@@ -141,8 +143,8 @@
         <p class="font-light text-2xl text-[#515151]">view sports centre statistics</p>
         <div class="w-full">
           <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Facilities</p>
-          <canvas id="barFacilities"></canvas>
-         <!-- <canvas id="lineFacilities"></canvas> -->
+          <canvas id="barFacilities"></canvas><br>
+          <canvas id="lineFacilities"></canvas>
         </div>
         <!-- <div>
           <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities</p>
