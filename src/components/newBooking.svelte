@@ -183,7 +183,8 @@
   async function timeLoading(facilityId : number) {
       
       // fetch all available times for the selected day
-      const res3 = await fetch(PUBLIC_BOOKINGS_URL + `availability/${facilityId}/${selectedMonth}/${selectedDay}`, {
+      const res3 = await fetch(
+        PUBLIC_BOOKINGS_URL + `availability/${facilityId}/${selectedMonth}/${selectedDay}`, {
         method: 'GET',
         headers: {
             "Content-Type": "application/json",
@@ -197,7 +198,9 @@
   
 <div class="p-4 pt-8 mb-4 mt-4 shadow-md rounded-lg border-[1px] border-borderColor">
     <p class="text-4xl text-center text-[#1A1A1A]">New Booking</p>
-    <p class="font-light text-md text-[#515151] text-center">Create a new booking at one of our facilities.</p>
+    <p class="font-light text-md text-[#515151] text-center">
+      Create a new booking at one of our facilities.
+    </p>
 
     <hr class="m-6 mx-24 rounded bg-borderColor">
 
@@ -293,7 +296,12 @@
         <!-- Allow the user to choose the amount of time 
               they wish to book an activity for-->
         <label for="length">Length</label> <br>
-        <select class="border-borderColor border-[1px] rounded-md px-2 py-2 mt-1 shadow-sm min-w-full" name="length" id="length">
+        <select 
+          class="border-borderColor border-[1px] rounded-md 
+                 px-2 py-2 mt-1 shadow-sm min-w-full" 
+          name="length" 
+          id="length"
+        >
           <option value="01:00">1 hour</option>
           <option value="02:00">2 hours</option>
         </select>

@@ -60,11 +60,22 @@
     return [hour, min].join(':');
   }
 
-  // when clicking on bookings in the list (left) this is called.
-  // based on 'i' the BookingInfo component will display the appropriate
-  // booking info
+  /**
+   * This function is responsible for setting the focus of the view to a specific booking.
+   * 
+   * @param {number} id - The id of the booking to focus on.
+   * @returns {void}
+   */
   function setViewFocus(id : number) {
-    i = id
+    // If bookings exist
+    if (bookings) {
+      /* Set the focus to the booking in a list shown in reverse order.
+         This is so that newer bookings are shown at the top. */
+      i = bookings.length - 1 - id;
+    // Otherwise, i is set to -1
+    } else {
+      i = -1;
+    }
   }
 
   // Clear the available activities array when a new date is selected
