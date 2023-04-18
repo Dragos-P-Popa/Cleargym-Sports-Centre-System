@@ -210,7 +210,7 @@
         result = await res2.json()
 
         // check what kind of user has logged in
-        if (result.privilegeLevel == 1) {
+        if (result.privilegeLevel == 1 || result.privilegeLevel == 0) {
           goto('/dashboard');
         }
         if (1 < result.privilegeLevel && result.privilegeLevel <= 32) {
@@ -298,7 +298,7 @@
   <div class="grid w-screen fontClass h-fill backdrop-blur-sm pb-12 pt-12 px-6">
       <img class="place-self-center pr-3" src = "logo.svg" alt="logo"/>
       <p class="text-center text-3xl font-bold pt-[10%] pb-2">Welcome to cleargym!</p>
-      <p class="text-center text-xl font-light pb-[30%]">Lorem ipsum lorem ipsum lerem ipsum</p>
+      <p class="text-center text-xl font-light pb-[30%]">The best sports centre in West Yorkshire</p>
 
       <!--currently in login UI-->
       {#if registerToggle == false}
@@ -371,7 +371,7 @@
       <div class="grid place-self-center rounded-xl bg-white shadow-lg border-[1px] border-borderColor m-8 px-16 pt-12 pb-8">
         <img class="place-self-center pr-3" src = "logo.svg" alt="logo"/>
         <p class="text-center text-5xl font-bold pt-4">Welcome to cleargym!</p>
-        <p class="text-center text-xl font-light pb-20">Lorem ipsum lorem ipsum lerem ipsum</p>
+        <p class="text-center text-xl font-light pb-20">The best sports centre in West Yorkshire</p>
 
         <!--currently in login UI-->
         {#if registerToggle == false}

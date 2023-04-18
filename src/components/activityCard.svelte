@@ -2,10 +2,13 @@
     
     import { PUBLIC_PAYMENTS_URL } from "$env/static/public";
     import MainButton from "./mainButton.svelte"
-
+    
+    // This variable is used to store the values of the form fields.
     let divProps = {
         class:[$$restProps.class] + "  border-[1px] border-borderColor shadow-md rounded-lg bg-cover select-none"
     }
+
+    // These variables are used to store the values of the form fields.
     export let userId:string;
     export let facilityId:number;
     export let activityId:number;
@@ -15,11 +18,16 @@
     export let bookingTime:string;
     export let bookingLength:string;
 
-    
     // This variable controls whether the confirmation message should be displayed.
     // It is set to 'false' by default.
     let display_confirm = false
 
+    /**
+     * Formats the date to YYYY/MM/DD format.
+     * 
+     * @param {Date} date - The date to format.
+     * @returns {string} - The formatted date.
+     */
     function formatDate(date: Date) {
         
         var month = "" + (date.getMonth() + 1),
@@ -36,7 +44,12 @@
         return [year, month, day].join("/");
         }
 
-
+    /**
+     * Creates a new booking by sending a request to the server 
+     * with the user's booking information.
+     *
+     * @returns {Promise<void>} - A Promise that resolves when the booking is created or errors.
+     */
     async function createBooking() {
 
         // initialise a variable for the API response
@@ -49,7 +62,7 @@
             headers: {
             "Content-Type": "application/json",
             },
-            // add email and password
+            // convert the data to JSON
             body: JSON.stringify({
                 userId,
                 facilityId,
@@ -71,9 +84,9 @@
             display_confirm = true;
         }
     }
-
 </script>
 
+<!-- The 'divProps' variable is used to store the values of the form fields. -->
 <div on:click {...divProps}>
     <div class="backdrop-blur-sm w-full h-full p-4 rounded-lg">
         <p class="text-3xl pb-2 font-extrabold">{heading}</p>
@@ -83,6 +96,7 @@
                 <p class="text-sm">Starts at {bookingTime} for {bookingLength} hour(s)</p>
             </div>
             <div class="justify-self-end">
+                <!-- When the button is clicked, call the createBooking() function -->
                 <MainButton on:click={createBooking} 
                             class="py-1 px-2">
                             Checkout

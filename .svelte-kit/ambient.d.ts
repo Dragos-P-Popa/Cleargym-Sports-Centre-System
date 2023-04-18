@@ -97,6 +97,7 @@ declare module '$env/static/public' {
 	export const PUBLIC_BOOKINGS_URL: string;
 	export const PUBLIC_AUTH_URL: string;
 	export const PUBLIC_PAYMENTS_URL: string;
+	export const PUBLIC_ANALYTICS_URL: string;
 }
 
 /**
@@ -189,6 +190,7 @@ declare module '$env/dynamic/public' {
 		PUBLIC_BOOKINGS_URL: string;
 		PUBLIC_AUTH_URL: string;
 		PUBLIC_PAYMENTS_URL: string;
+		PUBLIC_ANALYTICS_URL: string;
 		[key: `PUBLIC_${string}`]: string | undefined;
 	}
 }

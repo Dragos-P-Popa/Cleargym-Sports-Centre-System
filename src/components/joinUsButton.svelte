@@ -2,7 +2,7 @@
     let buttonProps = {
         class:
             [$$restProps.class] +
-            " py-1 my-2 rounded-lg text-white font-extrabold text-xl bg-mainBlue drop-shadow-md",
+            " py-1 my-2 rounded-lg text-white font-extrabold text-xl bg-mainBlue drop-shadow-md transition transform hover:-translate-y-[1.5px] motion-reduce:transition-none motion-reduce:hover:transform-none",
     };
 </script>
 
