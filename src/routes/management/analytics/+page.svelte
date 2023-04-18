@@ -84,7 +84,7 @@
         datasets: [{
           label: 'Total sales per facility (sessions)',
           // sales data
-          data: facilityNames,
+          data: facilitySales,
           borderWidth: 1
         }]
       },
