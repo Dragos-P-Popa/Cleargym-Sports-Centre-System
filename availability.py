@@ -241,7 +241,7 @@ class Booking:
 
     def check_facility_time(self, Btime, Bend, Open, Close):
 
-        if Close > Btime > Open and Close > Bend > Open:
+        if Close > Btime >= Open and Close >= Bend > Open:
             return True
         else:
             abort(400, description=' Too Early / Late')
