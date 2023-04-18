@@ -9,6 +9,8 @@
   let user = data.user;
   // all facilities
   let facilities = data.facilities;
+  // all activities
+  let activities = data.activities;
   // all sales
   let sales = data.sales;
 
@@ -24,6 +26,18 @@
     return facilityNames;
   }
 
+  // creates an array of activity names which can be used for the graph labels
+  // ["yoga", "pilates" ...]
+  function preProcessActivityNames() {
+    let activityType : any = [];
+
+    activities.forEach((activity : any) => {
+      activityType.push(activity.activityType)
+    });
+
+    return activityType;
+  }
+
   // creates a list of total sessions sold per facility
   // index correlates with facility ID so index 0 in facilitySales array is the total sales for facilityId 0
   function preProcessFacilitySales() {
@@ -31,10 +45,23 @@
 
     // loop over every sale and increment index which current sale relates to. E.g. when sale has facilityId 4, the 4th index in the facilitySales array gets incremented
     sales.forEach((sale : any) => {
-      facilitySales[sale.facilityId] = facilitySales[sale.facilityId] + 1
+      facilitySales[sale.facilityId] = facilitySales[sale.facilityId] + 1;
     });
 
     return facilitySales
+  }
+
+  // creates a list of total sessions sold per activity
+  // index correlates with activity ID so index 0 in activitySales array is the total sales for activityId 0
+  function preProcessActivitySales() {
+    let activitySales = new Array(activities.length).fill(0);
+
+    // loop over every sale and increment index which current sale relates to. E.g. when sale has activityId 4, the 4th index in the activitySales array gets incremented
+    sales.forEach((sale : any) => {
+      activitySales[sale.activityId] = activitySales[sale.activityId] + 1
+    });
+
+    return activitySales
   }
 
   onMount(async () => {
@@ -43,6 +70,8 @@
   // avoid undefined values
   let facilityNames : any = await preProcessFacilityNames();
   let facilitySales : any = await preProcessFacilitySales();
+  let activityNames : any = await preProcessActivityNames();
+  let activitySales : any = await preProcessActivitySales();
 
   if (browser) {
     const barFacilities = document.getElementById('barFacilities');
@@ -55,7 +84,7 @@
         datasets: [{
           label: 'Total sales per facility (sessions)',
           // sales data
-          data: facilitySales,
+          data: facilityNames,
           borderWidth: 1
         }]
       },
@@ -94,10 +123,12 @@
     new Chart(barActivities, {
       type: 'bar',
       data: {
-        labels: ['Yoga', 'Pilates', 'Lane swimming', 'General use', '1-hour sessions', 'Aerobics'],
+        // set labels to all activities
+        labels: activityNames,
         datasets: [{
-          label: '# of Visits per week',
-          data: [12, 5, 7, 5, 13, 11],
+          label: 'Total sales per activity (sessions)',
+          // sales data
+          data: activitySales,
           borderWidth: 1
         }]
       },
@@ -114,10 +145,12 @@
     new Chart(lineActivities, {
       type: 'line',
       data: {
-        labels: ['Swimming pool', 'Fitness room', 'Climbing wall', 'Sports hall', 'Studio', 'Squash court'],
+        // set labels to all activities
+        labels: activityNames,
         datasets: [{
-          label: '# of Visits per week',
-          data: [12, 5, 7, 5, 13, 11],
+          label: 'Total sales per activity (sessions)',
+          // sales data
+          data: activitySales,
           borderWidth: 1
         }]
       },
@@ -146,11 +179,11 @@
           <canvas id="barFacilities"></canvas><br>
           <canvas id="lineFacilities"></canvas>
         </div>
-        <!-- <div>
+        <div>
           <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities</p>
-          <canvas id="barActivities"></canvas>
+          <canvas id="barActivities"></canvas><br>
           <canvas id="lineActivities"></canvas>
-        </div>-->
+        </div>
       </div>
     </div>
   </div>

@@ -32,7 +32,16 @@ export async function load({ fetch, request }) {
 
   let sales = await res3.json()
 
+  const res4 = await fetch(PUBLIC_FACILITIES_URL + 'activities', {
+    method: 'GET',
+    headers: {
+      "Content-Type": "application/json",
+    }
+  })
+
+  let activities = await res4.json()
+
   if (user) {
-    return { user, facilities, sales }
+    return { user, facilities, sales, activities }
   }
 }
