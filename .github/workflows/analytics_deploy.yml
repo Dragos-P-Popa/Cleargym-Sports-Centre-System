@@ -1,0 +1,41 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Flask-Analytics CD
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main-analytics" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix: 
+        node-version: [16.x]
+        
+    steps:
+      - name: Deploying to Digital Ocean droplet
+        uses: appleboy/ssh-action@master
+        with: 
+          host: ${{ secrets.HOST }}
+          username:  ${{ secrets.USERNAME }}
+          password:  ${{ secrets.PASSWORD }}
+
+          script: |
+            pm2 stop analytics
+            cd analytics/
+            git fetch --all
+            git reset --hard HEAD
+            git pull
+            pm2 start analytics
