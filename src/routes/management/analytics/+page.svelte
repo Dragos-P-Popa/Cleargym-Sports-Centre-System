@@ -39,28 +39,54 @@
   }
 
   // creates a list of total sessions sold per facility
+  // index correlates with facility ID so index 0 in facilityUsage array is the total sales for facilityId 0
+  function preProcessFacilityUsage() {
+    let facilityUsage = new Array(facilities.length).fill(0);
+
+    // loop over every sale and increment index which current sale relates to. E.g. when sale has facilityId 4, the 4th index in the facilitySales array gets incremented
+    sales.forEach((sale : any) => {
+      facilityUsage[sale.facilityId] = facilityUsage[sale.facilityId] + 1;
+    });
+    
+    return facilityUsage
+  }
+
+  // creates a list of total sessions sold per facility
   // index correlates with facility ID so index 0 in facilitySales array is the total sales for facilityId 0
   function preProcessFacilitySales() {
     let facilitySales = new Array(facilities.length).fill(0);
 
     // loop over every sale and increment index which current sale relates to. E.g. when sale has facilityId 4, the 4th index in the facilitySales array gets incremented
     sales.forEach((sale : any) => {
-      facilitySales[sale.facilityId] = facilitySales[sale.facilityId] + 1;
+      facilitySales[sale.facilityId] = sale.saleValue;
     });
-
+    
     return facilitySales
   }
 
   // creates a list of total sessions sold per activity
   // index correlates with activity ID so index 0 in activitySales array is the total sales for activityId 0
-  function preProcessActivitySales() {
-    let activitySales = new Array(activities.length).fill(0);
+  function preProcessActivityUsage() {
+    let activityUsage = new Array(activities.length).fill(0);
 
     // loop over every sale and increment index which current sale relates to. E.g. when sale has activityId 4, the 4th index in the activitySales array gets incremented
     sales.forEach((sale : any) => {
-      activitySales[sale.activityId] = activitySales[sale.activityId] + 1
+      activityUsage[sale.activityId] = activityUsage[sale.activityId] + 1
     });
 
+    return activityUsage
+  }
+
+  // creates a list of total sessions sold per facility
+  // index correlates with facility ID so index 0 in facilitySales array is the total sales for facilityId 0
+  function preProcessActivitySales() {
+    let activitySales = new Array(activities.length).fill(0);
+
+    // loop over every sale and increment index which current sale relates to. E.g. when sale has facilityId 4, the 4th index in the facilitySales array gets incremented
+    sales.forEach((sale : any) => {
+      activitySales[sale.activityId] = sale.saleValue;
+    });
+    
     return activitySales
   }
 
@@ -69,9 +95,20 @@
   // await so that code does not progress until values have been returned by the functions
   // avoid undefined values
   let facilityNames : any = await preProcessFacilityNames();
+  let facilityUsage : any = await preProcessFacilityUsage();
   let facilitySales : any = await preProcessFacilitySales();
   let activityNames : any = await preProcessActivityNames();
+  let activityUsage : any = await preProcessActivityUsage();
   let activitySales : any = await preProcessActivitySales();
+  let date : any = sales.saleDate;
+
+  const today = new Date();
+  const weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+  const weekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - today.getDay()));
+  const weekRange = weekStart.toLocaleDateString() + " - " + weekEnd.toLocaleDateString();
+
+  // update graph title
+  const graphTitle = `${weekRange}`;
 
   if (browser) {
     const barFacilities = document.getElementById('barFacilities');
@@ -91,8 +128,26 @@
       options: {
         scales: {
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+            ticks: {
+              // include a gbp sign in the ticks
+              callback: function(value) {
+                  return '£' + value;
+              }
+            }
           }
+        },
+        plugins: {
+            // title of the graph
+            title: {
+                display: true,
+                text: 'Sales for ' + graphTitle
+            },
+            // put legend on the bottom
+            legend: {
+              display: true,
+              position: 'bottom'
+            }
         }
       }
     });
@@ -104,9 +159,9 @@
         // set labels to all facilities
         labels: facilityNames,
         datasets: [{
-          label: 'Total sales per facility (sessions)',
-          // sales data
-          data: facilitySales,
+          label: 'Total usage per facility (sessions)',
+          // usage data
+          data: facilityUsage,
           borderWidth: 1
         }]
       },
@@ -115,6 +170,18 @@
           y: {
             beginAtZero: true
           }
+        },
+        plugins: {
+            // title of the graph
+            title: {
+                display: true,
+                text: 'Usage for ' + graphTitle
+            },
+            // put legend on the bottom
+            legend: {
+              display: true,
+              position: 'bottom'
+            }
         }
       }
     });
@@ -135,8 +202,26 @@
       options: {
         scales: {
           y: {
-            beginAtZero: true
+            beginAtZero: true,
+            ticks: {
+              // include a gbp sign in the ticks
+              callback: function(value) {
+                  return '£' + value;
+              }
+            }
           }
+        },
+        plugins: {
+            // title of the graph
+            title: {
+                display: true,
+                text: 'Sales for ' + graphTitle
+            },
+            // put legend on the bottom
+            legend: {
+              display: true,
+              position: 'bottom'
+            }
         }
       }
     });
@@ -150,7 +235,7 @@
         datasets: [{
           label: 'Total sales per activity (sessions)',
           // sales data
-          data: activitySales,
+          data: activityUsage,
           borderWidth: 1
         }]
       },
@@ -159,6 +244,18 @@
           y: {
             beginAtZero: true
           }
+        },
+        plugins: {
+            // title of the graph
+            title: {
+                display: true,
+                text: 'Usage for ' + graphTitle
+            },
+            // put legend on the bottom
+            legend: {
+              display: true,
+              position: 'bottom'
+            }
         }
       }
     });
@@ -171,18 +268,18 @@
 
   <div class="col-span-10 pt-12 px-8">
     <div class="grid grid-cols-8">
-      <div class="col-span-5">
+      <div class="col-span-7">
         <p class="font-bold text-5xl text-[#1A1A1A]">Analytics</p>
         <p class="font-light text-2xl text-[#515151]">view sports centre statistics</p>
-        <div class="w-full">
+        <div class="grid w-full">
           <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Facilities</p>
-          <canvas id="barFacilities"></canvas><br>
+          <canvas id="barFacilities"></canvas><br><br>
           <canvas id="lineFacilities"></canvas>
         </div>
-        <div>
+        <div class="w-full">
           <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities</p>
-          <canvas id="barActivities"></canvas><br>
-          <canvas id="lineActivities"></canvas>
+          <canvas id="barActivities"></canvas><br><br>
+          <canvas id="lineActivities"></canvas><br>
         </div>
       </div>
     </div>
