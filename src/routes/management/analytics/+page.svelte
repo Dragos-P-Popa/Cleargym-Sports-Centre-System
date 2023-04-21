@@ -44,9 +44,10 @@
     let facilityUsage = new Array(facilities.length).fill(0);
 
     // loop over every sale and increment index which current sale relates to. E.g. when sale has facilityId 4, the 4th index in the facilitySales array gets incremented
-    sales.forEach((sale : any) => {
-      facilityUsage[sale.facilityId] = facilityUsage[sale.facilityId] + 1;
-    });
+    for (let i = 0; i < sales.length; i++) {
+      let index = sales[i].facilityId
+      facilityUsage[index - 1] = facilityUsage[index - 1] + 1;
+    }
     
     return facilityUsage
   }
@@ -57,9 +58,10 @@
     let facilitySales = new Array(facilities.length).fill(0);
 
     // loop over every sale and increment index which current sale relates to. E.g. when sale has facilityId 4, the 4th index in the facilitySales array gets incremented
-    sales.forEach((sale : any) => {
-      facilitySales[sale.facilityId] = sale.saleValue;
-    });
+    for (let i = 0; i < sales.length; i++) {
+      let index = sales[i].facilityId
+      facilitySales[index - 1] = facilitySales[index - 1] + sales[i].saleValue;
+    }
     
     return facilitySales
   }
@@ -70,9 +72,10 @@
     let activityUsage = new Array(activities.length).fill(0);
 
     // loop over every sale and increment index which current sale relates to. E.g. when sale has activityId 4, the 4th index in the activitySales array gets incremented
-    sales.forEach((sale : any) => {
-      activityUsage[sale.activityId] = activityUsage[sale.activityId] + 1
-    });
+    for (let i = 0; i < sales.length; i++) {
+      let index = sales[i].activityId
+      activityUsage[index - 1] = activityUsage[index - 1] + 1;
+    }
 
     return activityUsage
   }
@@ -83,10 +86,12 @@
     let activitySales = new Array(activities.length).fill(0);
 
     // loop over every sale and increment index which current sale relates to. E.g. when sale has facilityId 4, the 4th index in the facilitySales array gets incremented
-    sales.forEach((sale : any) => {
-      activitySales[sale.activityId] = sale.saleValue;
-    });
-    
+
+    for (let i = 0; i < sales.length; i++) {
+      let index = sales[i].activityId
+      activitySales[index - 1] = activitySales[index - 1] + sales[i].saleValue;
+    }
+
     return activitySales
   }
 
@@ -154,7 +159,7 @@
     const lineFacilities = document.getElementById('lineFacilities');
 
     new Chart(lineFacilities, {
-      type: 'line',
+      type: 'bar',
       data: {
         // set labels to all facilities
         labels: facilityNames,
@@ -228,7 +233,7 @@
     const lineActivities = document.getElementById('lineActivities');
 
     new Chart(lineActivities, {
-      type: 'line',
+      type: 'bar',
       data: {
         // set labels to all activities
         labels: activityNames,
