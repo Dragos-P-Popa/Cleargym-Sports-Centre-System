@@ -3,6 +3,7 @@
   import NavBar from "../../../components/managementNavbar.svelte";
   import { browser } from '$app/environment'; 
   import { onMount } from "svelte";
+  import Toggle from "../../../components/chartToggle.svelte"
   import { PUBLIC_ANALYTICS_URL } from '$env/static/public'
 
   export let data;
@@ -13,6 +14,22 @@
   let activities = data.activities;
   // all sales
   let sales = data.sales;
+
+  let selection:number = 1;
+
+  const today = new Date();
+  // get the start and end of the week day in format dd/mm/yyyy, replace the format to yyyy-mm-dd, change that format to have '/' instead of '-', yyyy/mm/dd.
+  const weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 1).toISOString().slice(0, 10).replace(/-/g, "/");
+  const weekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (7 - today.getDay())).toISOString().slice(0, 10).replace(/-/g, "/");
+  // define week range in format yyyy/mm/dd - yyyy/mm/dd to get a week period for today and 6 days before today.
+  const weekRange = weekStart + " - " + weekEnd;
+
+  console.log(today.getDate());
+  console.log(weekStart);
+  console.log(weekEnd);
+  console.log(weekRange);
+
+  // console.log(sales);
 
   // creates an array of facility names which can be used for the graph labels
   // ["swimming pool", "gym" ...]
@@ -40,6 +57,24 @@
 
   // creates a list of total sessions sold per facility
   // index correlates with facility ID so index 0 in facilityUsage array is the total sales for facilityId 0
+  function preProcessFacilityUsagePerWeek() {
+    let facilityUsage = new Array(facilities.length).fill(0);
+
+    // loop over every sale and increment index which current sale relates to. E.g. when sale has facilityId 4, the 4th index in the facilitySales array gets incremented
+    for (let i = 0; i < sales.length; i++) {
+      if(sales[i].saleDate >= weekStart && sales[i].saleDate <= weekEnd)
+      {
+        let index = sales[i].facilityId
+        facilityUsage[index - 1] = facilityUsage[index - 1] + 1;
+      }
+      
+    }
+    
+    return facilityUsage
+  }
+
+  // creates a list of total sessions sold per facility
+  // index correlates with facility ID so index 0 in facilityUsage array is the total sales for facilityId 0
   function preProcessFacilityUsage() {
     let facilityUsage = new Array(facilities.length).fill(0);
 
@@ -50,6 +85,23 @@
     }
     
     return facilityUsage
+  }
+
+  // creates a list of total sessions sold per facility
+  // index correlates with facility ID so index 0 in facilitySales array is the total sales for facilityId 0
+  function preProcessFacilitySalesPerWeek() {
+    let facilitySales = new Array(facilities.length).fill(0);
+
+    // loop over every sale and increment index which current sale relates to. E.g. when sale has facilityId 4, the 4th index in the facilitySales array gets incremented
+    for (let i = 0; i < sales.length; i++) {
+      if(sales[i].saleDate >= weekStart && sales[i].saleDate <= weekEnd)
+      {
+        let index = sales[i].facilityId
+        facilitySales[index - 1] = facilitySales[index - 1] + sales[i].saleValue;
+      }
+    }
+    
+    return facilitySales
   }
 
   // creates a list of total sessions sold per facility
@@ -68,6 +120,23 @@
 
   // creates a list of total sessions sold per activity
   // index correlates with activity ID so index 0 in activitySales array is the total sales for activityId 0
+  function preProcessActivityUsagePerWeek() {
+    let activityUsage = new Array(activities.length).fill(0);
+
+    // loop over every sale and increment index which current sale relates to. E.g. when sale has activityId 4, the 4th index in the activitySales array gets incremented
+    for (let i = 0; i < sales.length; i++) {
+      if(sales[i].saleDate >= weekStart && sales[i].saleDate <= weekEnd)
+      {
+        let index = sales[i].activityId
+        activityUsage[index - 1] = activityUsage[index - 1] + 1;
+      }
+    }
+
+    return activityUsage
+  }
+
+  // creates a list of total sessions sold per activity
+  // index correlates with activity ID so index 0 in activitySales array is the total sales for activityId 0
   function preProcessActivityUsage() {
     let activityUsage = new Array(activities.length).fill(0);
 
@@ -78,6 +147,24 @@
     }
 
     return activityUsage
+  }
+
+  // creates a list of total sessions sold per facility
+  // index correlates with facility ID so index 0 in facilitySales array is the total sales for facilityId 0
+  function preProcessActivitySalesPerWeek() {
+    let activitySales = new Array(activities.length).fill(0);
+
+    // loop over every sale and increment index which current sale relates to. E.g. when sale has facilityId 4, the 4th index in the facilitySales array gets incremented
+
+    for (let i = 0; i < sales.length; i++) {
+      if(sales[i].saleDate >= weekStart && sales[i].saleDate <= weekEnd)
+      {
+        let index = sales[i].activityId
+        activitySales[index - 1] = activitySales[index - 1] + sales[i].saleValue;
+      }
+    }
+
+    return activitySales
   }
 
   // creates a list of total sessions sold per facility
@@ -100,17 +187,15 @@
   // await so that code does not progress until values have been returned by the functions
   // avoid undefined values
   let facilityNames : any = await preProcessFacilityNames();
+  let facilityUsagePerWeek : any = await preProcessFacilityUsagePerWeek();
+  let facilitySalesPerWeek : any = await preProcessFacilitySalesPerWeek();
   let facilityUsage : any = await preProcessFacilityUsage();
   let facilitySales : any = await preProcessFacilitySales();
   let activityNames : any = await preProcessActivityNames();
+  let activityUsagePerWeek : any = await preProcessActivityUsagePerWeek();
+  let activitySalesPerWeek : any = await preProcessActivitySalesPerWeek();
   let activityUsage : any = await preProcessActivityUsage();
   let activitySales : any = await preProcessActivitySales();
-  let date : any = sales.saleDate;
-
-  const today = new Date();
-  const weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
-  const weekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - today.getDay()));
-  const weekRange = weekStart.toLocaleDateString() + " - " + weekEnd.toLocaleDateString();
 
   // update graph title
   const graphTitle = `${weekRange}`;
@@ -264,6 +349,154 @@
         }
       }
     });
+    const barFacilitiesPerWeek = document.getElementById('barFacilitiesPerWeek');
+    
+    new Chart(barFacilitiesPerWeek, {
+      type: 'bar',
+      data: {
+        // set labels to all facilities
+        labels: facilityNames,
+        datasets: [{
+          label: 'Total sales per facility (sessions)',
+          // sales data
+          data: facilitySalesPerWeek,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              // include a gbp sign in the ticks
+              callback: function(value) {
+                  return '£' + value;
+              }
+            }
+          }
+        },
+        plugins: {
+            // title of the graph
+            title: {
+                display: true,
+                text: 'Sales for ' + graphTitle
+            },
+            // put legend on the bottom
+            legend: {
+              display: true,
+              position: 'bottom'
+            }
+        }
+      }
+    });
+    const lineFacilitiesPerWeek = document.getElementById('lineFacilitiesPerWeek');
+
+    new Chart(lineFacilitiesPerWeek, {
+      type: 'bar',
+      data: {
+        // set labels to all facilities
+        labels: facilityNames,
+        datasets: [{
+          label: 'Total usage per facility (sessions)',
+          // usage data
+          data: facilityUsagePerWeek,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+            // title of the graph
+            title: {
+                display: true,
+                text: 'Usage for ' + graphTitle
+            },
+            // put legend on the bottom
+            legend: {
+              display: true,
+              position: 'bottom'
+            }
+        }
+      }
+    });
+    const barActivitiesPerWeek = document.getElementById('barActivitiesPerWeek');
+
+    new Chart(barActivitiesPerWeek, {
+      type: 'bar',
+      data: {
+        // set labels to all activities
+        labels: activityNames,
+        datasets: [{
+          label: 'Total sales per activity (sessions)',
+          // sales data
+          data: activitySalesPerWeek,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              // include a gbp sign in the ticks
+              callback: function(value) {
+                  return '£' + value;
+              }
+            }
+          }
+        },
+        plugins: {
+            // title of the graph
+            title: {
+                display: true,
+                text: 'Sales for ' + graphTitle
+            },
+            // put legend on the bottom
+            legend: {
+              display: true,
+              position: 'bottom'
+            }
+        }
+      }
+    });
+    const lineActivitiesPerWeek = document.getElementById('lineActivitiesPerWeek');
+
+    new Chart(lineActivitiesPerWeek, {
+      type: 'bar',
+      data: {
+        // set labels to all activities
+        labels: activityNames,
+        datasets: [{
+          label: 'Total sales per activity (sessions)',
+          // sales data
+          data: activityUsagePerWeek,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        },
+        plugins: {
+            // title of the graph
+            title: {
+                display: true,
+                text: 'Usage for ' + graphTitle
+            },
+            // put legend on the bottom
+            legend: {
+              display: true,
+              position: 'bottom'
+            }
+        }
+      }
+    });
   }
 })
 </script>
@@ -276,16 +509,31 @@
       <div class="col-span-7">
         <p class="font-bold text-5xl text-[#1A1A1A]">Analytics</p>
         <p class="font-light text-2xl text-[#515151]">view sports centre statistics</p>
-        <div class="grid w-full">
-          <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Facilities</p>
-          <canvas id="barFacilities"></canvas><br><br>
-          <canvas id="lineFacilities"></canvas>
+        <div class="flex w-full">
+          <p class="flex-1 pt-10 font-light text-2xl text-[#1A1A1A]">Facilities</p>
+          <p class="pt-10"><Toggle bind:selection/></p>
         </div>
-        <div class="w-full">
-          <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities</p>
-          <canvas id="barActivities"></canvas><br><br>
-          <canvas id="lineActivities"></canvas><br>
-        </div>
+        {#if selection == 1}
+          <div class="grid w-full">
+            <canvas id="barFacilitiesPerWeek"></canvas><br><br>
+            <canvas id="lineFacilitiesPerWeek"></canvas>
+          </div>
+          <div class="w-full">
+            <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities</p>
+            <canvas id="barActivitiesPerWeek"></canvas><br><br>
+            <canvas id="lineActivitiesPerWeek"></canvas><br>
+          </div>
+        {:else}
+          <div class="grid w-full">
+            <canvas id="barFacilities"></canvas><br><br>
+            <canvas id="lineFacilities"></canvas>
+          </div>
+          <div class="w-full">
+            <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities</p>
+            <canvas id="barActivities"></canvas><br><br>
+            <canvas id="lineActivities"></canvas><br>
+          </div>
+        {/if}
       </div>
     </div>
   </div>
