@@ -2,9 +2,8 @@ from app import app, db, models
 from flask import json, request, jsonify, abort
 
 
-
 # This function is to create a new booking
-@app.route('/sale', methods=['POST'])
+@app.route('/sales', methods=['POST'])
 def post_sale():
     user_input = request.get_json()
 
@@ -21,16 +20,16 @@ def post_sale():
 
     new_Sale = models.Sales(
         id=SaleId,
-        SaleVal=user_input["SaleVal"],
-        Facilityid=user_input["Facilityid"],
-        Activityid=user_input["Activityid"])
+        saleValue=user_input["saleValue"],
+        facilityId=user_input["facilityId"],
+        activityId=user_input["activityId"])
     db.session.add(new_Sale)
     db.session.commit()
     response = {'id': new_Sale.id,
-                'SaleVal': new_Sale.SaleVal,
-                'Facilityid': new_Sale.Facilityid,
-                'Activityid': new_Sale.Activityid,
-                'SaleDate': new_Sale.SaleDate.strftime('%Y/%m/%d')}
+                'saleValue': new_Sale.saleValue,
+                'facilityId': new_Sale.facilityId,
+                'activityId': new_Sale.activityId,
+                'saleDate': new_Sale.saleDate.strftime('%Y/%m/%d')}
     return jsonify(response), 200
 
 
@@ -42,19 +41,19 @@ def get_all_sales():
     Sales_response(Sales, result)
     return jsonify(result), 200
 
-@app.route('/sales/Facility/<int:Facilityid>', methods=['GET'])
-def get_sales_by_facilityId(Facilityid):
+@app.route('/sales/facility/<int:facilityId>', methods=['GET'])
+def get_sales_by_facilityId(facilityId):
     # Requesting the data from the database by using the selected Facilityid
-    Sales = models.Sales.query.filter_by(Facilityid=Facilityid).all()
+    Sales = models.Sales.query.filter_by(facilityId=facilityId).all()
     result = []
     Sales_response(Sales, result)
 
     return jsonify(result), 200
 
-@app.route('/sales/Activity/<int:ActivityId>', methods=['GET'])
-def get_sales_by_ActivityId(ActivityId):
+@app.route('/sales/activity/<int:activityId>', methods=['GET'])
+def get_sales_by_ActivityId(activityId):
     # Requesting the data from the database by using the selected ActivityId
-    Sales = models.Sales.query.filter_by(Activityid=ActivityId).all()
+    Sales = models.Sales.query.filter_by(activityId=activityId).all()
     result = []
     Sales_response(Sales, result)
 
@@ -63,8 +62,8 @@ def get_sales_by_ActivityId(ActivityId):
 def Sales_response(Sales, result):
     for sale in Sales:
         result.append({'id': sale.id,
-                       'SaleVal': sale.SaleVal,
-                       'Facilityid': sale.Facilityid,
-                       'Activityid': sale.Activityid,
-                       'SaleDate': sale.SaleDate.strftime('%Y/%m/%d')
+                       'saleValue': sale.saleValue,
+                       'facilityId': sale.facilityId,
+                       'activityId': sale.activityId,
+                       'saleDate': sale.saleDate.strftime('%Y/%m/%d')
                        })
