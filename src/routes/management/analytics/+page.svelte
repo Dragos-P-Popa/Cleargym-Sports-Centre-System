@@ -15,21 +15,12 @@
   // all sales
   let sales = data.sales;
 
-  let selection:number = 1;
-
   const today = new Date();
   // get the start and end of the week day in format dd/mm/yyyy, replace the format to yyyy-mm-dd, change that format to have '/' instead of '-', yyyy/mm/dd.
   const weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 1).toISOString().slice(0, 10).replace(/-/g, "/");
   const weekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (7 - today.getDay())).toISOString().slice(0, 10).replace(/-/g, "/");
   // define week range in format yyyy/mm/dd - yyyy/mm/dd to get a week period for today and 6 days before today.
   const weekRange = weekStart + " - " + weekEnd;
-
-  console.log(today.getDate());
-  console.log(weekStart);
-  console.log(weekEnd);
-  console.log(weekRange);
-
-  // console.log(sales);
 
   // creates an array of facility names which can be used for the graph labels
   // ["swimming pool", "gym" ...]
@@ -324,7 +315,7 @@
         // set labels to all activities
         labels: activityNames,
         datasets: [{
-          label: 'Total sales per activity (sessions)',
+          label: 'Total usage per activity (sessions)',
           // sales data
           data: activityUsage,
           borderWidth: 1
@@ -474,7 +465,7 @@
         // set labels to all activities
         labels: activityNames,
         datasets: [{
-          label: 'Total sales per activity (sessions)',
+          label: 'Total usage per activity (sessions)',
           // sales data
           data: activityUsagePerWeek,
           borderWidth: 1
@@ -512,31 +503,28 @@
       <div class="col-span-7">
         <p class="font-bold text-5xl text-[#1A1A1A]">Analytics</p>
         <p class="font-light text-2xl text-[#515151]">view sports centre statistics</p>
-        <div class="flex w-full">
+        <!-- show graphs for a week -->
+        <div class="grid w-full">
           <p class="flex-1 pt-10 font-light text-2xl text-[#1A1A1A]">Facilities</p>
-          <p class="pt-10"><Toggle bind:selection/></p>
+          <canvas id="barFacilitiesPerWeek"></canvas><br><br>
+          <canvas id="lineFacilitiesPerWeek"></canvas>
         </div>
-        {#if selection == 1}
-          <div class="grid w-full">
-            <canvas id="barFacilitiesPerWeek"></canvas><br><br>
-            <canvas id="lineFacilitiesPerWeek"></canvas>
-          </div>
-          <div class="w-full">
-            <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities</p>
-            <canvas id="barActivitiesPerWeek"></canvas><br><br>
-            <canvas id="lineActivitiesPerWeek"></canvas><br>
-          </div>
-        {:else}
-          <div class="grid w-full">
-            <canvas id="barFacilities"></canvas><br><br>
-            <canvas id="lineFacilities"></canvas>
-          </div>
-          <div class="w-full">
-            <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities</p>
-            <canvas id="barActivities"></canvas><br><br>
-            <canvas id="lineActivities"></canvas><br>
-          </div>
-        {/if}
+        <div class="w-full">
+          <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities</p>
+          <canvas id="barActivitiesPerWeek"></canvas><br><br>
+          <canvas id="lineActivitiesPerWeek"></canvas><br>
+        </div>
+        <!-- show total graphs -->
+        <div class="grid w-full">
+          <p class="flex-1 pt-10 font-light text-2xl text-[#1A1A1A]">Facilities</p>
+          <canvas id="barFacilities"></canvas><br><br>
+          <canvas id="lineFacilities"></canvas>
+        </div>
+        <div class="w-full">
+          <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities</p>
+          <canvas id="barActivities"></canvas><br><br>
+          <canvas id="lineActivities"></canvas><br>
+        </div>
       </div>
     </div>
   </div>
