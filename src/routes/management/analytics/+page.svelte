@@ -201,6 +201,7 @@
   const graphTitle = `${weekRange}`;
 
   if (browser) {
+    // Charts for total data
     const barFacilities = document.getElementById('barFacilities');
     
     new Chart(barFacilities, {
@@ -231,7 +232,7 @@
             // title of the graph
             title: {
                 display: true,
-                text: 'Sales for ' + graphTitle
+                text: 'Total sales'
             },
             // put legend on the bottom
             legend: {
@@ -265,7 +266,7 @@
             // title of the graph
             title: {
                 display: true,
-                text: 'Usage for ' + graphTitle
+                text: 'Total usage'
             },
             // put legend on the bottom
             legend: {
@@ -305,7 +306,7 @@
             // title of the graph
             title: {
                 display: true,
-                text: 'Sales for ' + graphTitle
+                text: 'Total sales'
             },
             // put legend on the bottom
             legend: {
@@ -339,7 +340,7 @@
             // title of the graph
             title: {
                 display: true,
-                text: 'Usage for ' + graphTitle
+                text: 'Total usage'
             },
             // put legend on the bottom
             legend: {
@@ -349,6 +350,8 @@
         }
       }
     });
+
+    // Charts for data per week
     const barFacilitiesPerWeek = document.getElementById('barFacilitiesPerWeek');
     
     new Chart(barFacilitiesPerWeek, {
