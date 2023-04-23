@@ -3,7 +3,6 @@
   import NavBar from "../../../components/managementNavbar.svelte";
   import { browser } from '$app/environment'; 
   import { onMount } from "svelte";
-  import Toggle from "../../../components/chartToggle.svelte"
   import { PUBLIC_ANALYTICS_URL } from '$env/static/public'
 
   export let data;
@@ -17,8 +16,8 @@
 
   const today = new Date();
   // get the start and end of the week day in format dd/mm/yyyy, replace the format to yyyy-mm-dd, change that format to have '/' instead of '-', yyyy/mm/dd.
-  const weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay() + 1).toISOString().slice(0, 10).replace(/-/g, "/");
-  const weekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (7 - today.getDay())).toISOString().slice(0, 10).replace(/-/g, "/");
+  const weekStart = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 5).toISOString().slice(0, 10).replace(/-/g, "/");
+  const weekEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).toISOString().slice(0, 10).replace(/-/g, "/");
   // define week range in format yyyy/mm/dd - yyyy/mm/dd to get a week period for today and 6 days before today.
   const weekRange = weekStart + " - " + weekEnd;
 
