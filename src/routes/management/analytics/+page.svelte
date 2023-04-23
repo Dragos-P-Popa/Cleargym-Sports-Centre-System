@@ -504,23 +504,23 @@
         <p class="font-light text-2xl text-[#515151]">view sports centre statistics</p>
         <!-- show graphs for a week -->
         <div class="grid w-full">
-          <p class="flex-1 pt-10 font-light text-2xl text-[#1A1A1A]">Facilities</p>
+          <p class="flex-1 pt-10 font-light text-2xl text-[#1A1A1A]">Facilities - weekly</p>
           <canvas id="barFacilitiesPerWeek"></canvas><br><br>
           <canvas id="lineFacilitiesPerWeek"></canvas>
         </div>
         <div class="w-full">
-          <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities</p>
+          <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities - weekly</p>
           <canvas id="barActivitiesPerWeek"></canvas><br><br>
           <canvas id="lineActivitiesPerWeek"></canvas><br>
         </div>
         <!-- show total graphs -->
         <div class="grid w-full">
-          <p class="flex-1 pt-10 font-light text-2xl text-[#1A1A1A]">Facilities</p>
+          <p class="flex-1 pt-10 font-light text-2xl text-[#1A1A1A]">Facilities - total</p>
           <canvas id="barFacilities"></canvas><br><br>
           <canvas id="lineFacilities"></canvas>
         </div>
         <div class="w-full">
-          <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities</p>
+          <p class="pt-10 font-light text-2xl text-[#1A1A1A]">Activities - total</p>
           <canvas id="barActivities"></canvas><br><br>
           <canvas id="lineActivities"></canvas><br>
         </div>
