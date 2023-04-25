@@ -13,7 +13,7 @@
 <div>
   <img class="place-self-left pt-4 pl-6" src="logo.svg" alt="logo" />
   <div class="absolute right-0 top-0 pt-4 pr-6">
-    <SecondaryButton on:click={() => goto("/dashboard")}
+    <SecondaryButton on:click={() => goto("/auth")}
       >Dashboard</SecondaryButton
     >
   </div>

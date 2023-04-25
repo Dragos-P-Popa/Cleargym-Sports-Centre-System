@@ -6,9 +6,39 @@
   import MediaQuery from "../../MediaQuery.svelte";
   import "@fontsource/manrope";
   import { PUBLIC_AUTH_URL } from "$env/static/public";
+  import { onMount } from "svelte";
 
   let registerToggle = false;
 
+  onMount(async () => {
+    // try to fetch current user
+    // if signed in it will succeed and user will be redirected to dashboard.
+    const res = await fetch(PUBLIC_AUTH_URL + 'user/', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+
+    const result = await res.json();
+    const responseCode = await res.status;
+    
+    if (responseCode == 201){
+      console.log("succeeded")
+      // check what kind of user is logged in
+      if (result.privilegeLevel == 1 || result.privilegeLevel == 0) {
+        goto('/dashboard');
+      }
+      if (1 < result.privilegeLevel && result.privilegeLevel <= 32) {
+        goto('/employees/book');
+      }
+      if (32 < result.privilegeLevel && result.privilegeLevel <= 1028) {
+        goto('/management/activities');
+      }
+    }
+  });
+  
   // switch between login and register
   function toggle(){
     registerToggle = !registerToggle;
