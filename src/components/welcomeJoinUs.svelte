@@ -9,7 +9,7 @@
         <p>The most complete and beginner friendly gym in the UK.</p>
         <p>Join us to make use of all our fantastic facilities!</p>
         <JoinUsButton
-            on:click={() => goto("/dashboard")}
+            on:click={() => goto("/auth")}
             class="w-1/4 text-base">Join Us</JoinUsButton
         >
     </div>
