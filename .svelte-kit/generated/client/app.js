@@ -1,6 +1,7 @@
 export { matchers } from './matchers.js';
 
-export const nodes = [() => import('./nodes/0'),
+export const nodes = [
+	() => import('./nodes/0'),
 	() => import('./nodes/1'),
 	() => import('./nodes/2'),
 	() => import('./nodes/3'),
@@ -26,25 +27,26 @@ export const nodes = [() => import('./nodes/0'),
 	() => import('./nodes/23'),
 	() => import('./nodes/24'),
 	() => import('./nodes/25'),
-	() => import('./nodes/26')];
+	() => import('./nodes/26')
+];
 
 export const server_loads = [];
 
 export const dictionary = {
-	"/": [14],
-	"/auth": [15,[2]],
-	"/basket": [16,[3]],
-	"/bookings": [17,[4]],
-	"/cancel": [18,[5]],
-	"/dashboard": [19,[6]],
-	"/employees/amend": [20,[7]],
-	"/employees/book": [21,[8]],
-	"/management/activities": [22,[9]],
-	"/management/analytics": [23,[10]],
-	"/management/facilities": [24,[11]],
-	"/management/staff": [25,[12]],
-	"/success": [26,[13]]
-};
+		"/": [14],
+		"/auth": [15,[2]],
+		"/basket": [16,[3]],
+		"/bookings": [17,[4]],
+		"/cancel": [18,[5]],
+		"/dashboard": [19,[6]],
+		"/employees/amend": [20,[7]],
+		"/employees/book": [21,[8]],
+		"/management/activities": [22,[9]],
+		"/management/analytics": [23,[10]],
+		"/management/facilities": [24,[11]],
+		"/management/staff": [25,[12]],
+		"/success": [26,[13]]
+	};
 
 export const hooks = {
 	handleError: (({ error }) => { console.error(error) }),

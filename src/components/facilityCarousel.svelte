@@ -33,15 +33,15 @@
             class="block w-2/6"
             alt="Swimming pool"
         />
-        <img src="fitness_room_c.webp" class="block w-2/6" alt="Fitness room" />
-        <img src="squash_court_c.webp" class="block w-2/6" alt="Squash court" />
-        <img src="sports_hall_c.webp" class="block w-2/6" alt="Sports hall" />
+        <img src="fitness_room_c.webp" class="block w-2/6" alt="Fitness room"/>
+        <img src="squash_court_c.webp" class="block w-2/6" alt="Squash court"/>
+        <img src="sports_hall_c.webp" class="block w-2/6" alt="Sports hall"/>
         <img
             src="climbing_wall_c.webp"
             class="block w-2/6"
             alt="Climbing wall"
         />
-        <img src="studio_c.webp" class="block w-2/6" alt="Studio" />
+        <img src="studio_c.webp" class="block w-2/6" alt="Studio"/>
     </div>
     <div
         class="absolute flex justify-between items-center w-full transform -translate-y-1/2 top-1/3"
