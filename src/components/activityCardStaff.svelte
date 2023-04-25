@@ -1,9 +1,5 @@
 <script lang="ts">
-    import {
-        PUBLIC_AUTH_URL,
-        PUBLIC_BOOKINGS_URL,
-        PUBLIC_FACILITIES_URL,
-    } from "$env/static/public";
+    import { PUBLIC_AUTH_URL, PUBLIC_BOOKINGS_URL } from "$env/static/public";
     import MainButton from "./mainButton.svelte";
 
     // This variable is used to store the values of the form fields.
