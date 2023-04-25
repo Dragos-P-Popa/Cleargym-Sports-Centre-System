@@ -6,7 +6,7 @@
         PUBLIC_FACILITIES_URL,
     } from "$env/static/public";
 
-    let facilities;
+    let facilities: any;
     let selectedFacility: number;
     export let selectedDate: Date;
     let nonCustomer = false;
