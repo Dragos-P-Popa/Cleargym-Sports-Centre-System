@@ -186,7 +186,7 @@
                 class="mt-8 mb-4 ml-auto mr-auto w-4/5 place-self-center text-center"
                 style="font-size: 20px; color: green;"
             >
-                The booking was successfully added to the basket!
+                The session was booked successfully!
             </p>
         {/if}
     </div>
