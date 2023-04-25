@@ -483,7 +483,7 @@ def patch_booking(id):
 
 
 @app.route('/emails/confirmation/<email>', methods=['POST'])
-def Email_confirmation(email):
+def email_confirmation(email):
     # Email's subject
     Sub = "Get ready! Your session is booked"
     # Email's sender
@@ -519,7 +519,7 @@ Cleargym Team
 
 
 @app.route('/emails/cancellation/<email>', methods=['POST'])
-def Email_cancellation(email):
+def email_cancellation(email):
     # Email's subject
     Sub = "Your booking has been cancelled"
     # Email's Sender

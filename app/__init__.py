@@ -10,7 +10,7 @@ app.app_context().push()
 CORS(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-#app.config['SECRET_KEY'] = "our0secret0key"
+# Email configuration
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True

@@ -1,14 +1,13 @@
-from flask import abort
+# This code was made by Mohamed Yanis BOUHAMADI
 import datetime
 from datetime import datetime, time, date, timedelta
 from app import app, db, models
 from flask import json, request, jsonify, abort
 
 
+# Creating a new booking class
 class Booking:
-
-    def __init__(self, Bdate, Btime, Blength, Bend, FacilityId, Close, Open, Capacity, A_time, A_end, Alength, A_day
-                 ):
+    def __init__(self, Bdate, Btime, Blength, Bend, FacilityId, Close, Open, Capacity, A_time, A_end, Alength, A_day):
         self.Bdate = Bdate
         self.Btime = Btime
         self.Blength = Blength
@@ -224,7 +223,8 @@ class Booking:
             return True
         return True
 
-    # check Facility
+    # Check Facility Starts
+    # This function checks if the capacity is not full, so the booking can be done.
     def check_facility_capacity(self, Bdate, Btime, Bend, Capacity, FacilityId, Blength):
         onehour = time(1, 0, 0)
         twohours = time(2, 0, 0)
@@ -239,6 +239,7 @@ class Booking:
         else:
             abort(400, description='Invalid Length')
 
+    # This function checks if the booking time is in the range facility start and end times.
     def check_facility_time(self, Btime, Bend, Open, Close):
 
         if Close > Btime >= Open and Close >= Bend > Open:
@@ -246,9 +247,9 @@ class Booking:
         else:
             abort(400, description=' Too Early / Late')
 
-    # check Facility done
-    # Activity Check Begins
-
+    # check Facility Ends
+    # Activity Check Starts
+    # This function checks if the bookings details match with activity data such as start time , length , day...
     def check_activity(self, Alength, A_day, Blength, Bdate, Btime, Bend, A_time, A_end):
 
         day_name = Bdate.strftime('%A')
