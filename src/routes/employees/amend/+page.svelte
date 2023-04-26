@@ -18,7 +18,7 @@
 
   <div class="col-span-10 pt-12 px-8">
     <p class="font-bold text-5xl text-[#1A1A1A] w-full pb-10">Amendments</p>
-    <SearchEmail />
+    <SearchEmail {data}/>
   </div>
 </div>
 

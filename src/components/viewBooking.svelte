@@ -4,7 +4,7 @@
     import SecondaryButton from "./secondaryButton.svelte";
     import { PUBLIC_BOOKINGS_URL } from "$env/static/public";
 
-    // variables to be defined by page (currently bookings/+page.svelte)
+    // variables to be defined by page
     export let bookingNumber: number;
     export let bookedOn: string;
     export let facility: string;
@@ -95,6 +95,7 @@
             emailConfirmation = await res2.json()
 
             if (emailConfirmation === "Sent") {
+                console.log("User email: " + user.email)
                 console.log("The message was sent")
             } else {
                 console.log("The message was not sent")
