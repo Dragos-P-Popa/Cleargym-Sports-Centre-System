@@ -13,8 +13,13 @@
     let nonCustomer = false;
     let i = -1;
     let bookings: any[];
-
+    // Data related to facilities, activities and their availability
+    let facilities: any[];
     let userId: string;
+
+    // Data fetched from server-side-rendering (SSR)
+    export let data;
+    let user = data.user;
 
     import {
         PUBLIC_AUTH_URL,
@@ -99,6 +104,40 @@
         }
         e.target.reset();
     }
+
+    /**
+     * Loads the facilities from the Facilities API.
+     * 
+     * @returns {Promise<Array<any>>} - A Promise that resolves with an array 
+     *                                  containing the facilities when they are loaded.
+     */
+    async function facilityLoading() {
+        // fetch all facilities
+        const res1 = await fetch(`http://cleargym.live:3003/facilities`, {
+        method: 'GET',
+        headers: {
+            "Content-Type": "application/json",
+        }
+        })
+        // this data is used to populate the facility selection UI element (line 97-112)
+        facilities = await res1.json()
+    }
+
+    /**
+     * This function is responsible for finding the name of a facility.
+     * 
+     * @param {number} facilityId - The id of the facility to find.
+     * @returns {string} - The name of the facility.
+     */
+    function findFacilityName(facilityId : number) {
+        // Iterate over the array of facilities
+        for (let i = 0; i < facilities.length; i++) {
+        // If a given 'facilityId' is found, return the facility's name
+        if (facilities[i].id == facilityId) {
+            return facilities[i].facilityName
+        }
+        }
+    }
 </script>
 
 <div>
@@ -155,12 +194,18 @@
                 {:then bookings}
                     <div class="flex-1">
                         {#each bookings as b, i}
+                            <!-- Display a loading message while the facilities are being fetched -->
+                            {#await facilityLoading()}
+                                <p class="m-5">loading...</p>
+                            {:then}
+                            <!-- Display a booking card for each booking -->
                             <BookingCard
                                 on:click={() => setViewFocus(i)}
                                 class="my-2 transition transform hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:transform-none"
                                 heading="Booking #{b.id}"
-                                subheading={b.bookingType}
+                                subheading={findFacilityName(b.facilityId)}
                             />
+                            {/await}
                         {/each}
                     </div>
                     <div class="flex-1 pl-5">
@@ -174,7 +219,9 @@
                                 )}
                                 bookingTime={bookings[i].bookingTime}
                                 bookingLength={bookings[i].bookingLength}
-                                facility={bookings[i].facilitiesId}
+                                facility={findFacilityName(bookings[i].facilityId)}
+                                activity={bookings[i].activityId}
+                                user = {user}
                             />
                         {/if}
                     </div>
