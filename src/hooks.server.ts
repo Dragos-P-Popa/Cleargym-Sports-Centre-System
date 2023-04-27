@@ -113,4 +113,4 @@ const runFetch = (async ({ event, resolve }) => {
     return result
 }) satisfies Handle;
  
-export const handle = sequence(refreshToken, routeProtection, /*permissionProtection,*/ runFetch);
+export const handle = sequence(refreshToken, routeProtection, permissionProtection, runFetch);
